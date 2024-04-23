@@ -1,14 +1,13 @@
 import React, { useEffect,useState } from 'react';
-import {Link} from 'react-router-dom'
+import {NavLink} from 'react-router-dom'
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import logo from './img/logoo.svg';
-import {ReactComponent as Menus} from './img/menus.svg';
-import {ReactComponent as Close} from './img/close.svg';
+
 import './styles.css'
 
 function Landing() {
-
+  const [menuOpen,setMenuOpen] =useState(false)
   useEffect(() => {
 
     gsap.registerPlugin(ScrollTrigger);
@@ -70,11 +69,18 @@ function Landing() {
     <div>
       <div id="nav">
         <img className="logo" src={logo} alt="logo" />
+        <div className='menu' onClick={()=>{
+          setMenuOpen(!menuOpen)
+        }}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
         <div  id="nav-part2">
           <div id="links">
-           <ul>
-           <li><Link to='/login' className="button">Login</Link></li>
-          <li> <Link to='/home' className="button">home</Link></li>
+           <ul className={menuOpen ? "open" :""}>
+           <li><NavLink to='/login' className="button">Login</NavLink></li>
+          <li> <NavLink to='/home' className="button">home</NavLink></li>
             </ul>
           </div>
         </div>

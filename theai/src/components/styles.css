@@ -48,6 +48,23 @@ body {
   gap: 20px;
 }
 
+#nav .menu {
+  display: none;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 2.25rem;
+  height: 2rem;
+}
+#nav .menu span {
+  height: 0.4rem;
+  width: 100%;
+  background-color: black;
+  border-radius: 0.2rem;
+}
+
 .button {
   text-transform: uppercase;
   text-decoration: none;
@@ -118,16 +135,40 @@ body {
   display: none;
 }
 @media (max-width: 600px) {
-  #nav {
+  #page1 {
+    min-height: 100vh;
+    position: relative;
     width: 100%;
-    position: fixed;
-    z-index: 99;
+
+    padding-top: 38vh;
+  }
+  #nav .menu {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 15px;
+  }
+  #nav {
+    flex-direction: column;
+    align-items: start;
+  }
+  #nav ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0.25rem;
+    text-align: center;
+    border-radius: 10%;
+    border-bottom: 1px solid #ccc;
+    background-color: #f2f2f2;
   }
 
+  #nav ul li a {
+    margin: 0.2rem 0.5rem;
+    display: block;
+    padding: 1rem;
+  }
+
+  #nav ul.open {
+    display: flex;
+  }
   #nav #nav-part2 {
     display: flex;
     align-items: center;
@@ -140,6 +181,12 @@ body {
     display: none;
   }
 
+  #nav-part2 #links {
+    position: absolute;
+    margin-right: 10em;
+    margin-top: 5em;
+  }
+
   #nav-part1 {
     height: 67px;
     overflow: hidden;
@@ -149,7 +196,7 @@ body {
     padding-top: 25vh;
   }
   #page1 .header {
-    font-size: 15.5vw;
+    font-size: 15vw;
     padding: 0 2vw;
     line-height: 14vw;
     letter-spacing: -3px;
@@ -160,8 +207,8 @@ body {
     margin-top: 20px;
   }
   #page1 .about-section {
-    font-size: 12vw;
-    font-weight: 100;
+    font-size: 10vw;
+    font-weight: normal;
     letter-spacing: -1.5px;
     text-align: left;
     padding: 0px;

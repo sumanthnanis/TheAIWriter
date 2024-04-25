@@ -1,7 +1,144 @@
-import React from 'react';
-const Home =()=>{
-    return (
-        <h1> home Page</h1>
-    )
-}
-export default Home
+import React, { useState, useCallback, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
+import "./Home.css";
+import fileIcon from "./img/document.png";
+import downloadIcon from "./img/download.jpg";
+
+const Home = () => {
+  const [file, setFile] = useState(null);
+  const [msg, setMsg] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [publicFiles, setPublicFiles] = useState([]);
+
+  const onDropHandler = useCallback((acceptedFiles) => {
+    const selectedFile = acceptedFiles[0];
+    if (selectedFile.type === "text/plain") {
+      setFile(selectedFile);
+      setMsg(null);
+    } else {
+      setFile(null);
+      setMsg("Only text files (.txt) are allowed.");
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: onDropHandler,
+    accept: ".txt",
+  });
+
+  useEffect(() => {
+    const publicFileNames = ["js.txt", "hi.txt", "styles.css.txt"]; // Assuming these are the files in the public folder
+    setPublicFiles(publicFileNames);
+  }, []);
+
+  function handleUpload() {
+    if (!file) {
+      setMsg("No file selected");
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("file", file);
+
+    setMsg("Uploading....");
+    setProgress(0);
+
+    axios
+      .post("http://localhost:5000/upload", fd, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setProgress(percentCompleted);
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setMsg("Uploaded successfully");
+
+        axios
+          .get("http://localhost:5000/uploads")
+          .then((response) => {
+            setUploadedFiles(response.data.files);
+          })
+          .catch((error) => {
+            console.error("Error fetching uploaded files: ", error);
+          });
+      })
+      .catch((err) => {
+        setMsg("Upload failed");
+        console.log(err);
+      });
+  }
+
+  return (
+    <>
+      <div className="home-heading">
+        <h1>Welcome to AI Writer</h1>
+      </div>
+      <div className="home">
+        <div className="left">
+          <div className="drop-area" {...getRootProps()}>
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p>Drop the files here ...</p>
+            ) : (
+              <h3>Drag and Drop text files here</h3>
+            )}
+            <p>OR</p>
+
+            <label htmlFor="file-upload" className="custom-file-upload">
+              Select a text file
+            </label>
+            {file && (
+              <div className="file-info">Uploaded File: {file.name}</div>
+            )}
+            <input
+              id="file-upload"
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+              accept=".txt"
+            />
+          </div>
+
+          {msg && <span>{msg}</span>}
+          {progress > 0 && progress < 100 && (
+            <progress value={progress} max="100"></progress>
+          )}
+          <button onClick={handleUpload}>Generate Paper</button>
+        </div>
+        <div className="right">
+          <h2>Your Research Papers</h2>
+
+          <ul>
+            {publicFiles.map((fileName, index) => (
+              <div className="wrapper" key={index}>
+                <li>
+                  <img src={fileIcon} alt="File Icon" className="file-icon" />
+                  <span>{fileName}</span>
+                  <a
+                    href={process.env.PUBLIC_URL + "/" + fileName}
+                    download={fileName}
+                  >
+                    <img
+                      src={downloadIcon}
+                      alt="Download Icon"
+                      className="download-icon"
+                    />
+                  </a>
+                </li>
+              </div>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Home;

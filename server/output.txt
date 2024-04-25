@@ -1,0 +1,9 @@
+The development of e-commerce mobile applications has become increasingly important in
+providing a platform for selling products, especially for Self Help Groups
+(SHGs) trained to create unique products. This research paper explores the
+use of Flutter, Dart, Node.js, and MySQL as the key technologies
+in the development of an e-commerce mobile application for SHGs. These
+technologies offer efficient cross-platform development, clean and maintainable code, scalability, and
+a structured database for product visualization. This paper presents a comprehensive
+overview of the e-commerce mobile application development process and the technologies
+involved.

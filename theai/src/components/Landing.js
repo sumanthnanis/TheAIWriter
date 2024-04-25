@@ -1,86 +1,41 @@
-import React, { useEffect,useState } from 'react';
-import {NavLink} from 'react-router-dom'
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
-import logo from './img/logoo.svg';
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
-import './styles.css'
+import logo from "./img/logoo.svg";
+import research from "./img/research.png";
+
+import "./Landing.css";
 
 function Landing() {
-  const [menuOpen,setMenuOpen] =useState(false)
-  useEffect(() => {
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    function videoconAnimation() {
-      const videocon = document.querySelector("#page1");
-      const playbtn = document.querySelector("#play");
-
-      videocon.addEventListener("mouseenter", function () {
-        gsap.to(playbtn, {
-          scale: 1,
-          opacity: 1,
-        });
-      });
-
-      videocon.addEventListener("mouseleave", function () {
-        gsap.to(playbtn, {
-          scale: 0,
-          opacity: 0,
-        });
-      });
-
-      document.addEventListener("mousemove", function (dets) {
-        gsap.to(playbtn, {
-          left: dets.x - 70,
-          top: dets.y - 80,
-        });
-      });
-    }
-
-    function animatePageElements() {
-      gsap.to("#nav-part2 #links", {
-        transform: "translateY(-100%)",
-        opacity: 0,
-        scrollTrigger: {
-          trigger: "#page1",
-          scroller: "#main",
-          start: "top 0",
-          end: "top -5%",
-          scrub: true,
-        },
-      });
-
-      gsap.from("#page1 h1", {
-        scale: 0.9,
-        opacity: 0,
-        delay: 0.5,
-        duration: 0.5,
-        stagger: 0.3
-      });
-    }
-
-    videoconAnimation();
-    animatePageElements();
-  }, []);
-
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div>
       <div id="nav">
         <img className="logo" src={logo} alt="logo" />
-        <div className='menu' onClick={()=>{
-          setMenuOpen(!menuOpen)
-        }}>
+        <div
+          className="menu"
+          onClick={() => {
+            setMenuOpen(!menuOpen);
+          }}
+        >
           <span></span>
           <span></span>
           <span></span>
         </div>
-        <div  id="nav-part2">
+        <div id="nav-part2">
           <div id="links">
-           <ul className={menuOpen ? "open" :""}>
-           <li><NavLink to='/login' className="button">Login</NavLink></li>
-          <li> <NavLink to='/home' className="button">home</NavLink></li>
+            <ul className={menuOpen ? "open" : ""}>
+              <li>
+                <NavLink to="/login" className="button">
+                  Login
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/home" className="button">
+                  Try Now
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>
@@ -88,23 +43,61 @@ function Landing() {
 
       <div id="main">
         <div id="page1">
-          <div id="play">Hello</div>
-          <h1 className="header">CHANGE</h1>
-          <h1 className="header">THE COURSE</h1>
+          <div className="wrap">
+            <h1 className="header">
+              CHANGE <br />
+              THE COURSE
+            </h1>
+          </div>
+        </div>
+        <div className="page2">
           <div id="about">
-          <h1 className="about-section"> What we do</h1>
-          <p class="content">"We specialize in providing a secure and efficient platform for accessing research papers 
-            through cutting-edge technologies. Our website utilizes Secure Remote Password (SRP) 
-            authentication to ensure the confidentiality and integrity of user credentials, offering 
-            a robust layer of protection against unauthorized access.
-
-Additionally, we harness the power of artificial intelligence through our proprietary
- Agents of genAI system to generate high-quality research papers. Our AI agents are trained on vast 
- datasets and employ advanced natural language processing techniques to create insightful and coherent
-  papers on a wide range of topics</p>
+            <h1 className="about-section">What we do</h1>
+            <div className="about-content">
+              <div className="about-para">
+                <p>
+                  <b>TheAIWriter</b> streamlines the process of transforming
+                  project concepts into comprehensive research papers. Our
+                  advanced AI agents, powered by LangChain and OpenAI LLM,
+                  conduct thorough research by analyzing reputable sources and
+                  academic literature. Users can customize preferences, ensuring
+                  the generated research paper aligns with their specific
+                  requirements. The final product is promptly delivered, ready
+                  for submission or further refinement. With TheAIWriter,
+                  professional-grade research papers are within reach.
+                </p>
+              </div>
+              <div className="about-img">
+                <img src={research} alt="research" className="img" />
+              </div>
+            </div>
+          </div>
         </div>
+        <div className="page2">
+          <div id="about">
+            <h1 className="about-section">How we do</h1>
+            <div className="about-content">
+              <div className="about-img">
+                <img src={research} alt="research" className="img" />
+              </div>
+              <div className="about-para">
+                <p>
+                  Our platform employs cutting-edge technologies and
+                  methodologies to streamline the process of generating research
+                  papers. Through the integration of AI agents built on
+                  LangChain and OpenAI LLM. These agents make the retrieved data
+                  into concise summaries while preserving key insights and
+                  ensuring coherence. Additionally, our platform adheres to
+                  established academic formatting standards, such as APA or MLA,
+                  to present the research paper in a professional manner. We
+                  continuously refine our algorithms and models based on user
+                  feedback and the latest advancements in AI, ensuring optimal
+                  performance and accuracy.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        
       </div>
     </div>
   );

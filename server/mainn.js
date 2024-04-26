@@ -1,6 +1,6 @@
 // Importing necessary modules and defining variables
 const fs = require("fs");
-const { ChatOpenAI } = require("langchain_openai");
+const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
   TavilySearchAPIWrapper,
   TavilySearchResults,

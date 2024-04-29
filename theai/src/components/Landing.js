@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 
 import logo from "./img/logoo.svg";
 import research from "./img/research.png";
+import flow from "./img/flow.png";
 
 import "./Landing.css";
 
@@ -78,7 +79,7 @@ function Landing() {
             <h1 className="about-section">How we do</h1>
             <div className="about-content">
               <div className="about-img">
-                <img src={research} alt="research" className="img" />
+                <img src={flow} alt="research" className="img" />
               </div>
               <div className="about-para">
                 <p>

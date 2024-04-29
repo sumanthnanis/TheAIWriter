@@ -62,10 +62,16 @@ span {
 
 .right {
   width: 50%;
+
   background-color: white;
   margin: 10px;
   border-radius: 20px;
   border: 1px solid black;
+  clear: both;
+  overflow-y: scroll;
+}
+::-webkit-scrollbar {
+  display: none;
 }
 
 .drop-area {
@@ -149,4 +155,25 @@ progress {
   border: #000 solid 1px;
   border-radius: 5px;
   justify-content: space-between;
+}
+
+@media (max-width: 600px) {
+  .home {
+    display: flex;
+    flex-direction: column;
+  }
+  .left {
+    width: 100%;
+    height: 50%;
+    margin-right: 20px;
+  }
+  .right {
+    width: 100%;
+    height: 50%;
+    margin-left: 10px;
+    margin-right: 20px;
+  }
+  .drop-area {
+    padding-bottom: 10px;
+  }
 }

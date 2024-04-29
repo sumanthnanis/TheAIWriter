@@ -1,9 +1,0 @@
-problem statment:
- we are built an e-commerce app for shgs who are trained to make products as they need a platform to sell the products we created an  e-commerce mobile application 
-
-solution: 
-
-First off, Flutter. We went with Flutter because it's like having the best of both worlds. With Flutter, we can build stunning cross-platform mobile applications using a single codebase. That means less time spent on development and more time delivering a polished user experience. Plus, Flutter's hot reload feature is a game-changer. It allows us to make real-time changes to the app and see them instantly, which greatly speeds up our development process.
- Dart is the language that powers Flutter, and it's a perfect fit for our needs. It's a versatile and easy-to-learn language that allows us to write clean and maintainable code for both the frontend and backend components of our app. 
- Node.js. We chose Node.js for our backend because of its scalability and efficiency. Node.js's event-driven architecture makes it perfect for handling I/O-bound operations, such as serving HTTP requests and interacting with databases. And with the vast ecosystem of npm packages available. 
-and used mysql structured database and free of cost and easy visualiztions using tables

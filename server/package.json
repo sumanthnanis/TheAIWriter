@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "fs": "^0.0.1-security",
-    "langchain": "^0.1.36"
-  }
-}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import "./Home.css";
@@ -10,7 +10,7 @@ const Home = () => {
   const [msg, setMsg] = useState(null);
   const [progress, setProgress] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [publicFiles, setPublicFiles] = useState([]);
+  // const [publicFiles, setPublicFiles] = useState([]);
 
   const onDropHandler = useCallback((acceptedFiles) => {
     const selectedFile = acceptedFiles[0];
@@ -28,11 +28,6 @@ const Home = () => {
     accept: ".txt",
   });
 
-  useEffect(() => {
-    const publicFileNames = ["js.txt", "hi.txt", "styles.css.txt"]; // Assuming these are the files in the public folder
-    setPublicFiles(publicFileNames);
-  }, []);
-
   function handleUpload() {
     if (!file) {
       setMsg("No file selected");
@@ -42,11 +37,11 @@ const Home = () => {
     const fd = new FormData();
     fd.append("file", file);
 
-    setMsg("Uploading....");
+    setMsg("Processing....");
     setProgress(0);
 
     axios
-      .post("http://localhost:5000/upload", fd, {
+      .post("http://localhost:5002/process_file", fd, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -59,19 +54,14 @@ const Home = () => {
       })
       .then((res) => {
         console.log(res.data);
-        setMsg("Uploaded successfully");
-
-        axios
-          .get("http://localhost:5000/uploads")
-          .then((response) => {
-            setUploadedFiles(response.data.files);
-          })
-          .catch((error) => {
-            console.error("Error fetching uploaded files: ", error);
-          });
+        setMsg("Processing completed");
+        setUploadedFiles([
+          ...uploadedFiles,
+          { name: file.name, content: res.data.modified_content },
+        ]);
       })
       .catch((err) => {
-        setMsg("Upload failed");
+        setMsg("Processing failed");
         console.log(err);
       });
   }
@@ -113,10 +103,10 @@ const Home = () => {
           <button onClick={handleUpload}>Generate Paper</button>
         </div>
         <div className="right">
-          <h2>Your Research Papers</h2>
+          <h2 className="research">Your Research Papers</h2>
 
           <ul>
-            {publicFiles.map((fileName, index) => (
+            {/* {publicFiles.map((fileName, index) => (
               <div className="wrapper" key={index}>
                 <li>
                   <img src={fileIcon} alt="File Icon" className="file-icon" />
@@ -132,6 +122,27 @@ const Home = () => {
                     />
                   </a>
                 </li>
+              </div>
+            ))} */}
+            {uploadedFiles.map((file, index) => (
+              <div className="wrapper" key={index}>
+                <li>
+                  <img src={fileIcon} alt="File Icon" className="file-icon" />
+                  <span>{file.name}</span>
+                  <a
+                    href={`data:text/plain;charset=utf-8,${encodeURIComponent(
+                      file.content
+                    )}`}
+                    download={file.name}
+                  >
+                    <img
+                      src={downloadIcon}
+                      alt="Download Icon"
+                      className="download-icon"
+                    />
+                  </a>
+                </li>
+                {/* <pre>{file.content}</pre> */}
               </div>
             ))}
           </ul>

@@ -8,10 +8,11 @@ import downloadIcon from "./img/download.jpg";
 const Home = () => {
   const [file, setFile] = useState(null);
   const [msg, setMsg] = useState(null);
-  const [progress, setProgress] = useState(0);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  // const [publicFiles, setPublicFiles] = useState([]);
 
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [generatedContent, setGeneratedContent] = useState("");
+  //   const [showPreview, setShowPreview] = useState(false);
+  const [paperGenerated, setPaperGenerated] = useState(false);
   const onDropHandler = useCallback((acceptedFiles) => {
     const selectedFile = acceptedFiles[0];
     if (selectedFile.type === "text/plain") {
@@ -38,18 +39,11 @@ const Home = () => {
     fd.append("file", file);
 
     setMsg("Processing....");
-    setProgress(0);
 
     axios
       .post("http://localhost:5002/process_file", fd, {
         headers: {
           "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setProgress(percentCompleted);
         },
       })
       .then((res) => {
@@ -57,9 +51,13 @@ const Home = () => {
         setMsg("Processing completed");
         setUploadedFiles([
           ...uploadedFiles,
-          { name: file.name, content: res.data.modified_content },
+          { name: file.name, content: res.data.ContentList },
         ]);
+        setGeneratedContent(res.data.ContentList);
+        console.log("Generated Content", generatedContent);
+        setPaperGenerated(true);
       })
+
       .catch((err) => {
         setMsg("Processing failed");
         console.log(err);
@@ -93,58 +91,42 @@ const Home = () => {
               type="file"
               onChange={(e) => setFile(e.target.files[0])}
               accept=".txt"
+              style={{ display: "none" }}
             />
           </div>
 
           {msg && <span>{msg}</span>}
-          {progress > 0 && progress < 100 && (
-            <progress value={progress} max="100"></progress>
-          )}
+
           <button onClick={handleUpload}>Generate Paper</button>
         </div>
         <div className="right">
           <h2 className="research">Your Research Papers</h2>
 
           <ul>
-            {/* {publicFiles.map((fileName, index) => (
-              <div className="wrapper" key={index}>
-                <li>
-                  <img src={fileIcon} alt="File Icon" className="file-icon" />
-                  <span>{fileName}</span>
-                  <a
-                    href={process.env.PUBLIC_URL + "/" + fileName}
-                    download={fileName}
-                  >
-                    <img
-                      src={downloadIcon}
-                      alt="Download Icon"
-                      className="download-icon"
-                    />
-                  </a>
-                </li>
-              </div>
-            ))} */}
-            {uploadedFiles.map((file, index) => (
-              <div className="wrapper" key={index}>
-                <li>
-                  <img src={fileIcon} alt="File Icon" className="file-icon" />
-                  <span>{file.name}</span>
-                  <a
-                    href={`data:text/plain;charset=utf-8,${encodeURIComponent(
-                      file.content
-                    )}`}
-                    download={file.name}
-                  >
-                    <img
-                      src={downloadIcon}
-                      alt="Download Icon"
-                      className="download-icon"
-                    />
-                  </a>
-                </li>
-                {/* <pre>{file.content}</pre> */}
-              </div>
-            ))}
+            {uploadedFiles
+              .slice()
+              .reverse()
+              .map((file, index) => (
+                <div className="wrapper" key={index}>
+                  <li>
+                    <img src={fileIcon} alt="File Icon" className="file-icon" />
+                    <span>{file.name}</span>
+                    <a
+                      href={`data:text/plain;charset=utf-8,${encodeURIComponent(
+                        file.content
+                      )}`}
+                      download={file.name}
+                    >
+                      <img
+                        src={downloadIcon}
+                        alt="Download Icon"
+                        className="download-icon"
+                      />
+                    </a>
+                  </li>
+                  {/* <pre>{file.content}</pre> */}
+                </div>
+              ))}
           </ul>
         </div>
       </div>

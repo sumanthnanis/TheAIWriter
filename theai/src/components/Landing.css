@@ -220,6 +220,13 @@ body {
     text-align: left;
     padding: 0px;
   }
+  .about-img .img {
+    display: none;
+  }
+  #about .about-para {
+    display: block;
+    text-align: justify;
+  }
 }
 .about > h1 {
   margin-bottom: 5vh;

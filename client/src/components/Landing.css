@@ -1,0 +1,272 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+*::selection {
+  color: white;
+  background-color: black;
+}
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+#nav #nav-part2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+#nav {
+  height: 20vh;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: white;
+}
+#nav ul {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  list-style-type: none;
+}
+
+#nav-part2 {
+  margin-left: auto;
+}
+
+#nav-part2 #links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+#nav .menu {
+  display: none;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 2.25rem;
+  height: 2rem;
+}
+#nav .menu span {
+  height: 0.4rem;
+  width: 100%;
+  background-color: black;
+  border-radius: 0.2rem;
+}
+
+.button {
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 1;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 20px;
+  padding: 8px 20px;
+  margin: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+#links {
+  padding: 20px;
+}
+
+#icons {
+  padding: 10px;
+  border-radius: 50px;
+  background-color: #f7f7f7;
+}
+#nav-part2 #icons i {
+  font-size: 18px;
+  margin: 0 20px;
+  font-weight: 100;
+}
+
+.logo {
+  height: 100px;
+  width: 300px;
+}
+
+#page1 {
+  min-height: 100vh;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  padding-top: 30vh;
+}
+
+#page1 h1 {
+  display: flex;
+  font-size: 13.5vw;
+  text-transform: uppercase;
+  font-family: futura;
+
+  color: black;
+  opacity: 1 !important;
+  letter-spacing: -8px;
+  line-height: 30vh;
+  margin-left: 5vw;
+}
+
+#about h1 {
+  font-size: 8vw;
+  margin-right: 0;
+  z-index: 1;
+  margin-bottom: 5vh;
+}
+#about .content {
+  flex: 1;
+  padding: 30px;
+  margin-top: 12vh;
+}
+
+#about .content h1 {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  #page1 {
+    min-height: 100vh;
+    position: relative;
+    width: 100%;
+
+    padding-top: 38vh;
+  }
+  #nav .menu {
+    display: flex;
+  }
+  #nav {
+    flex-direction: column;
+    align-items: start;
+  }
+  #nav ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0.25rem;
+    text-align: center;
+    border-radius: 10%;
+    border-bottom: 1px solid #ccc;
+    background-color: #f2f2f2;
+  }
+
+  #nav ul li a {
+    margin: 0.2rem 0.5rem;
+    display: block;
+    padding: 1rem;
+  }
+
+  #nav ul.open {
+    display: flex;
+  }
+  #nav #nav-part2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  #links {
+    padding: 10px;
+    display: none;
+  }
+
+  #nav-part2 #links {
+    position: absolute;
+    margin-right: 10em;
+    margin-top: 5em;
+  }
+
+  #nav-part1 {
+    height: 67px;
+    overflow: hidden;
+  }
+  #page1 {
+    width: 100%;
+    padding-top: 25vh;
+  }
+  #page1 .header {
+    font-size: 15vw;
+    padding: 0 2vw;
+    line-height: 14vw;
+    letter-spacing: -3px;
+  }
+  #page1 #about {
+    display: block;
+    text-align: left;
+    margin-top: 20px;
+  }
+  #page1 .about-section {
+    font-size: 10vw;
+    font-weight: normal;
+    letter-spacing: -1.5px;
+    text-align: left;
+    padding: 0px;
+  }
+  .about-img .img {
+    display: none;
+  }
+  #about .about-para {
+    display: block;
+    text-align: justify;
+  }
+}
+.about > h1 {
+  margin-bottom: 5vh;
+}
+.page2 {
+  height: 100vh;
+  padding-top: 20vh;
+}
+
+#about {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-inline: 5vw;
+  justify-content: start;
+}
+
+.about-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.about-para {
+  width: 65%;
+  text-align: justify;
+  margin-left: 1vw;
+  font-size: large;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 4vh;
+}
+
+.about-img {
+  width: 25%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.about-img img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  border-radius: 5px;
+}

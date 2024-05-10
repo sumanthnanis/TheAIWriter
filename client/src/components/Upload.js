@@ -1,5 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import { useLocation } from "react-router-dom";
+
 import axios from "axios";
 import "./Upload.css";
 
@@ -8,6 +10,9 @@ const Upload = () => {
   const [msg, setMsg] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const { state } = useLocation();
+
+  console.log(state);
 
   const onDropHandler = useCallback((acceptedFiles) => {
     const selectedFile = acceptedFiles[0];
@@ -24,12 +29,46 @@ const Upload = () => {
     accept: ".pdf",
   });
 
+  // const submitFile = async (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData();
+  //   formData.append("title", title);
+  //   formData.append("description", description);
+  //   formData.append("file", file);
+
+  //   try {
+  //     const result = await axios.post(
+  //       "http://localhost:8000/api/upload",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+  //     if (result.status === 200) {
+  //       setMsg("Paper uploaded succesfully");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting file:", error);
+  //   }
+  // };
   const submitFile = async (e) => {
     e.preventDefault();
+
+    // Get authentication token from storage (e.g., local storage)
+    const token = localStorage.getItem("token"); // Assuming token is stored in local storage
+
+    if (!token) {
+      console.error("Token not found in local storage");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", file);
+    formData.append("username", state.username);
 
     try {
       const result = await axios.post(
@@ -38,11 +77,12 @@ const Upload = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       if (result.status === 200) {
-        setMsg("Paper uploaded succesfully");
+        setMsg("Paper uploaded successfully");
       }
     } catch (error) {
       console.error("Error submitting file:", error);

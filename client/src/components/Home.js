@@ -5,6 +5,7 @@ import axios from "axios";
 import "./Home.css";
 
 const Home = () => {
+  // console.log(states);
   const { state } = useLocation();
   const [papers, setPapers] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,9 +46,8 @@ const Home = () => {
   }
 
   const showPdf = async (fileName) => {
-    console.log("File Name:", fileName);
     const url = `http://localhost:8000/files/${fileName}`;
-    console.log("Request URL:", url);
+
     try {
       const response = await axios.get(url, {
         responseType: "blob",
@@ -62,11 +62,11 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar state={state.role} />
+      <Navbar state={state.role} user={state} />
       <div>
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search By PaperName/Author"
           value={searchQuery}
           onChange={handleSearch}
           className="search-input"

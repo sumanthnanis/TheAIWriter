@@ -32,6 +32,7 @@ const Login = () => {
     });
     const data = await response.json();
   }
+
   async function loginuser(event) {
     event.preventDefault();
     const response = await fetch("http://localhost:8000/api/login", {
@@ -49,10 +50,12 @@ const Login = () => {
       navigate("/home", { state: data });
       console.log("routed");
     } else {
+      console.log("no token found");
       setMessage("Please check your email and password");
     }
     console.log(data);
   }
+
   return (
     <div className={`container ${isSignUp ? "sign-up-mode" : ""}`}>
       <div className="forms-container">

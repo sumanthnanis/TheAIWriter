@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Landing from "./components/Landing";
+
 import Upload from "./components/Upload";
 
 function App() {

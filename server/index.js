@@ -65,6 +65,7 @@ app.post("/api/login", async (req, res) => {
         },
         "asdfghjkl1234567890"
       );
+
       res.json({
         token: token,
         email: user.email,
@@ -84,12 +85,15 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
   console.log(req.file);
   const title = req.body.title;
   const description = req.body.description;
-  const fileName = req.file.filename;
+  const username = req.body.username;
+
   try {
     await Paper.create({
       title: title,
       description: description,
       pdf: req.file.filename,
+      uploadedBy: username,
+      count: 0,
     });
     res.send({ status: "ok" });
   } catch (error) {
@@ -115,6 +119,7 @@ app.get("/api/search", async (req, res) => {
       $or: [
         { title: { $regex: searchData, $options: "i" } },
         { description: { $regex: searchData, $options: "i" } },
+        { uploadedBy: { $regex: searchData, $options: "i" } },
       ],
     };
   }
@@ -127,7 +132,34 @@ app.get("/api/search", async (req, res) => {
   }
 });
 
-app.use("/files", express.static(path.join(__dirname, "files")));
+const incrementCount = async (path) => {
+  try {
+    // Remove leading slash from path
+    const filename = path.substring(1);
+    let file = await Paper.findOne({ pdf: filename });
+    console.log("File found in database:", file);
+
+    if (file) {
+      file.count++;
+      await file.save();
+      console.log(`Count incremented for file: ${filename}`);
+    } else {
+      console.log("File not found in database");
+    }
+  } catch (err) {
+    console.error("Error incrementing count:", err);
+  }
+};
+
+app.use(
+  "/files",
+  async (req, res, next) => {
+    console.log(req.path);
+    await incrementCount(req.path);
+    next();
+  },
+  express.static(path.join(__dirname, "files"))
+);
 
 app.listen(8000, () => {
   console.log("server started");

@@ -1,59 +1,33 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import Dropdown from "./Dropdown.js";
 
 import logo from "./img/logoo.svg";
-
 import "./Landing.css";
+import { MenuItems, CatItems } from "./MenuItems.js";
 
-function Navbar({ state }) {
-  console.log(state);
+function Navbar({ state, user }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [papers, setPapers] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  useEffect(() => {
-    fetchPapers();
-  }, [searchQuery]);
+  const [servicesDropdown, setServicesDropdown] = useState(false);
+  const [categoriesDropdown, setCategoriesDropdown] = useState(false);
 
-  const fetchPapers = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8000/api/get-papers?search=${searchQuery}`
-      );
-      setPapers(response.data);
-    } catch (error) {
-      console.error("Error fetching papers:", error);
-    }
-  };
-  function handleSearch(e) {
-    setSearchQuery(e.target.value);
-  }
+  const handleClick = () => setMenuOpen(!menuOpen);
+  const closeMobileMenu = () => setMenuOpen(false);
+
+  const toggleServicesDropdown = () => setServicesDropdown(!servicesDropdown);
+  const toggleCategoriesDropdown = () =>
+    setCategoriesDropdown(!categoriesDropdown);
 
   return (
     <nav id="nav">
       <img className="logo" src={logo} alt="logo" />
-      <div
-        className="menu"
-        onClick={() => {
-          setMenuOpen(!menuOpen);
-        }}
-      >
+      <div className="menu" onClick={handleClick}>
         <span></span>
         <span></span>
         <span></span>
       </div>
       <div id="nav-part2">
         <div id="links">
-          {/* <div>
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="search-input"
-            />
-          </div> */}
-
           <ul className={menuOpen ? "open" : ""}>
             {state === "landing" && (
               <li>
@@ -62,29 +36,36 @@ function Navbar({ state }) {
                 </NavLink>
               </li>
             )}
-            {state === "landing" && (
-              <li>
-                <NavLink to="/home" className="button">
-                  Try Now
-                </NavLink>
+
+            {(state === "user" || state === "author") && (
+              <li
+                className="nav-links"
+                onClick={() => {
+                  closeMobileMenu();
+                  toggleServicesDropdown();
+                }}
+              >
+                Services <i className="fas fa-caret-down" />
+                {servicesDropdown && <Dropdown items={CatItems} />}
               </li>
             )}
-            {(state === "user" || state === "author") && [
-              <li>
-                <NavLink to="/home" className="button">
-                  Trending
-                </NavLink>
-              </li>,
-              <li>
-                <NavLink to="/home" className="button">
-                  Explore
-                </NavLink>
-              </li>,
-            ]}
+
+            {(state === "user" || state === "author") && (
+              <li
+                className="nav-links"
+                onClick={() => {
+                  closeMobileMenu();
+                  toggleCategoriesDropdown();
+                }}
+              >
+                Categories <i className="fas fa-caret-down" />
+                {categoriesDropdown && <Dropdown items={MenuItems} />}
+              </li>
+            )}
 
             {state === "author" && (
               <li>
-                <NavLink to="/upload" className="button">
+                <NavLink to="/upload" className="button" state={user}>
                   Publish
                 </NavLink>
               </li>

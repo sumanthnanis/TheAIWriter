@@ -16,4 +16,14 @@ const paperId = req.query.id; const paper = await Paper.findById(paperId); if
 (!paper) { return res.status(404).send("Paper not found"); } const filePath =
 path.join(__dirname, "files", paper.pdf.filename); res.download(filePath,
 paper.pdf.originalname); } catch (error) { console.error(error);
-res.status(500).send("Internal Server Error"); } });
+res.status(500).send("Internal Server Error"); } }); // import React from
+"react"; // import "./Dropdown.css"; // function Dropdown({ items }) { // const
+renderMenu = (items) => { // return ( //
+<ul className="dropdown-menu">
+  // {items.map((item, index) => ( //
+  <li key="{index}" className="{item.cName}">
+    // {item.title} // {item.subMenu && renderMenu(item.subMenu)}{" "} //
+  </li>
+  // ))} //
+</ul>
+// ); // }; // return renderMenu(items); // } // export default Dropdown;

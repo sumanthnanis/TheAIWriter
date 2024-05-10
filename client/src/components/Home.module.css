@@ -12,12 +12,11 @@ body {
   height: 100%;
   width: 100%;
 }
-/* Landing.css */
-.search-container {
-  margin-bottom: 20px;
+.h5 {
+  margin-top: 5px;
 }
 
-.search-input {
+.searchInput {
   width: 60%;
   padding: 10px;
   margin-left: 20px;
@@ -27,35 +26,29 @@ body {
   margin-bottom: 10px;
 }
 
-.output-div {
+.outputDiv {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
 }
 
-.inner-div {
+.innerDiv {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
   position: relative;
 }
 
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-}
-
-.btn-primary {
+.btnPrimary {
   border: 1px solid black;
   background-color: #fff;
   color: black;
-
   padding: 8px 12px;
   border-radius: 5px;
+  margin-top: 5px;
   cursor: pointer;
 }
 
-.btn-primary:hover {
+.btnPrimary:hover {
   background-color: black;
 }

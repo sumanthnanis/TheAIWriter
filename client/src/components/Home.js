@@ -2,21 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import axios from "axios";
-import "./Home.css";
+import styles from "./Home.module.css";
 
 const Home = () => {
-  // console.log(states);
   const { state } = useLocation();
   const [papers, setPapers] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("");
 
   useEffect(() => {
     fetchPapers();
-  }, []);
+  }, [sortBy]);
 
   const fetchPapers = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/get-papers");
+      let url = "http://localhost:8000/api/get-papers";
+      if (sortBy === "mostViewed") {
+        url += "?sortBy=viewCount";
+      }
+      const response = await axios.get(url);
       setPapers(response.data);
     } catch (error) {
       console.error("Error fetching papers:", error);
@@ -62,35 +66,34 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar state={state.role} user={state} />
+      <Navbar state={state.role} user={state} setSortBy={setSortBy} />
       <div>
         <input
           type="text"
           placeholder="Search By PaperName/Author"
           value={searchQuery}
           onChange={handleSearch}
-          className="search-input"
+          className={styles.searchInput}
         />
       </div>
-      <div className="right">
-        <div className="output-div">
-          {papers == null
-            ? ""
-            : papers.map((data, index) => {
-                return (
-                  <div className="inner-div" key={index}>
-                    <h3>Title: {data.title}</h3>
-                    <h5>Description: {data.description}</h5>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => showPdf(data.pdf)}
-                    >
-                      Show Pdf
-                    </button>
-                  </div>
-                );
-              })}
-        </div>
+
+      <div className={styles.outputDiv}>
+        {papers == null
+          ? ""
+          : papers.map((data, index) => {
+              return (
+                <div className={styles.innerDiv} key={index}>
+                  <h3>Title: {data.title}</h3>
+                  <h5 className={styles.h5}>Description: {data.description}</h5>
+                  <button
+                    className={styles.btnPrimary}
+                    onClick={() => showPdf(data.pdf)}
+                  >
+                    Show Pdf
+                  </button>
+                </div>
+              );
+            })}
       </div>
     </div>
   );

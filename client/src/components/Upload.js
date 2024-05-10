@@ -1,7 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { useLocation } from "react-router-dom";
-
 import axios from "axios";
 import "./Upload.css";
 
@@ -10,17 +8,29 @@ const Upload = () => {
   const [msg, setMsg] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const { state } = useLocation();
-
-  console.log(state);
+  const [categories, setCategories] = useState({
+    artificialIntelligence: false,
+    blockchain: false,
+    deepLearning: false,
+    frontend: false,
+    backend: false,
+    database: false,
+  });
 
   const onDropHandler = useCallback((acceptedFiles) => {
     const selectedFile = acceptedFiles[0];
-    if (selectedFile.type === "text/plain") {
+    const fileName = selectedFile.name;
+    const fileExtension = fileName.slice(
+      ((fileName.lastIndexOf(".") - 1) >>> 0) + 2
+    );
+
+    if (fileExtension.toLowerCase() === "pdf") {
       setFile(selectedFile);
       setMsg(null);
+      console.log(selectedFile);
     } else {
       setFile(null);
+      setMsg("Please upload a PDF file.");
     }
   }, []);
 
@@ -29,46 +39,19 @@ const Upload = () => {
     accept: ".pdf",
   });
 
-  // const submitFile = async (e) => {
-  //   e.preventDefault();
-  //   const formData = new FormData();
-  //   formData.append("title", title);
-  //   formData.append("description", description);
-  //   formData.append("file", file);
-
-  //   try {
-  //     const result = await axios.post(
-  //       "http://localhost:8000/api/upload",
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-  //     if (result.status === 200) {
-  //       setMsg("Paper uploaded succesfully");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error submitting file:", error);
-  //   }
-  // };
   const submitFile = async (e) => {
     e.preventDefault();
-
-    // Get authentication token from storage (e.g., local storage)
-    const token = localStorage.getItem("token"); // Assuming token is stored in local storage
-
-    if (!token) {
-      console.error("Token not found in local storage");
-      return;
-    }
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", file);
-    formData.append("username", state.username);
+
+    for (const category in categories) {
+      if (categories[category]) {
+        formData.append("categories", category);
+      }
+    }
 
     try {
       const result = await axios.post(
@@ -77,7 +60,6 @@ const Upload = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -111,6 +93,87 @@ const Upload = () => {
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </div>
+          <div className="categories">
+            <label>
+              <input
+                type="checkbox"
+                checked={categories.artificialIntelligence}
+                onChange={(e) =>
+                  setCategories({
+                    ...categories,
+                    artificialIntelligence: e.target.checked,
+                  })
+                }
+              />
+              Artificial Intelligence
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                checked={categories.deepLearning}
+                onChange={(e) =>
+                  setCategories({
+                    ...categories,
+                    deepLearning: e.target.checked,
+                  })
+                }
+              />
+              Deep Learning
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={categories.blockchain}
+                onChange={(e) =>
+                  setCategories({
+                    ...categories,
+                    blockchain: e.target.checked,
+                  })
+                }
+              />
+              Blockchain
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={categories.frontend}
+                onChange={(e) =>
+                  setCategories({
+                    ...categories,
+                    frontend: e.target.checked,
+                  })
+                }
+              />
+              Frontend Development
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={categories.backend}
+                onChange={(e) =>
+                  setCategories({
+                    ...categories,
+                    backend: e.target.checked,
+                  })
+                }
+              />
+              Backend Development
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={categories.database}
+                onChange={(e) =>
+                  setCategories({
+                    ...categories,
+                    database: e.target.checked,
+                  })
+                }
+              />
+              Databases
+            </label>
+          </div>
           <div className="drop-area" {...getRootProps()}>
             <input {...getInputProps()} />
             {isDragActive ? (
@@ -119,7 +182,6 @@ const Upload = () => {
               <h3>Drag and Drop text files here</h3>
             )}
             <p>OR</p>
-
             <label htmlFor="file-upload" className="custom-file-upload">
               Select a text file
             </label>
@@ -128,16 +190,15 @@ const Upload = () => {
             )}
             <input
               id="file-upload"
-              type="file"
               onChange={(e) => setFile(e.target.files[0])}
               accept=".pdf"
               style={{ display: "none" }}
             />
           </div>
-
           {msg && <span>{msg}</span>}
-
-          <button onClick={submitFile}>Upload Paper</button>
+          <button className="button" onClick={submitFile}>
+            Upload Paper
+          </button>
         </div>
       </div>
     </>

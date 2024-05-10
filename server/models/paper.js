@@ -7,6 +7,7 @@ const PaperSchema = new mongoose.Schema(
     description: String,
     uploadedBy: String,
     count: Number,
+    categories: [String], // Array field for categories
   },
   { collection: "paperDetails" }
 );

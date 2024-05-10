@@ -9,6 +9,7 @@
 
 .dropdown-menu li {
   cursor: pointer;
+  border: none;
 }
 
 .dropdown-menu li:hover {

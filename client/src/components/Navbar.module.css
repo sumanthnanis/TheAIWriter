@@ -1,0 +1,129 @@
+.nav {
+  height: 20vh;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: white;
+}
+li {
+  margin-right: 10px;
+  border: 1px solid #000;
+  border-radius: 20px;
+  padding: 8px 20px;
+}
+.logo {
+  height: 100px;
+  width: 300px;
+}
+
+.menu {
+  display: none;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 2.25rem;
+  height: 2rem;
+}
+
+.menu span {
+  height: 0.4rem;
+  width: 100%;
+  background-color: black;
+  border-radius: 0.2rem;
+}
+
+.menu.open span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.menu.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu.open span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+#navPart2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-left: auto;
+}
+
+ul {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  list-style-type: none;
+  z-index: 5;
+}
+
+.menu {
+  display: none;
+}
+
+ul.open {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+  background-color: #f2f2f2;
+}
+
+ul.open li {
+  margin: 0.2rem 0.5rem;
+}
+
+ul.open li a {
+  display: block;
+  padding: 1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+ul.open li a:hover {
+  background-color: #000;
+  color: #fff;
+}
+.button {
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 1;
+  color: #000;
+
+  margin: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #000;
+  color: #fff;
+}
+#nav #nav-part2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+#nav {
+  height: 20vh;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: white;
+}

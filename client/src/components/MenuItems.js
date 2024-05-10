@@ -1,14 +1,4 @@
-export const CatItems = [
-  {
-    title: "Most Viewed",
-    cName: "dropdown-link",
-  },
-  {
-    title: "Most Downloaded",
-    cName: "dropdown-link",
-  },
-];
-export const MenuItems = [
+const MenuItems = [
   {
     title: "Artificial Intelligence",
     cName: "dropdown-link",
@@ -38,20 +28,6 @@ export const MenuItems = [
   {
     title: "Deep Learning",
     cName: "dropdown-link",
-    subMenu: [
-      {
-        title: "Convolutional Neural Networks (CNNs)",
-        cName: "dropdown-submenu-link",
-      },
-      {
-        title: "Recurrent Neural Networks (RNNs)",
-        cName: "dropdown-submenu-link",
-      },
-      {
-        title: "Generative Adversarial Networks (GANs)",
-        cName: "dropdown-submenu-link",
-      },
-    ],
   },
 
   {
@@ -156,3 +132,4 @@ export const MenuItems = [
     ],
   },
 ];
+export default MenuItems;

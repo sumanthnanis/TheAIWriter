@@ -86,16 +86,18 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
   const title = req.body.title;
   const description = req.body.description;
   const username = req.body.username;
+  const categories = req.body.categories;
 
   try {
-    await Paper.create({
+    const paper = await Paper.create({
       title: title,
       description: description,
       pdf: req.file.filename,
       uploadedBy: username,
       count: 0,
+      categories: categories,
     });
-    res.send({ status: "ok" });
+    res.send({ status: "ok", paper: paper });
   } catch (error) {
     res.send({ status: "error" });
   }
@@ -103,10 +105,18 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
 
 app.get("/api/get-papers", async (req, res) => {
   try {
-    const papers = await Paper.find({});
-    res.send(papers);
+    let query = {};
+
+    if (req.query.sortBy === "viewCount") {
+      query = {};
+      const papers = await Paper.find({}).sort({ count: -1 });
+      res.send(papers);
+    } else {
+      const papers = await Paper.find({});
+      res.send(papers);
+    }
   } catch (error) {
-    res.send({ status: "error" });
+    res.status(500).json({ status: "error" });
   }
 });
 
@@ -134,8 +144,10 @@ app.get("/api/search", async (req, res) => {
 
 const incrementCount = async (path) => {
   try {
-    // Remove leading slash from path
-    const filename = path.substring(1);
+    const decodedPath = decodeURIComponent(path);
+
+    const filename = decodedPath.substring(1);
+
     let file = await Paper.findOne({ pdf: filename });
     console.log("File found in database:", file);
 
@@ -160,6 +172,20 @@ app.use(
   },
   express.static(path.join(__dirname, "files"))
 );
+
+app.get("/api/papers-by-category", async (req, res) => {
+  const category = req.query.category;
+
+  try {
+    const papers = await Paper.find({ categories: category }).sort({
+      count: -1,
+    });
+    res.send(papers);
+  } catch (error) {
+    console.error("Error fetching papers by category:", error);
+    res.status(500).json({ status: "error" });
+  }
+});
 
 app.listen(8000, () => {
   console.log("server started");

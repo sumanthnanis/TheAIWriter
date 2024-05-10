@@ -14,6 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/upload" element={<Upload />} />
+        <Route path="/my-papers" element={<authorPapers />} />
       </Routes>
     </BrowserRouter>
   );

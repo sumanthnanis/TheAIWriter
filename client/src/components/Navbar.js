@@ -1,58 +1,53 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Dropdown from "./Dropdown.js";
-
 import logo from "./img/logoo.svg";
-import "./Landing.css";
-import { MenuItems, CatItems } from "./MenuItems.js";
+import styles from "./Navbar.module.css";
+import MenuItems from "./MenuItems.js";
 
-function Navbar({ state, user }) {
+function Navbar({ state, user, setSortBy }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [servicesDropdown, setServicesDropdown] = useState(false);
   const [categoriesDropdown, setCategoriesDropdown] = useState(false);
 
   const handleClick = () => setMenuOpen(!menuOpen);
   const closeMobileMenu = () => setMenuOpen(false);
 
-  const toggleServicesDropdown = () => setServicesDropdown(!servicesDropdown);
   const toggleCategoriesDropdown = () =>
     setCategoriesDropdown(!categoriesDropdown);
 
+  const handleMostViewedClick = () => {
+    setSortBy("mostViewed");
+    closeMobileMenu();
+  };
+
   return (
-    <nav id="nav">
-      <img className="logo" src={logo} alt="logo" />
-      <div className="menu" onClick={handleClick}>
+    <nav id={styles.nav}>
+      <img className={styles.logo} src={logo} alt="logo" />
+      <div className={styles.menu} onClick={handleClick}>
         <span></span>
         <span></span>
         <span></span>
       </div>
-      <div id="nav-part2">
-        <div id="links">
-          <ul className={menuOpen ? "open" : ""}>
+      <div id={styles.navPart2}>
+        <div id={styles.links}>
+          <ul className={menuOpen ? styles.open : ""}>
             {state === "landing" && (
               <li>
-                <NavLink to="/login" className="button">
+                <NavLink to="/login" className={styles.button}>
                   Login
                 </NavLink>
               </li>
             )}
 
             {(state === "user" || state === "author") && (
-              <li
-                className="nav-links"
-                onClick={() => {
-                  closeMobileMenu();
-                  toggleServicesDropdown();
-                }}
-              >
-                Services <i className="fas fa-caret-down" />
-                {servicesDropdown && <Dropdown items={CatItems} />}
+              <li className={styles.navLinks} onClick={handleMostViewedClick}>
+                Most Viewed
               </li>
             )}
 
             {(state === "user" || state === "author") && (
               <li
-                className="nav-links"
+                className={styles.navLinks}
                 onClick={() => {
                   closeMobileMenu();
                   toggleCategoriesDropdown();
@@ -62,10 +57,16 @@ function Navbar({ state, user }) {
                 {categoriesDropdown && <Dropdown items={MenuItems} />}
               </li>
             )}
-
             {state === "author" && (
               <li>
-                <NavLink to="/upload" className="button" state={user}>
+                <NavLink to="/my-papers" className={styles.button} state={user}>
+                  My Papers
+                </NavLink>
+              </li>
+            )}
+            {state === "author" && (
+              <li>
+                <NavLink to="/upload" className={styles.button} state={user}>
                   Publish
                 </NavLink>
               </li>

@@ -13,6 +13,7 @@ li {
   border-radius: 20px;
   padding: 8px 20px;
 }
+
 .logo {
   height: 100px;
   width: 300px;
@@ -107,8 +108,11 @@ ul.open li a:hover {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.button:hover {
+li:hover {
   background-color: #000;
+  color: #fff;
+}
+.button:hover {
   color: #fff;
 }
 #nav #nav-part2 {

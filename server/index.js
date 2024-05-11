@@ -5,7 +5,6 @@ const User = require("./models/user.model.js");
 const jwt = require("jsonwebtoken");
 const Paper = require("./models/paper.js");
 const path = require("path");
-const fs = require("fs");
 const app = express();
 app.use(cors());
 
@@ -102,20 +101,27 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
     res.send({ status: "error" });
   }
 });
-
 app.get("/api/get-papers", async (req, res) => {
   try {
     let query = {};
 
     if (req.query.sortBy === "viewCount") {
-      query = {};
       const papers = await Paper.find({}).sort({ count: -1 });
-      res.send(papers);
-    } else {
-      const papers = await Paper.find({});
-      res.send(papers);
+      return res.send(papers);
     }
+    if (req.query.category) {
+      const formattedCategory = req.query.category
+        .replace(/\s+/g, "")
+        .toLowerCase();
+      const papers = await Paper.find({ categories: formattedCategory });
+      console.log(formattedCategory);
+      return res.send(papers);
+    }
+
+    const papers = await Paper.find({});
+    res.send(papers);
   } catch (error) {
+    console.error("Error fetching papers:", error);
     res.status(500).json({ status: "error" });
   }
 });
@@ -175,11 +181,10 @@ app.use(
 
 app.get("/api/papers-by-category", async (req, res) => {
   const category = req.query.category;
-
+  console.log("hiiiiiiiiiii", category);
   try {
-    const papers = await Paper.find({ categories: category }).sort({
-      count: -1,
-    });
+    const papers = await Paper.find({ categories: { $in: [category] } });
+
     res.send(papers);
   } catch (error) {
     console.error("Error fetching papers by category:", error);

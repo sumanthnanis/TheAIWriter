@@ -5,7 +5,7 @@ import logo from "./img/logoo.svg";
 import styles from "./Navbar.module.css";
 import MenuItems from "./MenuItems.js";
 
-function Navbar({ state, user, setSortBy }) {
+function Navbar({ state, user, setSortBy, setCategory }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [categoriesDropdown, setCategoriesDropdown] = useState(false);
 
@@ -17,6 +17,11 @@ function Navbar({ state, user, setSortBy }) {
 
   const handleMostViewedClick = () => {
     setSortBy("mostViewed");
+    closeMobileMenu();
+  };
+
+  const handleCategoryClick = (category) => {
+    setCategory(category);
     closeMobileMenu();
   };
 
@@ -54,7 +59,12 @@ function Navbar({ state, user, setSortBy }) {
                 }}
               >
                 Categories <i className="fas fa-caret-down" />
-                {categoriesDropdown && <Dropdown items={MenuItems} />}
+                {categoriesDropdown && (
+                  <Dropdown
+                    items={MenuItems}
+                    handleCategoryClick={handleCategoryClick}
+                  />
+                )}
               </li>
             )}
             {state === "author" && (

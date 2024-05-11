@@ -9,24 +9,35 @@ const Home = () => {
   const [papers, setPapers] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [category, setCategory] = useState("");
 
   useEffect(() => {
     fetchPapers();
-  }, [sortBy]);
+  }, [sortBy, category]);
 
   const fetchPapers = async () => {
     try {
       let url = "http://localhost:8000/api/get-papers";
+      const params = new URLSearchParams();
       if (sortBy === "mostViewed") {
         url += "?sortBy=viewCount";
       }
+      if (category) {
+        const trimmedCategory = category.trim();
+        params.append("category", trimmedCategory);
+      }
+
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+        console.log(url);
+      }
       const response = await axios.get(url);
+
       setPapers(response.data);
     } catch (error) {
       console.error("Error fetching papers:", error);
     }
   };
-
   useEffect(() => {
     if (searchQuery === "") {
       fetchPapers();
@@ -66,7 +77,12 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar state={state.role} user={state} setSortBy={setSortBy} />
+      <Navbar
+        state={state.role}
+        user={state}
+        setSortBy={setSortBy}
+        setCategory={setCategory}
+      />
       <div>
         <input
           type="text"

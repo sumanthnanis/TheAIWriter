@@ -12,11 +12,10 @@ const Upload = () => {
     artificialIntelligence: false,
     blockchain: false,
     deepLearning: false,
-    frontend: false,
-    backend: false,
-    database: false,
+    frontendDevelopment: false,
+    backendDevelopment: false,
+    databases: false,
   });
-
   const onDropHandler = useCallback((acceptedFiles) => {
     const selectedFile = acceptedFiles[0];
     const fileName = selectedFile.name;
@@ -47,11 +46,13 @@ const Upload = () => {
     formData.append("description", description);
     formData.append("file", file);
 
-    for (const category in categories) {
-      if (categories[category]) {
-        formData.append("categories", category);
-      }
-    }
+    const formattedCategories = Object.keys(categories)
+      .filter((category) => categories[category])
+      .map((category) => category.toLowerCase().replace(/\s+/g, ""));
+
+    formattedCategories.forEach((category) => {
+      formData.append("categories", category);
+    });
 
     try {
       const result = await axios.post(
@@ -107,7 +108,6 @@ const Upload = () => {
               />
               Artificial Intelligence
             </label>
-
             <label>
               <input
                 type="checkbox"
@@ -137,11 +137,11 @@ const Upload = () => {
             <label>
               <input
                 type="checkbox"
-                checked={categories.frontend}
+                checked={categories.frontendDevelopment}
                 onChange={(e) =>
                   setCategories({
                     ...categories,
-                    frontend: e.target.checked,
+                    frontendDevelopment: e.target.checked,
                   })
                 }
               />
@@ -150,11 +150,11 @@ const Upload = () => {
             <label>
               <input
                 type="checkbox"
-                checked={categories.backend}
+                checked={categories.backendDevelopment}
                 onChange={(e) =>
                   setCategories({
                     ...categories,
-                    backend: e.target.checked,
+                    backendDevelopment: e.target.checked,
                   })
                 }
               />
@@ -163,11 +163,11 @@ const Upload = () => {
             <label>
               <input
                 type="checkbox"
-                checked={categories.database}
+                checked={categories.databases}
                 onChange={(e) =>
                   setCategories({
                     ...categories,
-                    database: e.target.checked,
+                    databases: e.target.checked,
                   })
                 }
               />

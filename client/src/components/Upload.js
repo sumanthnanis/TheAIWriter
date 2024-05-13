@@ -1,9 +1,11 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import "./Upload.css";
 
 const Upload = () => {
+  const { state } = useLocation();
   const [file, setFile] = useState(null);
   const [msg, setMsg] = useState(null);
   const [title, setTitle] = useState("");
@@ -45,6 +47,7 @@ const Upload = () => {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", file);
+    formData.append("username", state.username);
 
     const formattedCategories = Object.keys(categories)
       .filter((category) => categories[category])

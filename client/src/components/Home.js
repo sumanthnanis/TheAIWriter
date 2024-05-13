@@ -97,10 +97,12 @@ const Home = () => {
         {papers == null
           ? ""
           : papers.map((data, index) => {
+              console.log(data);
               return (
                 <div className={styles.innerDiv} key={index}>
                   <h3>Title: {data.title}</h3>
                   <h5 className={styles.h5}>Description: {data.description}</h5>
+                  <h5 className={styles.h5}>Author:{data.uploadedBy}</h5>
                   <button
                     className={styles.btnPrimary}
                     onClick={() => showPdf(data.pdf)}

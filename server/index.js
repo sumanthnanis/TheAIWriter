@@ -96,6 +96,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
       count: 0,
       categories: categories,
     });
+    console.log(paper.uploadedBy);
     res.send({ status: "ok", paper: paper });
   } catch (error) {
     res.send({ status: "error" });

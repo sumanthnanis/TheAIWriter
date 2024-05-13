@@ -1,0 +1,112 @@
+.paperpreviewcontainer {
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.papertitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  width: 50%;
+}
+.citebutton {
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+.citepaper {
+  margin-bottom: 10px;
+}
+.citetitle {
+  margin-bottom: 7px;
+}
+.copybutton {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  border: none;
+  margin-top: 5px;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.citationscontainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.citations {
+  font-size: 16px;
+  margin-right: 10px;
+  color: #666;
+}
+.innercontainer {
+  display: flex;
+  flex-direction: column;
+  padding-left: 30vw;
+}
+.reads {
+  font-size: 16px;
+  color: #666;
+  margin-top: 10px;
+}
+
+.paperauthor {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.paperdescription {
+  width: 70%;
+  font-size: 16px;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.descriptionline {
+  width: 100%;
+  height: 1px;
+  background-color: black;
+  margin: 10px 0;
+}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupcontent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  padding-top: 0px;
+}
+
+.close {
+  position: relative;
+  top: 15px;
+  left: 27vw;
+  font-size: 20px;
+  cursor: pointer;
+}

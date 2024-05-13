@@ -19,6 +19,10 @@ function Navbar({ state, user, setSortBy, setCategory }) {
     setSortBy("mostViewed");
     closeMobileMenu();
   };
+  const handleMostCitedClick = () => {
+    setSortBy("mostCited");
+    closeMobileMenu();
+  };
 
   const handleCategoryClick = (category) => {
     setCategory(category);
@@ -47,6 +51,11 @@ function Navbar({ state, user, setSortBy, setCategory }) {
             {(state === "user" || state === "author") && (
               <li className={styles.navLinks} onClick={handleMostViewedClick}>
                 Most Viewed
+              </li>
+            )}
+            {(state === "user" || state === "author") && (
+              <li className={styles.navLinks} onClick={handleMostCitedClick}>
+                Most Cited
               </li>
             )}
 

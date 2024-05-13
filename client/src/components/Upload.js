@@ -198,7 +198,7 @@ const Upload = () => {
               style={{ display: "none" }}
             />
           </div>
-          {msg && <span>{msg}</span>}
+          {msg && <span className="spanelement">{msg}</span>}
           <button className="button" onClick={submitFile}>
             Upload Paper
           </button>

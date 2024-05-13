@@ -5,6 +5,7 @@ import "./App.css";
 import Landing from "./components/Landing";
 import AuthorPapers from "./components/AuthorPapers";
 import Upload from "./components/Upload";
+import PaperPreview from "./components/PaperPreview";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/my-papers" element={<AuthorPapers />} />
+        <Route path="/paper/:id" element={<PaperPreview />} />
       </Routes>
     </BrowserRouter>
   );

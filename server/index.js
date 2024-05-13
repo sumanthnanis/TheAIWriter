@@ -94,9 +94,10 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
       pdf: req.file.filename,
       uploadedBy: username,
       count: 0,
+      citations: 0,
       categories: categories,
     });
-    console.log(paper.uploadedBy);
+
     res.send({ status: "ok", paper: paper });
   } catch (error) {
     res.send({ status: "error" });
@@ -108,6 +109,10 @@ app.get("/api/get-papers", async (req, res) => {
 
     if (req.query.sortBy === "viewCount") {
       const papers = await Paper.find({}).sort({ count: -1 });
+      return res.send(papers);
+    }
+    if (req.query.sortBy === "citationCount") {
+      const papers = await Paper.find({}).sort({ citations: -1 });
       return res.send(papers);
     }
     if (req.query.category) {
@@ -190,6 +195,41 @@ app.get("/api/papers-by-category", async (req, res) => {
   } catch (error) {
     console.error("Error fetching papers by category:", error);
     res.status(500).json({ status: "error" });
+  }
+});
+app.get("/api/get-paper/:id", async (req, res) => {
+  const paperId = req.params.id;
+  try {
+    const paper = await Paper.findById(paperId);
+    if (!paper) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Paper not found" });
+    }
+    res.send(paper);
+  } catch (error) {
+    console.error("Error fetching paper details:", error);
+    res.status(500).json({ status: "error" });
+  }
+});
+app.post("/api/increase-citations/:id", async (req, res) => {
+  const paperId = req.params.id;
+  try {
+    const paper = await Paper.findById(paperId);
+    if (!paper) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Paper not found" });
+    }
+    paper.citations += 1;
+    await paper.save();
+    res.status(200).json({
+      status: "success",
+      message: "Citations count increased successfully",
+    });
+  } catch (error) {
+    console.error("Error increasing citations count:", error);
+    res.status(500).json({ status: "error", message: "Internal server error" });
   }
 });
 

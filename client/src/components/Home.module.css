@@ -27,15 +27,16 @@ body {
 }
 
 .outputDiv {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
 
 .innerDiv {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
+  margin: 10px;
   position: relative;
 }
 
@@ -51,4 +52,13 @@ body {
 
 .btnPrimary:hover {
   background-color: black;
+}
+.navlink {
+  text-decoration: none;
+  color: black;
+}
+
+.navlink :hover {
+  text-decoration: underline;
+  color: rgb(51, 106, 245);
 }

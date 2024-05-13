@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import axios from "axios";
 import styles from "./Home.module.css";
@@ -22,6 +22,9 @@ const Home = () => {
       if (sortBy === "mostViewed") {
         url += "?sortBy=viewCount";
       }
+      if (sortBy === "mostCited") {
+        url += "?sortBy=citationCount";
+      }
       if (category) {
         const trimmedCategory = category.trim();
         params.append("category", trimmedCategory);
@@ -40,7 +43,6 @@ const Home = () => {
   };
   useEffect(() => {
     if (searchQuery === "") {
-      fetchPapers();
       return;
     }
     const getPapers = async () => {
@@ -100,8 +102,10 @@ const Home = () => {
               console.log(data);
               return (
                 <div className={styles.innerDiv} key={index}>
-                  <h3>Title: {data.title}</h3>
-                  <h5 className={styles.h5}>Description: {data.description}</h5>
+                  <NavLink to={`/paper/${data._id}`} className={styles.navlink}>
+                    <h3>Title: {data.title}</h3>
+                  </NavLink>
+
                   <h5 className={styles.h5}>Author:{data.uploadedBy}</h5>
                   <button
                     className={styles.btnPrimary}

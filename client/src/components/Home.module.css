@@ -31,7 +31,12 @@ body {
   flex-direction: column;
   padding: 10px;
 }
-
+.authorDiv {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-left: 10px;
+}
 .innerDiv {
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -59,6 +64,24 @@ body {
 }
 
 .navlink :hover {
+  text-decoration: underline;
+  color: rgb(51, 106, 245);
+}
+
+.author {
+  box-sizing: content-box;
+  display: inline-block;
+  text-decoration: none;
+  width: 30%;
+
+  color: black;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 5px;
+  margin: 5px 0;
+}
+
+.author :hover {
   text-decoration: underline;
   color: rgb(51, 106, 245);
 }

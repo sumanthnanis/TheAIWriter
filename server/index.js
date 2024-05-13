@@ -103,6 +103,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
     res.send({ status: "error" });
   }
 });
+
 app.get("/api/get-papers", async (req, res) => {
   try {
     let query = {};
@@ -123,7 +124,12 @@ app.get("/api/get-papers", async (req, res) => {
       console.log(formattedCategory);
       return res.send(papers);
     }
-
+    if (req.query.authorName) {
+      const authorName = req.query.authorName;
+      console.log(authorName);
+      const papers = await Paper.find({ uploadedBy: authorName });
+      return res.send(papers);
+    }
     const papers = await Paper.find({});
     res.send(papers);
   } catch (error) {

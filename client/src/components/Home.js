@@ -10,6 +10,7 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [category, setCategory] = useState("");
+  const [authors, setAuthors] = useState([]);
 
   useEffect(() => {
     fetchPapers();
@@ -35,12 +36,17 @@ const Home = () => {
         console.log(url);
       }
       const response = await axios.get(url);
-
       setPapers(response.data);
+
+      const uniqueAuthors = [
+        ...new Set(response.data.map((paper) => paper.uploadedBy)),
+      ];
+      setAuthors(uniqueAuthors);
     } catch (error) {
       console.error("Error fetching papers:", error);
     }
   };
+
   useEffect(() => {
     if (searchQuery === "") {
       return;
@@ -51,6 +57,11 @@ const Home = () => {
           `http://localhost:8000/api/search?search=${searchQuery}`
         );
         setPapers(response.data);
+
+        const uniqueAuthors = [
+          ...new Set(response.data.map((paper) => paper.uploadedBy)),
+        ];
+        setAuthors(uniqueAuthors);
       } catch (error) {
         console.error("Error fetching papers:", error);
       }
@@ -95,18 +106,30 @@ const Home = () => {
         />
       </div>
 
+      {searchQuery && authors.length > 0 && (
+        <div className={styles.authorDiv}>
+          {authors.map((author, index) => (
+            <NavLink
+              key={index}
+              className={styles.author}
+              to={`/user/${encodeURIComponent(author)}`}
+            >
+              <h4>Author: {author}</h4>
+            </NavLink>
+          ))}
+        </div>
+      )}
+
       <div className={styles.outputDiv}>
         {papers == null
           ? ""
-          : papers.map((data, index) => {
-              console.log(data);
-              return (
-                <div className={styles.innerDiv} key={index}>
+          : papers.map((data, index) => (
+              <div key={index}>
+                <div className={styles.innerDiv}>
                   <NavLink to={`/paper/${data._id}`} className={styles.navlink}>
                     <h3>Title: {data.title}</h3>
                   </NavLink>
-
-                  <h5 className={styles.h5}>Author:{data.uploadedBy}</h5>
+                  <h5 className={styles.h5}>Author: {data.uploadedBy}</h5>
                   <button
                     className={styles.btnPrimary}
                     onClick={() => showPdf(data.pdf)}
@@ -114,8 +137,8 @@ const Home = () => {
                     Show Pdf
                   </button>
                 </div>
-              );
-            })}
+              </div>
+            ))}
       </div>
     </div>
   );

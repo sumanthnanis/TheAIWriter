@@ -1,11 +1,11 @@
 import React from "react";
-import Home from "./Home";
+import Navbar from "./Navbar";
 
 const AuthorPapers = () => {
   return (
     <div>
-      <h1>Author Papers</h1>
-      <Home />
+      <Navbar />
+      <h1> My papers </h1>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import Landing from "./components/Landing";
 import AuthorPapers from "./components/AuthorPapers";
 import Upload from "./components/Upload";
 import PaperPreview from "./components/PaperPreview";
+import Author from "./components/Author";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/upload" element={<Upload />} />
         <Route path="/my-papers" element={<AuthorPapers />} />
         <Route path="/paper/:id" element={<PaperPreview />} />
+        <Route path="/user/:authorName" element={<Author />} />
       </Routes>
     </BrowserRouter>
   );

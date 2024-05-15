@@ -81,11 +81,11 @@ app.post("/api/login", async (req, res) => {
 });
 
 app.post("/api/upload", upload.single("file"), async (req, res) => {
-  console.log(req.file);
   const title = req.body.title;
   const description = req.body.description;
   const username = req.body.username;
   const categories = req.body.categories;
+  const draft = req.body.draft;
 
   try {
     const paper = await Paper.create({
@@ -95,6 +95,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
       uploadedBy: username,
       count: 0,
       citations: 0,
+      draft: draft,
       categories: categories,
     });
 
@@ -130,14 +131,60 @@ app.get("/api/get-papers", async (req, res) => {
       const papers = await Paper.find({ uploadedBy: authorName });
       return res.send(papers);
     }
-    const papers = await Paper.find({});
+    const papers = await Paper.find({ draft: 0 });
     res.send(papers);
   } catch (error) {
     console.error("Error fetching papers:", error);
     res.status(500).json({ status: "error" });
   }
 });
+app.get("/api/papers/:username", async (req, res) => {
+  try {
+    const papers = await Paper.find({ uploadedBy: req.params.username });
+    res.json(papers);
+  } catch (error) {
+    console.error("Error fetching papers:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+app.put("/api/papers/:filename", async (req, res) => {
+  const { filename } = req.params;
+  console.log(filename);
+  const { draft } = req.body;
 
+  try {
+    const paper = await Paper.findOne({ pdf: filename });
+
+    if (!paper) {
+      return res.status(404).json({ error: "Paper not found" });
+    }
+
+    paper.draft = draft;
+    await paper.save();
+    console.log(paper);
+
+    res
+      .status(200)
+      .json({ message: "Paper draft status updated successfully" });
+  } catch (error) {
+    console.error("Error updating paper draft status:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+app.delete("/api/papers/:paperId", async (req, res) => {
+  const { paperId } = req.params;
+  try {
+    const deletedPaper = await Paper.findByIdAndDelete(paperId);
+
+    if (!deletedPaper) {
+      return res.status(404).json({ error: "Paper not found" });
+    }
+    res.status(200).json({ message: "Paper deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting paper:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 app.get("/api/search", async (req, res) => {
   let query = {};
   const searchData = req.query.search;

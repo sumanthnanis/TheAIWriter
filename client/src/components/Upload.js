@@ -18,6 +18,7 @@ const Upload = () => {
     backendDevelopment: false,
     databases: false,
   });
+  console.log(state.username);
   const onDropHandler = useCallback((acceptedFiles) => {
     const selectedFile = acceptedFiles[0];
     const fileName = selectedFile.name;
@@ -40,7 +41,7 @@ const Upload = () => {
     accept: ".pdf",
   });
 
-  const submitFile = async (e) => {
+  const submitFile = async (e, draft) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -48,6 +49,7 @@ const Upload = () => {
     formData.append("description", description);
     formData.append("file", file);
     formData.append("username", state.username);
+    formData.append("draft", draft);
 
     const formattedCategories = Object.keys(categories)
       .filter((category) => categories[category])
@@ -198,10 +200,15 @@ const Upload = () => {
               style={{ display: "none" }}
             />
           </div>
-          {msg && <span className="spanelement">{msg}</span>}
-          <button className="button" onClick={submitFile}>
-            Upload Paper
-          </button>
+          <div className="buttonss">
+            {msg && <span className="spanelement">{msg}</span>}
+            <button className="button" onClick={(e) => submitFile(e, 0)}>
+              Upload Paper
+            </button>
+            <button className="button" onClick={(e) => submitFile(e, 1)}>
+              Save as draft
+            </button>
+          </div>
         </div>
       </div>
     </>

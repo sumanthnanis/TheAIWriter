@@ -1,0 +1,43 @@
+.heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.paperList {
+  display: flex;
+  flex-direction: column;
+
+  list-style-type: none;
+  padding: 0;
+}
+.innerDiv {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.paperItem {
+  margin-bottom: 10px;
+}
+
+.paperLink {
+  text-decoration: none;
+  color: #333;
+}
+.paperLink:hover {
+  color: #3c97fe;
+  text-decoration: underline;
+}
+
+.deleteButton {
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background-color: #cc0000;
+}

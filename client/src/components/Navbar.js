@@ -38,60 +38,58 @@ function Navbar({ state, user, setSortBy, setCategory }) {
         <span></span>
       </div>
       <div id={styles.navPart2}>
-        <div id={styles.links}>
-          <ul className={menuOpen ? styles.open : ""}>
-            {state === "landing" && (
-              <li>
-                <NavLink to="/login" className={styles.button}>
-                  Login
-                </NavLink>
-              </li>
-            )}
+        <ul className={menuOpen ? styles.open : ""}>
+          {state === "landing" && (
+            <li>
+              <NavLink to="/login" className={styles.navLinks}>
+                Login
+              </NavLink>
+            </li>
+          )}
 
-            {(state === "user" || state === "author") && (
-              <li className={styles.navLinks} onClick={handleMostViewedClick}>
-                Most Viewed
-              </li>
-            )}
-            {(state === "user" || state === "author") && (
-              <li className={styles.navLinks} onClick={handleMostCitedClick}>
-                Most Cited
-              </li>
-            )}
+          {(state === "user" || state === "author") && (
+            <li className={styles.navLinks} onClick={handleMostViewedClick}>
+              Most Viewed
+            </li>
+          )}
+          {(state === "user" || state === "author") && (
+            <li className={styles.navLinks} onClick={handleMostCitedClick}>
+              Most Cited
+            </li>
+          )}
 
-            {(state === "user" || state === "author") && (
-              <li
-                className={styles.navLinks}
-                onClick={() => {
-                  closeMobileMenu();
-                  toggleCategoriesDropdown();
-                }}
-              >
-                Categories <i className="fas fa-caret-down" />
-                {categoriesDropdown && (
-                  <Dropdown
-                    items={MenuItems}
-                    handleCategoryClick={handleCategoryClick}
-                  />
-                )}
-              </li>
-            )}
-            {state === "author" && (
-              <li>
-                <NavLink to="/my-papers" className={styles.button} state={user}>
-                  My Papers
-                </NavLink>
-              </li>
-            )}
-            {state === "author" && (
-              <li>
-                <NavLink to="/upload" className={styles.button} state={user}>
-                  Publish
-                </NavLink>
-              </li>
-            )}
-          </ul>
-        </div>
+          {(state === "user" || state === "author") && (
+            <li
+              className={styles.navLinks}
+              onClick={() => {
+                closeMobileMenu();
+                toggleCategoriesDropdown();
+              }}
+            >
+              Categories <i className="fas fa-caret-down" />
+              {categoriesDropdown && (
+                <Dropdown
+                  items={MenuItems}
+                  handleCategoryClick={handleCategoryClick}
+                />
+              )}
+            </li>
+          )}
+          {state === "author" && (
+            <li>
+              <NavLink to="/my-papers" className={styles.button} state={user}>
+                My Papers
+              </NavLink>
+            </li>
+          )}
+          {(state === "author" || state === "author-papers") && (
+            <li>
+              <NavLink to="/upload" className={styles.button} state={user}>
+                Publish
+              </NavLink>
+            </li>
+          )}
+        </ul>
       </div>
     </nav>
   );

@@ -87,6 +87,9 @@ const Home = () => {
       console.error("Error fetching PDF:", error);
     }
   };
+  const includeSearchQuery = (authorName, searchQuery) => {
+    return authorName.toLowerCase().includes(searchQuery.toLowerCase());
+  };
 
   return (
     <div>
@@ -108,15 +111,18 @@ const Home = () => {
 
       {searchQuery && authors.length > 0 && (
         <div className={styles.authorDiv}>
-          {authors.map((author, index) => (
-            <NavLink
-              key={index}
-              className={styles.author}
-              to={`/user/${encodeURIComponent(author)}`}
-            >
-              <h4>Author: {author}</h4>
-            </NavLink>
-          ))}
+          {authors.map(
+            (author, index) =>
+              includeSearchQuery(author, searchQuery) && (
+                <NavLink
+                  key={index}
+                  className={styles.author}
+                  to={`/user/${encodeURIComponent(author)}`}
+                >
+                  <h4>Author: {author}</h4>
+                </NavLink>
+              )
+          )}
         </div>
       )}
 

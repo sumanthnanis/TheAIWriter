@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import styles from "./PaperPreview.module.css";
 
 const PaperPreview = () => {
+  const { state } = useLocation();
   const { id } = useParams();
   const [paper, setPaper] = useState(null);
   const [showPopup, setShowPopup] = useState(false);

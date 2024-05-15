@@ -86,7 +86,7 @@ body {
   text-align: center;
 }
 .button {
-  margin-left: 15vw;
+  margin-left: 6vw;
 }
 
 button,
@@ -116,6 +116,9 @@ label:hover {
   margin-top: 10px;
   margin-left: 13vw;
   color: rgb(120, 217, 120);
+}
+.buttonss {
+  display: flex;
 }
 
 @media (max-width: 600px) {

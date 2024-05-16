@@ -127,3 +127,39 @@ li {
   background-color: black;
   color: white;
 }
+.menudrop {
+  background: rgb(60, 58, 58);
+  width: 200px;
+  position: absolute;
+  top: 80px;
+  list-style: none;
+  text-align: start;
+}
+.menudrop li {
+  cursor: pointer;
+  border: none;
+}
+.menudrop.navitem:hover {
+  background: white;
+}
+
+ul.menudrop {
+  display: flex;
+  flex-direction: column;
+}
+.listdrop {
+  height: 100%;
+  width: 100%;
+  text-decoration: none;
+
+  padding: 16px;
+  border-top: 10px;
+}
+.listdrop:hover .navitem:hover {
+  color: black;
+  background: white;
+}
+.navitem {
+  text-decoration: none;
+  color: #fff;
+}

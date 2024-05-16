@@ -2,10 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const User = require("./models/user.model.js");
+const Profile = require("./models/profile.model.js");
 const jwt = require("jsonwebtoken");
 const Paper = require("./models/paper.js");
 const path = require("path");
 const app = express();
+const { ObjectId } = mongoose.Types;
 app.use(cors());
 
 mongoose.connect("mongodb://localhost:27017/researchdata", {
@@ -80,6 +82,79 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+app.post("/api/add-file", async (req, res) => {
+  const { id, username } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.files) {
+      user.files = [];
+    }
+
+    if (!user.files.includes(id)) {
+      user.files.push(id);
+      await user.save();
+      return res
+        .status(200)
+        .json({ message: "File added to list successfully" });
+    } else {
+      return res.status(400).json({ message: "File already in list" });
+    }
+  } catch (error) {
+    console.error("Error adding file to list:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/api/user-files/:username", async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const fileIds = user.files.map((fileId) => new ObjectId(fileId));
+
+    const files = await Paper.find(
+      { _id: { $in: fileIds } },
+      { title: 1, uploadedBy: 1 }
+    );
+
+    res.status(200).json({ files });
+  } catch (error) {
+    console.error("Error retrieving user files:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+app.delete("/api/user-files/:username/:filename", async (req, res) => {
+  const { username, filename } = req.params;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.files = user.files.filter((file) => file !== filename);
+
+    await user.save();
+
+    res.status(200).json({ message: "File removed successfully" });
+  } catch (error) {
+    console.error("Error removing file:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.post("/api/upload", upload.single("file"), async (req, res) => {
   const title = req.body.title;
   const description = req.body.description;
@@ -102,6 +177,63 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
     res.send({ status: "ok", paper: paper });
   } catch (error) {
     res.send({ status: "error" });
+  }
+});
+
+app.post("/api/profile", async (req, res) => {
+  const {
+    username,
+    degree,
+    department,
+    interests,
+    institution,
+    skills,
+    currentActivity,
+  } = req.body;
+
+  try {
+    let profile = await Profile.findOne({ username });
+
+    if (profile) {
+      profile.degree = degree;
+      profile.department = department;
+      profile.interests = interests;
+      profile.institution = institution;
+      profile.skills = skills;
+      profile.currentActivity = currentActivity;
+      await profile.save();
+      res.json({ message: "Profile updated successfully" });
+    } else {
+      profile = new Profile({
+        username,
+        degree,
+        department,
+        interests,
+        institution,
+        skills,
+        currentActivity,
+      });
+      await profile.save();
+      res.status(201).json({ message: "Profile created successfully" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to create/update profile",
+      details: error.message,
+    });
+  }
+});
+
+app.get("/api/profile/:username", async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ username: req.params.username });
+    if (profile) {
+      res.json(profile);
+    } else {
+      res.status(404).json({ message: "Profile not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 

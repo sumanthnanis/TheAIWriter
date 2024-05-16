@@ -19,6 +19,7 @@ const User = new mongoose.Schema(
       type: String,
       required: true,
     },
+    files: { type: [String], default: [] },
   },
   { collection: "user-data" }
 );

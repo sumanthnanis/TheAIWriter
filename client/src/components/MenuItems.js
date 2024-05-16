@@ -7,7 +7,6 @@ const MenuItems = [
     title: "Deep Learning",
     cName: "dropdown-link",
   },
-
   {
     title: "Blockchain",
     cName: "dropdown-link",
@@ -25,4 +24,5 @@ const MenuItems = [
     cName: "dropdown-link",
   },
 ];
+
 export default MenuItems;

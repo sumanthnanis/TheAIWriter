@@ -1,87 +1,232 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  font-family: "Circular", sans-serif;
 }
-*::selection {
-  color: white;
-  background-color: black;
-}
-html,
-body {
-  height: 100%;
+.searchInput {
   width: 100%;
-}
-.h5 {
-  margin-top: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.searchInput {
-  width: 60%;
-  padding: 10px;
-  margin-left: 20px;
-  border: 1px solid black;
+/* Author section */
+.authorDiv {
+  margin-bottom: 20px;
+}
+
+.author {
+  display: block;
+  margin-bottom: 10px;
+  color: #333;
+  text-decoration: none;
+}
+
+.author:hover {
+  text-decoration: underline;
+}
+
+/* Papers container */
+.outputDiv {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+}
+
+/* Paper card */
+.innerDiv {
+  background-color: #fff;
+  padding: 20px;
   border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Paper title */
+.navlink {
+  text-decoration: none;
+  color: #258eb2;
+}
+
+.navlink:hover {
+  text-decoration: underline;
+}
+.navlnk {
+  text-decoration: none;
+  color: black;
+}
+/* Paper details */
+.h5 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #666;
+}
+
+.btnBookmark {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.btnBookmark:hover {
+  color: red;
+}
+
+.bookmarked {
+  color: red;
+}
+
+.btnPrimary {
+  margin-top: 10px;
+  padding: 8px 16px;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup content */
+.popupContent {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Close button */
+.close {
+  position: relative;
+  top: 10px;
+  left: 27vw;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: red;
+}
+
+.citePaper {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.citationsText {
   font-size: 16px;
   margin-bottom: 10px;
 }
 
-.outputDiv {
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-}
-.authorDiv {
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  margin-left: 10px;
-}
-.innerDiv {
-  border: 1px solid #ccc;
+.copyButton {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
   border-radius: 5px;
-  padding: 10px;
-  margin: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.copyButton:hover {
+  background-color: #0056b3;
+}
+
+/* Success message */
+.successMessage {
+  color: green;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.btnBookmark {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #ccc; /* Default color */
+  transition: color 0.3s ease;
+  position: relative; /* Position relative for tooltip positioning */
+}
+
+.bookmarked {
+  color: red; /* Red color when bookmarked */
+}
+
+/* Cite icon */
+.citeButton {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #ccc; /* Default color */
+  transition: color 0.3s ease;
+  position: relative; /* Position relative for tooltip positioning */
+}
+
+.citeButton:hover {
+  color: #007bff; /* Blue color on hover */
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 120px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btnBookmark:hover .tooltip,
+.citeButton:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+/* Paper title */
+.truncatedTitle {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Limit to three lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer; /* Add pointer cursor for clickable effect */
+}
+.home-root {
   position: relative;
 }
-
-.btnPrimary {
-  border: 1px solid black;
-  background-color: #fff;
-  color: black;
-  padding: 8px 12px;
-  border-radius: 5px;
-  margin-top: 5px;
-  cursor: pointer;
-}
-
-.btnPrimary:hover {
-  background-color: black;
-}
-.navlink {
-  text-decoration: none;
-  color: black;
-}
-
-.navlink :hover {
-  text-decoration: underline;
-  color: rgb(51, 106, 245);
-}
-
-.author {
-  box-sizing: content-box;
-  display: inline-block;
-  text-decoration: none;
-  width: 30%;
-
-  color: black;
-  border: 1px solid black;
-  border-radius: 4px;
-  padding: 5px;
-  margin: 5px 0;
-}
-
-.author :hover {
-  text-decoration: underline;
-  color: rgb(51, 106, 245);
+.nav-div {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: auto;
+  /* border: 2px solid red; */
+  background-color: white;
 }

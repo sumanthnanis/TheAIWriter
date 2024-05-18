@@ -10,6 +10,7 @@ const PaperSchema = new mongoose.Schema(
     citations: Number,
     draft: Number,
     categories: [String],
+    publicationDate: Date,
   },
   { collection: "paperDetails" }
 );

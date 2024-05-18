@@ -81,105 +81,6 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ status: "error" });
   }
 });
-
-app.post("/api/add-file", async (req, res) => {
-  const { id, username } = req.body;
-
-  try {
-    const user = await User.findOne({ username });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    if (!user.files) {
-      user.files = [];
-    }
-
-    if (!user.files.includes(id)) {
-      user.files.push(id);
-      await user.save();
-      return res
-        .status(200)
-        .json({ message: "File added to list successfully" });
-    } else {
-      return res.status(400).json({ message: "File already in list" });
-    }
-  } catch (error) {
-    console.error("Error adding file to list:", error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-app.get("/api/user-files/:username", async (req, res) => {
-  const { username } = req.params;
-
-  try {
-    const user = await User.findOne({ username });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const fileIds = user.files.map((fileId) => new ObjectId(fileId));
-
-    const files = await Paper.find(
-      { _id: { $in: fileIds } },
-      { title: 1, uploadedBy: 1 }
-    );
-
-    res.status(200).json({ files });
-  } catch (error) {
-    console.error("Error retrieving user files:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-app.delete("/api/user-files/:username/:filename", async (req, res) => {
-  const { username, filename } = req.params;
-
-  try {
-    const user = await User.findOne({ username });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    user.files = user.files.filter((file) => file !== filename);
-
-    await user.save();
-
-    res.status(200).json({ message: "File removed successfully" });
-  } catch (error) {
-    console.error("Error removing file:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-app.post("/api/upload", upload.single("file"), async (req, res) => {
-  const title = req.body.title;
-  const description = req.body.description;
-  const username = req.body.username;
-  const categories = req.body.categories;
-  const draft = req.body.draft;
-
-  try {
-    const paper = await Paper.create({
-      title: title,
-      description: description,
-      pdf: req.file.filename,
-      uploadedBy: username,
-      count: 0,
-      citations: 0,
-      draft: draft,
-      categories: categories,
-    });
-
-    res.send({ status: "ok", paper: paper });
-  } catch (error) {
-    res.send({ status: "error" });
-  }
-});
-
 app.post("/api/profile", async (req, res) => {
   const {
     username,
@@ -234,6 +135,105 @@ app.get("/api/profile/:username", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/api/add-file", async (req, res) => {
+  const { id, username } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.files) {
+      user.files = [];
+    }
+
+    if (!user.files.includes(id)) {
+      user.files.push(id);
+      await user.save();
+      return res
+        .status(200)
+        .json({ message: "File added to list successfully" });
+    } else {
+      return res.status(400).json({ message: "File already in list" });
+    }
+  } catch (error) {
+    console.error("Error adding file to list:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+app.get("/api/user-files/:username", async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const fileIds = user.files.map((fileId) => new ObjectId(fileId));
+
+    const files = await Paper.find(
+      { _id: { $in: fileIds } },
+      { title: 1, uploadedBy: 1 }
+    );
+
+    res.status(200).json({ files });
+  } catch (error) {
+    console.error("Error retrieving user files:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+app.delete("/api/user-files/:username/:filename", async (req, res) => {
+  const { username, filename } = req.params;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.files = user.files.filter((file) => file !== filename);
+
+    await user.save();
+
+    res.status(200).json({ message: "File removed successfully" });
+  } catch (error) {
+    console.error("Error removing file:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/upload", upload.single("file"), async (req, res) => {
+  const title = req.body.title;
+  const description = req.body.description;
+  const username = req.body.username;
+  const categories = req.body.categories;
+  const draft = req.body.draft;
+  const date = Date.now();
+
+  try {
+    const paper = await Paper.create({
+      title: title,
+      description: description,
+      pdf: req.file.filename,
+      uploadedBy: username,
+      count: 0,
+      citations: 0,
+      draft: draft,
+      categories: categories,
+      publicationDate: date,
+    });
+
+    res.send({ status: "ok", paper: paper });
+  } catch (error) {
+    res.send({ status: "error" });
   }
 });
 

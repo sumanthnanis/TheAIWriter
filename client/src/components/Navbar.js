@@ -1,32 +1,41 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Dropdown from "./Dropdown.js";
-import logo from "./img/logoo.svg";
+import logo from "./img/logo.jpg";
 import styles from "./Navbar.module.css";
 import MenuItems from "./MenuItems.js";
+import Search from "./Search.js";
 
-function Navbar({ state, user, setSortBy, setCategory }) {
+function Navbar({
+  state,
+  user,
+  setSortBy,
+  setCategory,
+  handleChange = null,
+  searchQuery = null,
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [categoriesDropdown, setCategoriesDropdown] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [authors, setAuthors] = useState([]);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
   const handleClick = () => setMenuOpen(!menuOpen);
   const closeMobileMenu = () => setMenuOpen(false);
 
-  const toggleCategoriesDropdown = () =>
-    setCategoriesDropdown(!categoriesDropdown);
-
   const handleLogout = () => {
     localStorage.removeItem("token");
-
     window.location.href = "/";
   };
+
+  // const handleSearch = (query) => {
+  //   setSearchQuery(query);
+  // };
 
   const handleMostViewedClick = () => {
     setSortBy("mostViewed");
     closeMobileMenu();
   };
+
   const handleMostCitedClick = () => {
     setSortBy("mostCited");
     closeMobileMenu();
@@ -37,18 +46,35 @@ function Navbar({ state, user, setSortBy, setCategory }) {
     closeMobileMenu();
   };
 
+  const toggleDropdown = (dropdown) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
+
+  const handleMouseLeaveDropdown = () => {
+    setActiveDropdown(null);
+  };
+
   return (
     <nav id={styles.nav}>
-      <img className={styles.logo} src={logo} alt="logo" />
+      <div className={styles.logocontainer}>
+        <img className={styles.logo} src={logo} alt="logo" />
+      </div>
       <div className={styles.menu} onClick={handleClick}>
         <span></span>
         <span></span>
         <span></span>
       </div>
       <div id={styles.navPart2}>
-        <ul className={menuOpen ? styles.open : ""}>
+        <ul className={menuOpen ? styles.open : ""} id={styles.ul}>
+          <Search
+            authors={authors}
+            setAuthors={setAuthors}
+            className={styles.search}
+            handleChange={handleChange}
+            searchQuery={searchQuery}
+          />
           {state === "landing" && (
-            <li>
+            <li className={styles.li}>
               <NavLink to="/login" className={styles.navLinks}>
                 Login
               </NavLink>
@@ -56,59 +82,86 @@ function Navbar({ state, user, setSortBy, setCategory }) {
           )}
 
           {(state === "user" || state === "author") && (
-            <li className={styles.navLinks} onClick={handleMostViewedClick}>
-              Most Viewed
-            </li>
-          )}
-          {(state === "user" || state === "author") && (
-            <li className={styles.navLinks} onClick={handleMostCitedClick}>
-              Most Cited
+            <li
+              className={`${styles.navLinks} ${styles.dropdownToggle}`}
+              onMouseEnter={() => toggleDropdown("categories")}
+              onMouseLeave={handleMouseLeaveDropdown}
+            >
+              Categories <i className="fas fa-caret-down" />
+              {activeDropdown === "categories" && (
+                <Dropdown
+                  className={styles.dropdown}
+                  items={MenuItems}
+                  handleCategoryClick={handleCategoryClick}
+                  onMouseLeave={handleMouseLeaveDropdown}
+                />
+              )}
             </li>
           )}
 
           {(state === "user" || state === "author") && (
             <li
-              className={styles.navLinks}
-              onClick={() => {
-                closeMobileMenu();
-                toggleCategoriesDropdown();
-              }}
+              className={`${styles.navLinks} ${styles.dropdownToggle}`}
+              onMouseEnter={() => toggleDropdown("filter")}
+              onMouseLeave={() => setTimeout(handleMouseLeaveDropdown, 100)}
             >
-              Categories <i className="fas fa-caret-down" />
-              {categoriesDropdown && (
-                <Dropdown
-                  items={MenuItems}
-                  handleCategoryClick={handleCategoryClick}
-                />
+              Filter <i className="fas fa-caret-down" />
+              {activeDropdown === "filter" && (
+                <ul
+                  className={styles.filterDropdown}
+                  onMouseLeave={handleMouseLeaveDropdown}
+                >
+                  <li
+                    className={styles.filterItem}
+                    onClick={handleMostViewedClick}
+                  >
+                    Most Viewed
+                  </li>
+                  <li
+                    className={styles.filterItem}
+                    onClick={handleMostCitedClick}
+                  >
+                    Most Cited
+                  </li>
+                </ul>
               )}
             </li>
           )}
+
           {state === "author" && (
-            <li>
-              <NavLink to="/my-papers" className={styles.button} state={user}>
+            <li className={styles.navLinks}>
+              <NavLink to="/my-papers" className={styles.linked} state={user}>
                 My Papers
               </NavLink>
             </li>
           )}
+
           {(state === "author" || state === "author-papers") && (
-            <li>
-              <NavLink to="/upload" className={styles.button} state={user}>
+            <li className={styles.navLinks}>
+              <NavLink to="/upload" className={styles.linked} state={user}>
                 Publish
               </NavLink>
             </li>
           )}
+
           {(state === "user" || state === "author") && (
             <>
               <button
-                onClick={toggleDropdown}
+                onClick={() => toggleDropdown("userMenu")}
                 className={isOpen ? "Close" : "Open"}
+                id={styles.button}
               >
-                {user.username}
-                <i className="fas fa-caret-down" />
+                <div className={styles.icons}>
+                  <i className="fa fa-bars padd" id={styles.icon}></i>
+                  <i className="fas fa-user" id={styles.icon}></i>
+                </div>
               </button>
 
-              {isOpen && (
-                <ul className={styles.menudrop}>
+              {activeDropdown === "userMenu" && (
+                <ul
+                  className={styles.menudrop}
+                  onMouseLeave={handleMouseLeaveDropdown}
+                >
                   <li className={styles.listdrop}>
                     <NavLink
                       className={styles.navitem}
@@ -127,7 +180,11 @@ function Navbar({ state, user, setSortBy, setCategory }) {
                       My list
                     </NavLink>
                   </li>
-                  <li className={styles.navitem} onClick={() => handleLogout()}>
+                  <li
+                    className={styles.navitem}
+                    id={styles.listdrop}
+                    onClick={() => handleLogout()}
+                  >
                     Logout
                   </li>
                 </ul>

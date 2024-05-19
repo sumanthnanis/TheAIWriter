@@ -1,177 +1,11 @@
-// import React, { useState, useEffect } from "react";
-// import { useLocation } from "react-router-dom";
-// import styles from "./Profile.module.css";
-
-// const Profile = () => {
-//   const { state } = useLocation();
-//   const [username, setUsername] = useState("");
-
-//   const [formData, setFormData] = useState({
-//     degree: "",
-//     department: "",
-//     interests: "",
-//     institution: "",
-//     skills: "",
-//     currentActivity: "",
-//   });
-
-//   useEffect(() => {
-//     if (state && state.username) {
-//       setUsername(state.username);
-//       fetchProfileData(state.username);
-//     }
-//   }, [state]);
-
-//   const fetchProfileData = async (username) => {
-//     try {
-//       const response = await fetch(
-//         `http://localhost:8000/api/profile/${username}`
-//       );
-//       if (response.ok) {
-//         const data = await response.json();
-//         setFormData(data);
-//       } else {
-//         console.error("Failed to fetch profile data");
-//       }
-//     } catch (error) {
-//       console.error("Error fetching profile data:", error);
-//     }
-//   };
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData({
-//       ...formData,
-//       [name]: value,
-//     });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     const dataToSend = {
-//       username,
-//       ...formData,
-//     };
-
-//     try {
-//       const response = await fetch("http://localhost:8000/api/profile", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(dataToSend),
-//       });
-
-//       if (response.ok) {
-//         console.log("Profile submitted successfully");
-//       } else {
-//         console.log("Failed to submit profile");
-//       }
-//     } catch (error) {
-//       console.error("Error submitting profile:", error);
-//     }
-//   };
-
-//   return (
-//     <div className={styles.profile}>
-//       <form onSubmit={handleSubmit} className={styles.form}>
-//         <div className={styles.formGroup}>
-//           <label htmlFor="degree" className={styles.label}>
-//             Degree:
-//           </label>
-//           <input
-//             type="text"
-//             id="degree"
-//             name="degree"
-//             value={formData.degree}
-//             onChange={handleChange}
-//             className={styles.input}
-//           />
-//         </div>
-//         <div className={styles.formGroup}>
-//           <label htmlFor="department" className={styles.label}>
-//             Department:
-//           </label>
-//           <input
-//             type="text"
-//             id="department"
-//             name="department"
-//             value={formData.department}
-//             onChange={handleChange}
-//             className={styles.input}
-//           />
-//         </div>
-//         <div className={styles.formGroup}>
-//           <label htmlFor="interests" className={styles.label}>
-//             Areas of Interest:
-//           </label>
-//           <input
-//             type="text"
-//             id="interests"
-//             name="interests"
-//             value={formData.interests}
-//             onChange={handleChange}
-//             className={styles.input}
-//           />
-//         </div>
-//         <div className={styles.formGroup}>
-//           <label htmlFor="institution" className={styles.label}>
-//             College/Company:
-//           </label>
-//           <input
-//             type="text"
-//             id="institution"
-//             name="institution"
-//             value={formData.institution}
-//             onChange={handleChange}
-//             className={styles.input}
-//           />
-//         </div>
-//         <div className={styles.formGroup}>
-//           <label htmlFor="skills" className={styles.label}>
-//             Skills & Expertise:
-//           </label>
-//           <input
-//             type="text"
-//             id="skills"
-//             name="skills"
-//             value={formData.skills}
-//             onChange={handleChange}
-//             className={styles.input}
-//           />
-//         </div>
-
-//         <div className={styles.formGroup}>
-//           <label htmlFor="currentActivity" className={styles.label}>
-//             Current Activity:
-//           </label>
-//           <input
-//             type="text"
-//             id="currentActivity"
-//             name="currentActivity"
-//             value={formData.currentActivity}
-//             onChange={handleChange}
-//             className={styles.input}
-//           />
-//         </div>
-//         <button type="submit" className={styles.button}>
-//           Submit
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default Profile;
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import styles from "./Profile.module.css";
+import styles from "./Profile.css";
 
 const Profile = () => {
   const { state } = useLocation();
   const [username, setUsername] = useState("");
-
+  const [image, setImage] = useState(null);
   const [formData, setFormData] = useState({
     degree: "",
     department: "",
@@ -228,21 +62,29 @@ const Profile = () => {
     });
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const dataToSend = {
-      username,
-      ...formData,
-    };
+    const dataToSend = new FormData();
+    dataToSend.append("username", username);
+    dataToSend.append("degree", formData.degree);
+    dataToSend.append("department", formData.department);
+    dataToSend.append("interests", formData.interests);
+    dataToSend.append("institution", formData.institution);
+    dataToSend.append("skills", formData.skills);
+    dataToSend.append("currentActivity", formData.currentActivity);
+    if (image) {
+      dataToSend.append("profileImage", image);
+    }
 
     try {
       const response = await fetch("http://localhost:8000/api/profile", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
+        body: dataToSend,
       });
 
       if (response.ok) {
@@ -298,6 +140,17 @@ const Profile = () => {
           "currentActivity",
           formData.currentActivity
         )}
+        <div className={styles.formGroup}>
+          <label htmlFor="profileImage" className={styles.label}>
+            Profile Image:
+          </label>
+          <input
+            type="file"
+            id="profileImage"
+            name="profileImage"
+            onChange={handleImageChange}
+          />
+        </div>
         <button type="submit" className={styles.button}>
           Update my profile
         </button>

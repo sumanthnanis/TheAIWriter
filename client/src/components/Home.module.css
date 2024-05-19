@@ -227,6 +227,83 @@
   top: 0;
   width: 100%;
   height: auto;
-  /* border: 2px solid red; */
+
   background-color: white;
+}
+.authorDiv {
+  display: flex; /* Set display to flex */
+  justify-content: center; /* Horizontally center the cards */
+  flex-wrap: wrap; /* Allow cards to wrap if necessary */
+}
+
+.authorCard {
+  margin: 10px;
+  display: inline-block; /* Change display to inline-block */
+  width: auto; /* Set width to auto */
+  text-decoration: none;
+  color: inherit;
+}
+
+.card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  width: 100%; /* Set card width to 100% */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profileContainer {
+  display: flex;
+}
+
+.profileImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.detailsOverlay {
+  margin-left: 16px;
+}
+
+.userName {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.userInstitution {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.stats {
+  display: flex;
+  margin-top: 13px;
+}
+
+.statItem {
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.statNumber {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 40%;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: #666;
 }

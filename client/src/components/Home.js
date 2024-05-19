@@ -3,16 +3,16 @@ import { NavLink, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import axios from "axios";
 import styles from "./Home.module.css";
-import LazyLoader from "./LazyLoader";
+
 import { FaBookmark } from "react-icons/fa";
 
 const Home = () => {
   const { state } = useLocation();
   const [papers, setPapers] = useState([]);
+  const [profiles, setProfiles] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [category, setCategory] = useState("");
-  const [authors, setAuthors] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPaper, setSelectedPaper] = useState(null);
@@ -25,12 +25,12 @@ const Home = () => {
 
   const handleClosePopup = () => {
     setShowPopup(false);
-    setSelectedPaper(null); // Reset selected paper
-    setCopySuccess(false); // Reset copy success flag
+    setSelectedPaper(null);
+    setCopySuccess(false);
   };
 
   const handleCiteThisPaper = async () => {
-    if (!selectedPaper) return; // Ensure there is a selected paper
+    if (!selectedPaper) return;
 
     try {
       await axios.post(
@@ -74,12 +74,6 @@ const Home = () => {
         const response = await axios.get(url);
         setPapers(response.data);
 
-        const uniqueAuthors = [
-          ...new Set(response.data.map((paper) => paper.uploadedBy)),
-        ];
-        setAuthors(uniqueAuthors);
-
-        // Initialize bookmark states for each paper
         setBookmarks(Array(response.data.length).fill(false));
       } catch (error) {
         console.error("Error fetching papers:", error);
@@ -98,17 +92,13 @@ const Home = () => {
         const response = await axios.get(
           `http://localhost:8000/api/search?search=${searchQuery}`
         );
-        setPapers(response.data);
-
-        const uniqueAuthors = [
-          ...new Set(response.data.map((paper) => paper.uploadedBy)),
-        ];
-        setAuthors(uniqueAuthors);
-
-        // Initialize bookmark states for each paper
-        setBookmarks(Array(response.data.length).fill(false));
+        const { papers, profiles } = response.data;
+        setPapers(papers);
+        setProfiles(profiles);
+        console.log(profiles);
+        setBookmarks(Array(papers.length).fill(false));
       } catch (error) {
-        console.error("Error fetching papers:", error);
+        console.error("Error fetching papers and profiles:", error);
       }
     };
     getPapersBySearch();
@@ -155,7 +145,6 @@ const Home = () => {
     return authorName.toLowerCase().includes(searchQuery.toLowerCase());
   };
 
-  // Function to toggle bookmark status for a specific paper
   const toggleBookmark = async (index, id, username) => {
     const newBookmarks = [...bookmarks];
     newBookmarks[index] = !newBookmarks[index];
@@ -165,6 +154,28 @@ const Home = () => {
       await addList(id, username);
     }
   };
+
+  const aggregatedProfiles = profiles.map((profile) => {
+    const authorPapers = papers.filter(
+      (paper) => paper.uploadedBy === profile.username
+    );
+    const totalPapers = authorPapers.length;
+    const totalCitations = authorPapers.reduce(
+      (sum, paper) => sum + paper.citations,
+      0
+    );
+    const totalReads = authorPapers.reduce(
+      (sum, paper) => sum + paper.count,
+      0
+    );
+
+    return {
+      ...profile,
+      totalPapers,
+      totalCitations,
+      totalReads,
+    };
+  });
 
   return (
     <div className={styles["home-root"]}>
@@ -178,30 +189,60 @@ const Home = () => {
           searchQuery={searchQuery}
         />
       </div>
-      {/* <div>
-        <input
-          type="text"
-          placeholder="Search By PaperName/Author"
-          value={searchQuery}
-          onChange={handleSearch}
-          className={styles.searchInput}
-        />
-      </div> */}
 
-      {searchQuery && authors.length > 0 && (
+      {searchQuery && aggregatedProfiles.length > 0 && (
         <div className={styles.authorDiv}>
-          {authors.map(
-            (author, index) =>
-              includeSearchQuery(author, searchQuery) && (
-                <NavLink
-                  key={index}
-                  className={styles.author}
-                  to={`/user/${encodeURIComponent(author)}`}
-                >
-                  <h4> {author}</h4>
-                </NavLink>
-              )
-          )}
+          {aggregatedProfiles.map((profile, index) => (
+            <NavLink
+              key={index}
+              className={styles.authorCard}
+              to={`/user/${encodeURIComponent(profile.username)}`}
+            >
+              <div className={styles.card}>
+                <div className={styles.profileContainer}>
+                  <div className={styles.imageContainer}>
+                    {profile.profileImage && (
+                      <img
+                        src={`http://localhost:8000${profile.profileImage}`}
+                        alt={profile.username}
+                        className={styles.profileImage}
+                      />
+                    )}
+                  </div>
+                  <div className={styles.detailsOverlay}>
+                    <div className={styles.userInfo}>
+                      <h4 className={styles.userName}>{profile.username}</h4>
+                      <p className={styles.userInstitution}>
+                        {profile.institution}
+                      </p>
+                    </div>
+                    <div className={styles.stats}>
+                      <div className={styles.statItem}>
+                        <span className={styles.statNumber}>
+                          {profile.totalPapers}
+                        </span>
+                        <span className={styles.statLabel}>Publications</span>
+                      </div>
+                      <div className={styles.statDivider}></div>
+                      <div className={styles.statItem}>
+                        <span className={styles.statNumber}>
+                          {profile.totalCitations}
+                        </span>
+                        <span className={styles.statLabel}>Citations</span>
+                      </div>
+                      <div className={styles.statDivider}></div>
+                      <div className={styles.statItem}>
+                        <span className={styles.statNumber}>
+                          {profile.totalReads}
+                        </span>
+                        <span className={styles.statLabel}>Reads</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </NavLink>
+          ))}
         </div>
       )}
 
@@ -213,8 +254,8 @@ const Home = () => {
                 <NavLink to={`/paper/${data._id}`} className={styles.navlink}>
                   <h3 className={styles.truncatedTitle}>{data.title}</h3>
                 </NavLink>
-                <h5 className={styles.h5}>Citations:{data.citations}</h5>
-                <h5 className={styles.h5}>reads:{data.count}</h5>
+                <h5 className={styles.h5}>Citations: {data.citations}</h5>
+                <h5 className={styles.h5}>Reads: {data.count}</h5>
 
                 <NavLink
                   to={`/user/${encodeURIComponent(data.uploadedBy)}`}
@@ -252,7 +293,7 @@ const Home = () => {
                   className={styles.citeButton}
                   onClick={() => handleCitePopup(data)}
                 >
-                  <i class="fa fa-quote-right" aria-hidden="true"></i>
+                  <i className="fa fa-quote-right" aria-hidden="true"></i>
                   <span className={styles.tooltip}>Cite</span>
                 </button>
               </div>
@@ -268,7 +309,7 @@ const Home = () => {
             </span>
             <h2 className={styles.citePaper}>Cite Paper</h2>
             <p>
-              {selectedPaper.uploadedBy}.{selectedPaper.title}
+              {selectedPaper.uploadedBy}. {selectedPaper.title}
             </p>
             <button
               className={styles.copyButton}

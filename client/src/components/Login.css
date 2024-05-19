@@ -33,7 +33,7 @@
   z-index: 5;
 }
 
-form {
+#form {
   display: flex;
   align-items: center;
   justify-content: center;

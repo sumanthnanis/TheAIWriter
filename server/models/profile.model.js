@@ -10,6 +10,7 @@ const ProfileSchema = new Schema({
   skills: { type: String },
 
   currentActivity: { type: String },
+  profileImage: { type: String },
 });
 
 module.exports = mongoose.model("Profile", ProfileSchema);

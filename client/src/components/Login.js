@@ -63,6 +63,7 @@ const Login = () => {
           <form
             onSubmit={loginuser}
             className={`sign-in-form ${isSignUp ? "hidden" : ""}`}
+            id="form"
           >
             <h2 className="title">Log In</h2>
             <div className="input-field">
@@ -87,6 +88,7 @@ const Login = () => {
             <input type="submit" value="Login" className="btn solid" />
           </form>
           <form
+            id="form"
             onSubmit={registeUser}
             className={`sign-up-form ${isSignUp ? "" : "hidden"}`}
           >

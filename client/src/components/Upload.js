@@ -100,7 +100,7 @@ const Upload = () => {
             ></textarea>
           </div>
           <div className="categories">
-            <label>
+            <label className="label">
               <input
                 type="checkbox"
                 checked={categories.artificialIntelligence}
@@ -113,7 +113,7 @@ const Upload = () => {
               />
               Artificial Intelligence
             </label>
-            <label>
+            <label className="label">
               <input
                 type="checkbox"
                 checked={categories.deepLearning}
@@ -126,7 +126,7 @@ const Upload = () => {
               />
               Deep Learning
             </label>
-            <label>
+            <label className="label">
               <input
                 type="checkbox"
                 checked={categories.blockchain}
@@ -139,7 +139,7 @@ const Upload = () => {
               />
               Blockchain
             </label>
-            <label>
+            <label className="label">
               <input
                 type="checkbox"
                 checked={categories.frontendDevelopment}
@@ -152,7 +152,7 @@ const Upload = () => {
               />
               Frontend Development
             </label>
-            <label>
+            <label className="label">
               <input
                 type="checkbox"
                 checked={categories.backendDevelopment}
@@ -165,7 +165,7 @@ const Upload = () => {
               />
               Backend Development
             </label>
-            <label>
+            <label className="label">
               <input
                 type="checkbox"
                 checked={categories.databases}
@@ -187,7 +187,7 @@ const Upload = () => {
               <h3>Drag and Drop text files here</h3>
             )}
             <p>OR</p>
-            <label htmlFor="file-upload" className="custom-file-upload">
+            <label htmlFor="file-upload" className="label">
               Select a text file
             </label>
             {file && (

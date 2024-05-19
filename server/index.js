@@ -2,13 +2,18 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const User = require("./models/user.model.js");
+const Paper = require("./models/paper.js");
 const Profile = require("./models/profile.model.js");
 const jwt = require("jsonwebtoken");
-const Paper = require("./models/paper.js");
+const multer = require("multer");
 const path = require("path");
 const app = express();
 const { ObjectId } = mongoose.Types;
+
 app.use(cors());
+app.use(express.json());
+
+app.use("/files", express.static(path.join(__dirname, "files")));
 
 mongoose.connect("mongodb://localhost:27017/researchdata", {
   useNewUrlParser: true,
@@ -21,16 +26,12 @@ db.once("open", function () {
   console.log("db connected");
 });
 
-app.use(express.json());
-
-const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./files");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now();
-    cb(null, uniqueSuffix + file.originalname);
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
@@ -81,7 +82,8 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ status: "error" });
   }
 });
-app.post("/api/profile", async (req, res) => {
+
+app.post("/api/profile", upload.single("profileImage"), async (req, res) => {
   const {
     username,
     degree,
@@ -91,6 +93,8 @@ app.post("/api/profile", async (req, res) => {
     skills,
     currentActivity,
   } = req.body;
+
+  const profileImage = req.file ? `/files/${req.file.filename}` : null;
 
   try {
     let profile = await Profile.findOne({ username });
@@ -102,6 +106,9 @@ app.post("/api/profile", async (req, res) => {
       profile.institution = institution;
       profile.skills = skills;
       profile.currentActivity = currentActivity;
+      if (profileImage) {
+        profile.profileImage = profileImage;
+      }
       await profile.save();
       res.json({ message: "Profile updated successfully" });
     } else {
@@ -113,6 +120,7 @@ app.post("/api/profile", async (req, res) => {
         institution,
         skills,
         currentActivity,
+        profileImage,
       });
       await profile.save();
       res.status(201).json({ message: "Profile created successfully" });
@@ -137,7 +145,6 @@ app.get("/api/profile/:username", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
 app.post("/api/add-file", async (req, res) => {
   const { id, username } = req.body;
 
@@ -317,25 +324,56 @@ app.delete("/api/papers/:paperId", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 app.get("/api/search", async (req, res) => {
-  let query = {};
+  let paperQuery = {};
   const searchData = req.query.search;
   console.log(searchData);
-  if (searchData) {
-    query = {
-      $or: [
-        { title: { $regex: searchData, $options: "i" } },
-        { description: { $regex: searchData, $options: "i" } },
-        { uploadedBy: { $regex: searchData, $options: "i" } },
-      ],
-    };
-  }
+
   try {
-    const papers = await Paper.find(query);
-    res.send(papers);
+    // Search papers based on title, description, or uploadedBy
+    if (searchData) {
+      paperQuery = {
+        $or: [
+          { title: { $regex: searchData, $options: "i" } },
+          { description: { $regex: searchData, $options: "i" } },
+          { uploadedBy: { $regex: searchData, $options: "i" } },
+        ],
+      };
+    }
+
+    const paperSearchPromise = Paper.find(paperQuery);
+
+    // Search for profiles if the search query is a username
+    const profileSearchPromise = Profile.find({
+      username: { $regex: searchData, $options: "i" },
+    });
+
+    const [papers, profiles] = await Promise.all([
+      paperSearchPromise,
+      profileSearchPromise,
+    ]);
+
+    // If profiles are found, find papers uploaded by these users
+    let userPapers = [];
+    if (profiles.length > 0) {
+      const usernames = profiles.map((profile) => profile.username);
+      userPapers = await Paper.find({
+        uploadedBy: { $in: usernames },
+      });
+    }
+
+    const allPapers = [...new Set([...papers, ...userPapers])];
+
+    const response = {
+      papers: allPapers,
+      profiles: profiles,
+    };
+
+    res.send(response);
   } catch (error) {
     console.log(error);
-    res.send({ status: "error" });
+    res.status(500).send({ status: "error" });
   }
 });
 

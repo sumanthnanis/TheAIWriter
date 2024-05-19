@@ -55,7 +55,7 @@ body {
   flex-wrap: wrap;
 }
 
-.categories label {
+.categories .label {
   width: calc(33.33% - 10px);
   margin-right: 10px;
   margin-bottom: 10px;
@@ -90,7 +90,7 @@ body {
 }
 
 .button,
-label {
+.label {
   display: inline-block;
   text-transform: uppercase;
   text-decoration: none;
@@ -106,7 +106,7 @@ label {
 }
 
 .button:hover,
-label:hover {
+.label:hover {
   background-color: #000;
   color: #fff;
 }

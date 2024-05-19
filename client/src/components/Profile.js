@@ -126,7 +126,7 @@ const Profile = () => {
           </label>
           {formData.profileImage && !isEditingImage && (
             <img
-              src={formData.profileImage}
+              src={`http://localhost:8000${formData.profileImage}`}
               alt="Profile"
               className={styles.profileImage}
             />

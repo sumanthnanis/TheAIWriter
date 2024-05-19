@@ -10,6 +10,7 @@ const Upload = () => {
   const [msg, setMsg] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [paperType, setPaperType] = useState("");
   const [categories, setCategories] = useState({
     artificialIntelligence: false,
     blockchain: false,
@@ -50,6 +51,7 @@ const Upload = () => {
     formData.append("file", file);
     formData.append("username", state.username);
     formData.append("draft", draft);
+    formData.append("paperType", paperType);
 
     const formattedCategories = Object.keys(categories)
       .filter((category) => categories[category])
@@ -98,6 +100,20 @@ const Upload = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
+          </div>
+          <div className="paper-type">
+            <label className="label">Paper Type:</label>
+            <select
+              value={paperType}
+              onChange={(e) => setPaperType(e.target.value)}
+              className="select-paper-type"
+            >
+              <option value="">Select Paper Type</option>
+              <option value="conferencePaper">Conference Paper</option>
+              <option value="researchProposal">Research Proposal</option>
+              <option value="article">Article</option>
+              <option value="article">Presentation</option>
+            </select>
           </div>
           <div className="categories">
             <label className="label">

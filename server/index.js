@@ -218,11 +218,8 @@ app.delete("/api/user-files/:username/:filename", async (req, res) => {
 });
 
 app.post("/api/upload", upload.single("file"), async (req, res) => {
-  const title = req.body.title;
-  const description = req.body.description;
-  const username = req.body.username;
-  const categories = req.body.categories;
-  const draft = req.body.draft;
+  const { title, description, username, categories, draft, paperType } =
+    req.body; // Destructure paperType from req.body
   const date = Date.now();
 
   try {
@@ -236,6 +233,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
       draft: draft,
       categories: categories,
       publicationDate: date,
+      paperType: paperType,
     });
 
     res.send({ status: "ok", paper: paper });

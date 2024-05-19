@@ -263,6 +263,7 @@ const Home = () => {
                 >
                   <h5 className={styles.h5}> {data.uploadedBy}</h5>
                 </NavLink>
+                <h5 className={styles.h5}>{data.paperType}</h5>
                 {data.publicationDate && (
                   <h5>
                     Published Year:{" "}

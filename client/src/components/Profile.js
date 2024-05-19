@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import styles from "./Profile.css";
+import styles from "./Profile.module.css";
 
 const Profile = () => {
   const { state } = useLocation();
@@ -13,16 +13,10 @@ const Profile = () => {
     institution: "",
     skills: "",
     currentActivity: "",
+    profileImage: "",
   });
-
-  const [editableFields, setEditableFields] = useState({
-    degree: false,
-    department: false,
-    interests: false,
-    institution: false,
-    skills: false,
-    currentActivity: false,
-  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingImage, setIsEditingImage] = useState(false);
 
   useEffect(() => {
     if (state && state.username) {
@@ -55,13 +49,6 @@ const Profile = () => {
     });
   };
 
-  const handleEditClick = (field) => {
-    setEditableFields({
-      ...editableFields,
-      [field]: true,
-    });
-  };
-
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
@@ -89,6 +76,9 @@ const Profile = () => {
 
       if (response.ok) {
         console.log("Profile submitted successfully");
+        setIsEditing(false);
+        setIsEditingImage(false);
+        fetchProfileData(username);
       } else {
         console.log("Failed to submit profile");
       }
@@ -109,17 +99,7 @@ const Profile = () => {
         value={value}
         onChange={handleChange}
         className={styles.input}
-        disabled={!editableFields[name]}
       />
-      {!editableFields[name] && (
-        <button
-          type="button"
-          className={styles.editButton}
-          onClick={() => handleEditClick(name)}
-        >
-          Edit
-        </button>
-      )}
     </div>
   );
 
@@ -144,16 +124,44 @@ const Profile = () => {
           <label htmlFor="profileImage" className={styles.label}>
             Profile Image:
           </label>
-          <input
-            type="file"
-            id="profileImage"
-            name="profileImage"
-            onChange={handleImageChange}
-          />
+          {formData.profileImage && !isEditingImage && (
+            <img
+              src={formData.profileImage}
+              alt="Profile"
+              className={styles.profileImage}
+            />
+          )}
+          {isEditingImage && (
+            <input
+              type="file"
+              id="profileImage"
+              name="profileImage"
+              onChange={handleImageChange}
+            />
+          )}
+          {!isEditingImage && (
+            <button
+              type="button"
+              className={styles.editButton}
+              onClick={() => setIsEditingImage(true)}
+            >
+              Edit Image
+            </button>
+          )}
         </div>
-        <button type="submit" className={styles.button}>
-          Update my profile
-        </button>
+        {isEditing ? (
+          <button type="submit" className={styles.button}>
+            Save Changes
+          </button>
+        ) : (
+          <button
+            type="button"
+            className={styles.editButton}
+            onClick={() => setIsEditing(true)}
+          >
+            Edit Profile
+          </button>
+        )}
       </form>
     </div>
   );

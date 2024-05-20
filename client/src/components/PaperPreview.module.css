@@ -1,6 +1,10 @@
 .paperpreviewcontainer {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
 
+.papertypecon {
   display: flex;
   flex-direction: column;
 }
@@ -9,79 +13,93 @@
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
-  width: 50%;
+  width: 70%;
 }
-.citebutton {
+
+.citebutton,
+.copybutton,
+.btnPrimary {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
   margin-top: 15px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
-.citepaper {
-  margin-bottom: 10px;
-}
-.citetitle {
-  margin-bottom: 7px;
-}
-.copybutton {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  border: none;
-  margin-top: 5px;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
+
+.citebutton:hover,
+.copybutton:hover,
+.btnPrimary:hover {
+  background-color: #45a049;
 }
 
 .citationscontainer {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
 }
-
 .citations {
-  font-size: 16px;
-  margin-right: 10px;
-  color: #666;
-}
-.innercontainer {
   display: flex;
   flex-direction: column;
-  padding-left: 30vw;
 }
+
+.citations,
 .reads {
   font-size: 16px;
   color: #666;
-  margin-top: 10px;
+  margin-right: 10px;
 }
 
+.innercontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+.paperType {
+  background-color: #a4f9a8;
+  padding: 4px;
+  width: 10%;
+}
 .paperauthor {
+  font-size: 16px;
+}
+
+.date {
   font-size: 16px;
   margin-bottom: 20px;
 }
 
+.paperdetails {
+  font-size: 16px;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 .paperdescription {
   width: 70%;
   font-size: 16px;
   margin-bottom: 20px;
   background-color: white;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  padding-top: 0px;
 }
-
+.uppercon {
+  padding: 20px;
+  padding-bottom: 0px;
+}
 .descriptionline {
   width: 100%;
   height: 1px;
-  background-color: black;
+  background-color: #ddd;
   margin: 10px 0;
 }
+
 .popup {
   position: fixed;
   top: 0;
@@ -109,4 +127,31 @@
   left: 27vw;
   font-size: 20px;
   cursor: pointer;
+}
+.h3 {
+  font-size: 24px;
+  margin-left: 2.3vw;
+  margin-bottom: 20px;
+}
+
+.btnPrimary {
+  padding: 10px 20px;
+  color: white;
+  background-color: #4caf50;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btnPrimary:hover {
+  background-color: #45a049;
+}
+
+.pdf {
+  font-size: 18px;
+  color: #4caf50;
+}
+
+.pdf:hover {
+  color: #45a049;
 }

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import styles from "./Profile.module.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./EditProfile.css";
+import { Toaster, toast } from "sonner";
 
 const EditProfile = () => {
   const { state } = useLocation();
   const [username, setUsername] = useState("");
   const [image, setImage] = useState(null);
+  const [activeTab, setActiveTab] = useState("account-general");
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     degree: "",
     department: "",
@@ -13,10 +17,25 @@ const EditProfile = () => {
     institution: "",
     skills: "",
     currentActivity: "",
+    email: "",
+    role: "",
     profileImage: "",
   });
-  const [isEditing, setIsEditing] = useState(false);
+
+  const [editableFields, setEditableFields] = useState({
+    degree: true,
+    department: true,
+    interests: true,
+    institution: true,
+    skills: true,
+    currentActivity: true,
+  });
+
   const [isEditingImage, setIsEditingImage] = useState(false);
+
+  const handleCancel = () => {
+    navigate("/home");
+  };
 
   useEffect(() => {
     if (state && state.username) {
@@ -41,16 +60,16 @@ const EditProfile = () => {
     }
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-  };
-
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -76,92 +95,229 @@ const EditProfile = () => {
 
       if (response.ok) {
         console.log("Profile submitted successfully");
-        setIsEditing(false);
         setIsEditingImage(false);
         fetchProfileData(username);
+        toast.success("Profile updated successfully!");
       } else {
         console.log("Failed to submit profile");
+        toast.error("Failed to update profile");
       }
     } catch (error) {
       console.error("Error submitting profile:", error);
     }
   };
 
-  const renderFormField = (label, name, value) => (
-    <div className={styles.formGroup}>
-      <label htmlFor={name} className={styles.label}>
-        {label}:
-      </label>
-      <input
-        type="text"
-        id={name}
-        name={name}
-        value={value}
-        onChange={handleChange}
-        className={styles.input}
-      />
-    </div>
-  );
-
   return (
-    <div className={styles.profile}>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        {renderFormField("Degree", "degree", formData.degree)}
-        {renderFormField("Department", "department", formData.department)}
-        {renderFormField("Areas of Interest", "interests", formData.interests)}
-        {renderFormField(
-          "College/Company",
-          "institution",
-          formData.institution
-        )}
-        {renderFormField("Skills & Expertise", "skills", formData.skills)}
-        {renderFormField(
-          "Current Activity",
-          "currentActivity",
-          formData.currentActivity
-        )}
-        <div className={styles.formGroup}>
-          <label htmlFor="profileImage" className={styles.label}>
-            Profile Image:
-          </label>
-          {formData.profileImage && !isEditingImage && (
-            <img
-              src={`http://localhost:8000${formData.profileImage}`}
-              alt="Profile"
-              className={styles.profileImage}
-            />
-          )}
-          {isEditingImage && (
-            <input
-              type="file"
-              id="profileImage"
-              name="profileImage"
-              onChange={handleImageChange}
-            />
-          )}
-          {!isEditingImage && (
+    <div>
+      <Toaster richColors position="top-right" />
+      <form onSubmit={handleSubmit}>
+        <div className="containerr">
+          <h4 className="heading">User Profile</h4>
+          <div className="card">
+            <div className="row-bordered row-border-light">
+              <div className="list-group-containerr">
+                <div className="list-group list-group-flush account-settings-links">
+                  <a
+                    className={`list-group-item ${
+                      activeTab === "account-general" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveTab("account-general")}
+                  >
+                    General
+                  </a>
+                  <a
+                    className={`list-group-item ${
+                      activeTab === "account-professional" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveTab("account-professional")}
+                  >
+                    Professional Profile
+                  </a>
+                </div>
+                <hr className="list-group-line" />
+              </div>
+              <div className="content">
+                <div className="tab-content">
+                  <div
+                    className={`tab-pane ${
+                      activeTab === "account-general" ? "active" : ""
+                    }`}
+                    id="account-general"
+                  >
+                    <div className="tab-pane active">
+                      <div className="card-body">
+                        <div className="form-group">
+                          <label htmlFor="profileImage" className="form-label">
+                            Profile Image:
+                          </label>
+                          {formData.profileImage && !isEditingImage && (
+                            <img
+                              src={`http://localhost:8000${formData.profileImage}`}
+                              alt="Profile"
+                              className="profileImage"
+                            />
+                          )}
+                          {isEditingImage && (
+                            <input
+                              type="file"
+                              id="profileImage"
+                              name="profileImage"
+                              onChange={handleImageChange}
+                            />
+                          )}
+                          {!isEditingImage && (
+                            <button
+                              type="button"
+                              className="editButton"
+                              onClick={() => setIsEditingImage(true)}
+                            >
+                              Edit Image
+                            </button>
+                          )}
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label" htmlFor="username">
+                            Username
+                          </label>
+                          <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            className="form-control"
+                            value={username}
+                            disabled
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">E-mail</label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            className="form-control"
+                            value={formData.email}
+                            disabled
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">Role</label>
+                          <input
+                            type="text"
+                            id="role"
+                            name="role"
+                            className="form-control"
+                            value={formData.role}
+                            disabled
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className={`tab-pane ${
+                      activeTab === "account-professional" ? "active" : ""
+                    }`}
+                    id="account-professional"
+                  >
+                    <div className="tab-pane active">
+                      <div className="card-body">
+                        <div className="form-group">
+                          <label className="form-label">Degree</label>
+                          <input
+                            type="text"
+                            id="degree"
+                            name="degree"
+                            value={formData.degree}
+                            onChange={handleChange}
+                            disabled={!editableFields.degree}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">Department</label>
+                          <input
+                            type="text"
+                            id="department"
+                            name="department"
+                            value={formData.department}
+                            onChange={handleChange}
+                            disabled={!editableFields.department}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">
+                            Areas of Interest
+                          </label>
+                          <input
+                            type="text"
+                            id="interests"
+                            name="interests"
+                            value={formData.interests}
+                            onChange={handleChange}
+                            disabled={!editableFields.interests}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">College/Company</label>
+                          <input
+                            type="text"
+                            id="institution"
+                            name="institution"
+                            value={formData.institution}
+                            onChange={handleChange}
+                            disabled={!editableFields.institution}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">
+                            Skills and Expertise
+                          </label>
+                          <input
+                            type="text"
+                            id="skills"
+                            name="skills"
+                            value={formData.skills}
+                            onChange={handleChange}
+                            disabled={!editableFields.skills}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">Current Activity</label>
+                          <input
+                            type="text"
+                            id="currentActivity"
+                            name="currentActivity"
+                            value={formData.currentActivity}
+                            onChange={handleChange}
+                            disabled={!editableFields.currentActivity}
+                            className="form-control"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="buttons">
+            <button type="submit" className="btn btn-primary">
+              Save Changes
+            </button>
+            &nbsp;
             <button
               type="button"
-              className={styles.editButton}
-              onClick={() => setIsEditingImage(true)}
+              className="btn btn-default"
+              onClick={handleCancel}
             >
-              Edit Image
+              Cancel
             </button>
-          )}
+          </div>
         </div>
-        {isEditing ? (
-          <button type="submit" className={styles.button}>
-            Save Changes
-          </button>
-        ) : (
-          <button
-            type="button"
-            className={styles.editButton}
-            onClick={() => setIsEditing(true)}
-          >
-            Edit Profile
-          </button>
-        )}
       </form>
     </div>
   );

@@ -137,8 +137,10 @@ app.post("/api/profile", upload.single("profileImage"), async (req, res) => {
 app.get("/api/profile/:username", async (req, res) => {
   try {
     const profile = await Profile.findOne({ username: req.params.username });
-    if (profile) {
-      res.json(profile);
+    const user = await User.findOne({ username: req.params.username });
+
+    if (profile && user) {
+      res.json({ ...profile._doc, email: user.email, role: user.role });
     } else {
       res.status(404).json({ message: "Profile not found" });
     }
@@ -214,6 +216,25 @@ app.delete("/api/user-files/:username/:filename", async (req, res) => {
     res.status(200).json({ message: "File removed successfully" });
   } catch (error) {
     console.error("Error removing file:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/api/get-related-papers/:category", async (req, res) => {
+  const { category } = req.params;
+  console.log(category);
+
+  const categoriesArray = category.split(",");
+
+  try {
+    const relatedPapers = await Paper.find({
+      categories: { $in: categoriesArray },
+    });
+
+    res.json(relatedPapers);
+    console.log(relatedPapers);
+  } catch (error) {
+    console.error("Error fetching related papers:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

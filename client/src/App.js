@@ -9,6 +9,7 @@ import PaperPreview from "./components/PaperPreview";
 import Author from "./components/Author";
 import Profile from "./components/Profile";
 import UserFiles from "./components/UserFiles";
+import EditProfile from "./components/EditProfile";
 
 function App() {
   return (

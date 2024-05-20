@@ -1,43 +1,71 @@
+.tabs {
+  display: flex;
+  justify-content: start;
+  margin-top: 10px;
+}
+
+.tabButton {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px 5px 0 0;
+  font-size: 16px;
+
+  outline: none;
+}
+
+.tabButton:hover {
+  background-color: #d0d0d0;
+}
+
+.activeTab {
+  background-color: #a0a0a0;
+  border-bottom: none;
+  font-weight: bold;
+}
+
 .heading {
-  font-size: 24px;
+  text-align: center;
   margin-bottom: 20px;
 }
 
 .paperList {
-  display: flex;
-  flex-direction: column;
-
+  border: 1px solid black;
   list-style-type: none;
   padding: 0;
 }
-.innerDiv {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 10px;
-}
 
 .paperItem {
-  margin-bottom: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.innerDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .paperLink {
   text-decoration: none;
   color: #333;
 }
+
 .paperLink:hover {
-  color: #3c97fe;
   text-decoration: underline;
 }
 
 .deleteButton {
-  background-color: #ff0000;
-  color: #fff;
-  border: none;
   padding: 5px 10px;
+  margin-left: 10px;
   cursor: pointer;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 3px;
 }
 
 .deleteButton:hover {
-  background-color: #cc0000;
+  background-color: #c0392b;
 }

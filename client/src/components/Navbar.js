@@ -27,10 +27,6 @@ function Navbar({
     window.location.href = "/";
   };
 
-  // const handleSearch = (query) => {
-  //   setSearchQuery(query);
-  // };
-
   const handleMostViewedClick = () => {
     setSortBy("mostViewed");
     closeMobileMenu();

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
+import logo from "./img/myself.jpg";
 import axios from "axios";
 import styles from "./Home.module.css";
 
@@ -141,20 +142,6 @@ const Home = () => {
     }
   };
 
-  const includeSearchQuery = (authorName, searchQuery) => {
-    return authorName.toLowerCase().includes(searchQuery.toLowerCase());
-  };
-
-  const toggleBookmark = async (index, id, username) => {
-    const newBookmarks = [...bookmarks];
-    newBookmarks[index] = !newBookmarks[index];
-    setBookmarks(newBookmarks);
-
-    if (!newBookmarks[index]) {
-      await addList(id, username);
-    }
-  };
-
   const aggregatedProfiles = profiles.map((profile) => {
     const authorPapers = papers.filter(
       (paper) => paper.uploadedBy === profile.username
@@ -177,6 +164,20 @@ const Home = () => {
     };
   });
 
+  const includeSearchQuery = (authorName, searchQuery) => {
+    return authorName.toLowerCase().includes(searchQuery.toLowerCase());
+  };
+
+  const toggleBookmark = async (index, id, username) => {
+    const newBookmarks = [...bookmarks];
+    newBookmarks[index] = !newBookmarks[index];
+    setBookmarks(newBookmarks);
+
+    if (!newBookmarks[index]) {
+      await addList(id, username);
+    }
+  };
+
   return (
     <div className={styles["home-root"]}>
       <div className={styles["nav-div"]}>
@@ -192,70 +193,114 @@ const Home = () => {
 
       {searchQuery && aggregatedProfiles.length > 0 && (
         <div className={styles.authorDiv}>
-          {aggregatedProfiles.map((profile, index) => (
-            <NavLink
-              key={index}
-              className={styles.authorCard}
-              to={`/user/${encodeURIComponent(profile.username)}`}
-            >
-              <div className={styles.card}>
-                <div className={styles.profileContainer}>
-                  <div className={styles.imageContainer}>
-                    {profile.profileImage && (
-                      <img
-                        src={`http://localhost:8000${profile.profileImage}`}
-                        alt={profile.username}
-                        className={styles.profileImage}
-                      />
-                    )}
-                  </div>
-                  <div className={styles.detailsOverlay}>
-                    <div className={styles.userInfo}>
-                      <h4 className={styles.userName}>{profile.username}</h4>
-                      <p className={styles.userInstitution}>
-                        {profile.institution}
-                      </p>
+          <div className={styles.header}>
+            <span className={styles.authorSearch}>
+              Search Results for {searchQuery} in Authors{" "}
+            </span>
+          </div>
+          <div className={styles.total}>
+            {aggregatedProfiles.map((profile, index) => (
+              <NavLink
+                key={index}
+                className={styles.authorCard}
+                to={`/user/${encodeURIComponent(profile.username)}`}
+              >
+                <div className={styles.card}>
+                  <div className={styles.profileContainer}>
+                    <div className={styles.imageContainer}>
+                      {profile.profileImage && (
+                        <img
+                          src={`http://localhost:8000${profile.profileImage}`}
+                          alt={profile.username}
+                          className={styles.profileImage}
+                        />
+                      )}
                     </div>
-                    <div className={styles.stats}>
-                      <div className={styles.statItem}>
-                        <span className={styles.statNumber}>
-                          {profile.totalPapers}
-                        </span>
-                        <span className={styles.statLabel}>Publications</span>
+                    <div className={styles.detailsOverlay}>
+                      <div className={styles.userInfo}>
+                        <h4 className={styles.userName}>{profile.username}</h4>
+                        <p className={styles.userInstitution}>
+                          {profile.institution}
+                        </p>
                       </div>
-                      <div className={styles.statDivider}></div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statNumber}>
-                          {profile.totalCitations}
-                        </span>
-                        <span className={styles.statLabel}>Citations</span>
-                      </div>
-                      <div className={styles.statDivider}></div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statNumber}>
-                          {profile.totalReads}
-                        </span>
-                        <span className={styles.statLabel}>Reads</span>
+                      <div className={styles.stats}>
+                        <div className={styles.statItem}>
+                          <span className={styles.statNumber}>
+                            {profile.totalPapers}
+                          </span>
+                          <span className={styles.statLabel}>Publications</span>
+                        </div>
+                        <div className={styles.statDivider}></div>
+                        <div className={styles.statItem}>
+                          <span className={styles.statNumber}>
+                            {profile.totalCitations}
+                          </span>
+                          <span className={styles.statLabel}>Citations</span>
+                        </div>
+                        <div className={styles.statDivider}></div>
+                        <div className={styles.statItem}>
+                          <span className={styles.statNumber}>
+                            {profile.totalReads}
+                          </span>
+                          <span className={styles.statLabel}>Reads</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </NavLink>
-          ))}
+              </NavLink>
+            ))}
+          </div>
         </div>
       )}
 
       <div className={styles.outputDiv}>
+        <div className={styles.paperheader}>
+          {searchQuery ? (
+            <span className={styles.paperSearch}>
+              Search Results for {searchQuery} in Papers
+            </span>
+          ) : category ? (
+            <span className={styles.paperCategory}>
+              Showing Papers On {category}
+            </span>
+          ) : sortBy ? (
+            <span className={styles.paperFilter}>{sortBy} Papers</span>
+          ) : (
+            <span></span>
+          )}
+        </div>
         <>
           {papers.map((data, index) => (
             <div key={index}>
               <div className={styles.innerDiv}>
+                <div className={styles.profilepicture}>
+                  <div>
+                    <img
+                      src={logo}
+                      alt={data.username}
+                      className={styles.profileImag}
+                    />
+                  </div>
+                  <div className={styles.upperpart}>
+                    <NavLink
+                      to={`/user/${encodeURIComponent(data.uploadedBy)}`}
+                      className={styles.navlnk}
+                    >
+                      <h5 className={styles.uploadedBy}> {data.uploadedBy}</h5>
+                    </NavLink>
+                    <h5 className={styles.papertype}>
+                      Added an {data.paperType}
+                    </h5>
+                  </div>
+                </div>
                 <NavLink to={`/paper/${data._id}`} className={styles.navlink}>
                   <h3 className={styles.truncatedTitle}>{data.title}</h3>
                 </NavLink>
                 <div className={styles.details}>
-                  <h5 className={styles.h5}>{data.paperType}</h5>
+                  <h5 className={styles.h5} id={styles.h5}>
+                    {data.paperType}
+                  </h5>
                   {data.publicationDate && (
                     <h5 className={styles.h5}>
                       {new Date(data.publicationDate).toLocaleDateString(
@@ -267,18 +312,17 @@ const Home = () => {
                   <h5 className={styles.h5}>Citations {data.citations}</h5>
                   <h5 className={styles.h5}>Reads {data.count}</h5>
                 </div>
-                <NavLink
-                  to={`/user/${encodeURIComponent(data.uploadedBy)}`}
-                  className={styles.navlnk}
-                >
-                  <h5 className={styles.h5}> {data.uploadedBy}</h5>
-                </NavLink>
+
                 <button
                   className={styles.btnPrimary}
                   onClick={() => showPdf(data.pdf)}
                 >
-                  <i className="fa fa-file-pdf-o" aria-hidden="true">
-                    PDF
+                  <i
+                    className="fa fa-file-pdf-o"
+                    aria-hidden="true"
+                    id={styles.pdf}
+                  >
+                    <span> PDF </span>
                   </i>
                 </button>
                 <button

@@ -7,6 +7,7 @@ const Profile = require("./models/profile.model.js");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
+const { profile } = require("console");
 const app = express();
 const { ObjectId } = mongoose.Types;
 
@@ -219,7 +220,7 @@ app.delete("/api/user-files/:username/:filename", async (req, res) => {
 
 app.post("/api/upload", upload.single("file"), async (req, res) => {
   const { title, description, username, categories, draft, paperType } =
-    req.body; // Destructure paperType from req.body
+    req.body;
   const date = Date.now();
 
   try {

@@ -14,7 +14,7 @@
   padding: 20px;
   width: 70%;
   margin-left: 25px;
-  margin-bottom: 5px;
+  margin-bottom: 11px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -37,14 +37,70 @@
   display: flex;
   justify-content: start;
 }
+.truncatedTitle {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Limit to three lines */
+  overflow: hidden;
+  font-family: sans-serif;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  cursor: pointer; /* Add pointer cursor for clickable effect */
+}
 .h5 {
-  margin-top: 10px;
+  margin-top: 13px;
   margin-bottom: 5px;
   margin-right: 5px;
   font-size: 14px;
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 100;
+  padding: 3px;
   color: #666;
 }
-
+#h5 {
+  background-color: rgb(200, 255, 200);
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 100;
+  padding: 3px;
+  color: black;
+}
+.uploadedBy {
+  font-family: sans-serif;
+  font-style: normal;
+  font-size: 17px;
+  font-weight: 400;
+}
+.papertype {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 100;
+  color: rgb(105, 105, 105);
+}
+.profileImag {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+.upperpart {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.profilepicture {
+  display: flex;
+  margin-bottom: 5px;
+}
+#pdf {
+  margin-right: 3px;
+}
+.pdf {
+  font-family: sans-serif;
+}
 .btnBookmark {
   margin-top: 10px;
   padding: 8px;
@@ -194,14 +250,7 @@
   opacity: 1;
 }
 /* Paper title */
-.truncatedTitle {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3; /* Limit to three lines */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer; /* Add pointer cursor for clickable effect */
-}
+
 .home-root {
   position: relative;
 }
@@ -213,10 +262,29 @@
 
   background-color: white;
 }
-.authorDiv {
+.header {
+  margin-top: 15px;
+}
+.authorSearch {
+  margin-left: 2.3vw;
+}
+.paperSearch {
+  margin-left: 5px;
+}
+.paperheader {
+  margin-top: 5px;
+  background-color: white;
+  font-family: sans-serif;
+  width: 70%;
+  margin-left: 25px;
+  margin-bottom: 10px;
+  border-radius: 5px 5px 0px 0px;
+}
+.total {
   display: flex; /* Set display to flex */
-  justify-content: center; /* Horizontally center the cards */
-  flex-wrap: wrap; /* Allow cards to wrap if necessary */
+  margin-left: 1.3vw;
+  flex-wrap: wrap;
+  /* Allow cards to wrap if necessary */
 }
 
 .authorCard {

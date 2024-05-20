@@ -1,42 +1,20 @@
 * {
   font-family: "Circular", sans-serif;
 }
-.searchInput {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
 
-/* Author section */
-.authorDiv {
-  margin-bottom: 20px;
-}
-
-.author {
-  display: block;
-  margin-bottom: 10px;
-  color: #333;
-  text-decoration: none;
-}
-
-.author:hover {
-  text-decoration: underline;
-}
-
-/* Papers container */
 .outputDiv {
   margin-top: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-gap: 20px;
+  display: flex;
+  flex-direction: column;
+  /* background-color: antiquewhite; */
 }
 
-/* Paper card */
 .innerDiv {
   background-color: #fff;
   padding: 20px;
+  width: 70%;
+  margin-left: 25px;
+  margin-bottom: 5px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -55,9 +33,14 @@
   color: black;
 }
 /* Paper details */
+.details {
+  display: flex;
+  justify-content: start;
+}
 .h5 {
   margin-top: 10px;
   margin-bottom: 5px;
+  margin-right: 5px;
   font-size: 14px;
   color: #666;
 }

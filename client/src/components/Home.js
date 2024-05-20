@@ -254,22 +254,25 @@ const Home = () => {
                 <NavLink to={`/paper/${data._id}`} className={styles.navlink}>
                   <h3 className={styles.truncatedTitle}>{data.title}</h3>
                 </NavLink>
-                <h5 className={styles.h5}>Citations: {data.citations}</h5>
-                <h5 className={styles.h5}>Reads: {data.count}</h5>
-
+                <div className={styles.details}>
+                  <h5 className={styles.h5}>{data.paperType}</h5>
+                  {data.publicationDate && (
+                    <h5 className={styles.h5}>
+                      {new Date(data.publicationDate).toLocaleDateString(
+                        undefined,
+                        { month: "long", year: "numeric" }
+                      )}
+                    </h5>
+                  )}
+                  <h5 className={styles.h5}>Citations {data.citations}</h5>
+                  <h5 className={styles.h5}>Reads {data.count}</h5>
+                </div>
                 <NavLink
                   to={`/user/${encodeURIComponent(data.uploadedBy)}`}
                   className={styles.navlnk}
                 >
                   <h5 className={styles.h5}> {data.uploadedBy}</h5>
                 </NavLink>
-                <h5 className={styles.h5}>{data.paperType}</h5>
-                {data.publicationDate && (
-                  <h5>
-                    Published Year:{" "}
-                    {new Date(data.publicationDate).getFullYear()}
-                  </h5>
-                )}
                 <button
                   className={styles.btnPrimary}
                   onClick={() => showPdf(data.pdf)}

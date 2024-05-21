@@ -1,11 +1,58 @@
-.profile {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+* {
+  font-family: sans-serif;
 }
+.profileDetails {
+  display: flex;
+  padding: 20px;
+  padding-left: 7vw;
+  padding-top: 10px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 0px 0px 8px;
+
+  margin-top: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.profileMatter {
+  display: flex;
+  flex-direction: column;
+
+  padding: 10px;
+  padding-top: 20px;
+}
+.profileColleg {
+  line-height: 20px;
+}
+
+.profileImage {
+  display: block;
+  margin-top: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 2vh;
+}
+.profilename {
+  font-family: sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 26px;
+  margin-bottom: 8px;
+  margin-left: 17px;
+}
+.paperStats {
+  margin-left: 21vw;
+  padding: 20px;
+  font-size: 16px;
+  color: #666;
+}
+.profileCollege {
+  font-size: 14px;
+
+  margin-left: 20px;
+}
+
+/* edit details css */
 
 .form {
   display: flex;
@@ -55,12 +102,4 @@
 
 .button:hover {
   background-color: #218838;
-}
-
-.profileImage {
-  display: block;
-  margin-top: 10px;
-  max-width: 100px;
-  max-height: 100px;
-  border-radius: 50%;
 }

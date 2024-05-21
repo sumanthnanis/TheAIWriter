@@ -3,7 +3,7 @@ import axios from "axios";
 import styles from "./UserFiles.module.css";
 import { useLocation, NavLink } from "react-router-dom";
 import Pagination from "./Pagination";
-
+import PaperList from "./Paper";
 let PageSize = 5;
 
 const UserFiles = () => {
@@ -74,33 +74,14 @@ const UserFiles = () => {
         {paginatedFiles.length === 0 ? (
           <p>No files found</p>
         ) : (
-          paginatedFiles.map((file, index) => (
-            <div className={styles.button} key={index}>
-              <li className={styles.paper}>
-                <NavLink to={`/paper/${file._id}`} className={styles.navlink}>
-                  <h3>Title: {file.title}</h3>
-                </NavLink>
-                <NavLink
-                  to={`/user/${encodeURIComponent(file.uploadedBy)}`}
-                  className={styles.navlink}
-                >
-                  <h5 className={styles.h5}>Author: {file.uploadedBy}</h5>
-                </NavLink>
-                <button
-                  className={styles.btnPrimary}
-                  onClick={() => showPdf(file)}
-                >
-                  Show Pdf
-                </button>
-                <button
-                  className={styles.btnPrimary}
-                  onClick={() => removeFile(file)}
-                >
-                  Remove from list
-                </button>
-              </li>
-            </div>
-          ))
+          <PaperList
+            papers={paginatedFiles}
+            bookmarks={[]}
+            toggleBookmark={() => {}}
+            showPdf={() => {}}
+            handleCitePopup={() => {}}
+            state={state}
+          />
         )}
       </ul>
       <Pagination

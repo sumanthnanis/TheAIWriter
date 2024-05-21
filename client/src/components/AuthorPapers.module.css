@@ -2,6 +2,7 @@
   display: flex;
   justify-content: start;
   margin-top: 10px;
+  margin-left: 25px;
 }
 
 .tabButton {
@@ -31,7 +32,6 @@
 }
 
 .paperList {
-  border: 1px solid black;
   list-style-type: none;
   padding: 0;
 }

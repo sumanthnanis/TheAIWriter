@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
-import logo from "./img/myself.jpg";
+
 import axios from "axios";
 import styles from "./Home.module.css";
 import PaperList from "./Paper";
-import { FaBookmark } from "react-icons/fa";
 
 const Home = () => {
   const { state } = useLocation();
@@ -171,10 +170,24 @@ const Home = () => {
   const toggleBookmark = async (index, id, username) => {
     const newBookmarks = [...bookmarks];
     newBookmarks[index] = !newBookmarks[index];
-    setBookmarks(newBookmarks);
 
-    if (!newBookmarks[index]) {
-      await addList(id, username);
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/api/toggle-bookmark`,
+        {
+          paperId: id,
+          username,
+          bookmarked: newBookmarks[index],
+        }
+      );
+
+      if (response.status === 200) {
+        setBookmarks(newBookmarks);
+      } else {
+        console.error("Failed to update bookmark status");
+      }
+    } catch (error) {
+      console.error("Error updating bookmark status:", error);
     }
   };
 

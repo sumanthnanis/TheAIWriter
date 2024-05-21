@@ -28,6 +28,7 @@
   cursor: pointer;
   margin-top: 15px;
   transition: background-color 0.3s ease;
+  margin-right: 5px;
 }
 
 .citebutton:hover,
@@ -35,14 +36,25 @@
 .btnPrimary:hover {
   background-color: #45a049;
 }
-
 .citationscontainer {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
-.citations {
+
+.innercontainer {
   display: flex;
   flex-direction: column;
+
+  margin-top: 10px;
+}
+
+.citations {
+  display: flex;
+  flex-direction: row;
+
+  margin-right: 10px;
 }
 
 .citations,
@@ -52,12 +64,6 @@
   margin-right: 10px;
 }
 
-.innercontainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 10px;
-}
 .paperType {
   background-color: #a4f9a8;
   padding: 4px;
@@ -65,11 +71,20 @@
 }
 .paperauthor {
   font-size: 16px;
+  color: #666;
+  font-weight: 100;
+  margin-bottom: 15px;
 }
 
 .date {
   font-size: 16px;
-  margin-bottom: 20px;
+
+  color: #666;
+  font-weight: 100;
+}
+h5 {
+  font-weight: 100;
+  margin-bottom: 5px;
 }
 
 .paperdetails {
@@ -149,6 +164,7 @@
 
 .pdf {
   font-size: 18px;
+  margin-right: 5px;
   color: #4caf50;
 }
 

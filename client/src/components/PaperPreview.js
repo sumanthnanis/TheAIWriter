@@ -110,20 +110,23 @@ const PaperPreview = () => {
               </div>
               <div className={styles.innercontainer}>
                 <div className={styles.citations}>
-                  Citations: {paper.citations}
+                  <div className={styles.divv}>Citations:</div>{" "}
+                  <div> {paper.citations}</div>
                 </div>
-                <div className={styles.reads}>Reads: {paper.count}</div>
+                <span className={styles.reads}>Reads: {paper.count}</span>
               </div>
             </div>
-            <div className={styles.paperauthor}>Author: {paper.uploadedBy}</div>
+
             <div className={styles.date}>
-              {" "}
               <h5 className={styles.h5}>
                 {new Date(paper.publicationDate).toLocaleDateString(undefined, {
                   month: "long",
                   year: "numeric",
                 })}
               </h5>
+              <div className={styles.paperauthor}>
+                <h5 className={styles.h5}> Author: {paper.uploadedBy}</h5>
+              </div>
             </div>
           </div>
           <div className={styles.paperdescription}>

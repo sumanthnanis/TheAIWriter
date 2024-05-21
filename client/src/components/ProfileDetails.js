@@ -1,15 +1,23 @@
 import { useLocation } from "react-router-dom";
 import styles from "./Profile.module.css";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const ProfileDetails = () => {
+const ProfileDetails = ({ authorname }) => {
   const { state } = useLocation();
   const [profileData, setProfileData] = useState(null);
+  const [paperStats, setPaperStats] = useState({
+    totalPapers: 0,
+    totalCitations: 0,
+    totalReads: 0,
+    categories: [],
+  });
 
   const fetchProfileData = async () => {
+    const fetchUsername = authorname || state.username;
     try {
       const response = await fetch(
-        `http://localhost:8000/api/profile/${state.username}`
+        `http://localhost:8000/api/profile/${fetchUsername}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -23,27 +31,84 @@ const ProfileDetails = () => {
   };
 
   useEffect(() => {
-    if (state.username) {
+    const fetchUsername = authorname || state.username;
+    const fetchPapersByAuthor = async () => {
+      const fetchUsername = authorname || state.username;
+      try {
+        if (state?.username) {
+          const response = await axios.get(
+            `http://localhost:8000/api/get-papers?authorName=${encodeURIComponent(
+              fetchUsername
+            )}`
+          );
+          if (response.status === 200) {
+            const papers = response.data;
+            const totalPapers = papers.length;
+            const totalCitations = papers.reduce(
+              (sum, paper) => sum + paper.citations,
+              0
+            );
+            const totalReads = papers.reduce(
+              (sum, paper) => sum + paper.count,
+              0
+            );
+
+            const categories = [
+              ...new Set(papers.flatMap((paper) => paper.categories)),
+            ];
+
+            setPaperStats({
+              totalPapers,
+              totalCitations,
+              totalReads,
+              categories,
+            });
+          } else {
+            console.error("Failed to fetch papers");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching papers:", error);
+      }
+    };
+
+    if (fetchUsername) {
       fetchProfileData();
+      fetchPapersByAuthor();
     }
-  }, [state.username]);
+  }, []);
 
   if (!profileData) {
-    return <div>Loading...</div>;
+    return <div>No details Found About Author</div>;
   }
+
   return (
     <div className={styles.profileDetails}>
-      <div className={styles.profileItem}>
-        <strong>Username:</strong> {profileData.username}
+      <div className={styles.profileImage}>
+        <img
+          src={`http://localhost:8000${profileData.profileImage}`}
+          alt={profileData.username}
+          className={styles.profileImage}
+        />
       </div>
-      <div className={styles.profileItem}>
-        <strong>Degree:</strong> {profileData.degree}
+      <div className={styles.profileMatter}>
+        <span className={styles.profilename}>{profileData.username}</span>
+        <div className={styles.profileColleg}>
+          <ul>
+            <li className={styles.profileCollege}>
+              Pursuing {profileData.degree} in {profileData.department} at{" "}
+              {profileData.institution}
+            </li>
+            <li className={styles.profileCollege}>
+              {profileData.currentActivity}
+            </li>
+          </ul>
+        </div>
       </div>
-      <div className={styles.profileItem}>
-        <strong>Department:</strong> {profileData.department}
-      </div>
-      <div className={styles.profileItem}>
-        <strong>Institution:</strong> {profileData.institution}
+      <div className={styles.paperStats}>
+        <p>Publications: {paperStats.totalPapers}</p>
+        <p> Citations: {paperStats.totalCitations}</p>
+        <p> Reads: {paperStats.totalReads}</p>
       </div>
     </div>
   );

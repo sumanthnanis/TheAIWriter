@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import Navbar from "./Navbar";
+import PaperList from "./Paper";
 import axios from "axios";
 import styles from "./Home.module.css";
+import ProfileDetails from "./ProfileDetails";
 
 const Author = () => {
   const { authorName } = useParams();
@@ -44,23 +46,17 @@ const Author = () => {
   return (
     <div className={styles.outputDiv}>
       <Navbar />
-      <h2>Papers by {authorName}</h2>
 
-      {papers.map((paper, index) => (
-        <div key={index} className={styles.paperDiv}>
-          <div key={index} className={styles.innerDiv}>
-            <NavLink to={`/paper/${paper._id}`} className={styles.navlink}>
-              <h3>Title: {paper.title}</h3>
-            </NavLink>
-            <button
-              className={styles.btnPrimary}
-              onClick={() => showPdf(paper.pdf)}
-            >
-              Show PDF
-            </button>
-          </div>
-        </div>
-      ))}
+      <ProfileDetails authorname={authorName} />
+      <PaperList
+        className={styles.allPapersDiv}
+        papers={papers}
+        bookmarks={[]}
+        toggleBookmark={() => {}}
+        showPdf={() => {}}
+        handleCitePopup={() => {}}
+        state={""}
+      />
     </div>
   );
 };

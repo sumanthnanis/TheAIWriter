@@ -55,13 +55,21 @@ function Navbar({
       <div className={styles.logocontainer}>
         <img className={styles.logo} src={logo} alt="logo" />
       </div>
-      <div className={styles.menu} onClick={handleClick}>
+      <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>
         <span></span>
         <span></span>
         <span></span>
       </div>
+
       <div id={styles.navPart2}>
         <ul className={menuOpen ? styles.open : ""} id={styles.ul}>
+          {(state === "author" || state === "user" || state === "profile") && (
+            <li className={styles.navLinks}>
+              <NavLink to="/home" className={styles.linked} state={user}>
+                Home
+              </NavLink>
+            </li>
+          )}
           <Search
             authors={authors}
             setAuthors={setAuthors}

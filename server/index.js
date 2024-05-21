@@ -480,33 +480,24 @@ app.post("/api/increase-citations/:id", async (req, res) => {
 app.listen(8000, () => {
   console.log("server started");
 });
-// In your server code (e.g., server.js or routes.js)
 
 app.post("/api/toggle-bookmark", async (req, res) => {
   const { paperId, username, bookmarked } = req.body;
 
   try {
     const paper = await Paper.findById(paperId);
+
     if (!paper) {
       return res.status(404).json({ message: "Paper not found" });
     }
 
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Update the bookmark status
-    if (bookmarked) {
-      paper.bookmarks.push(username);
-    } else {
-      paper.bookmarks = paper.bookmarks.filter((user) => user !== username);
-    }
+    paper.bookmarks = bookmarked;
 
     await paper.save();
+
     res.status(200).json({ message: "Bookmark status updated" });
   } catch (error) {
     console.error("Error updating bookmark status:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 });

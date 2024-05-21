@@ -81,11 +81,9 @@ const Upload = () => {
 
   return (
     <>
-      <div className="home-heading">
-        <h1>Welcome to AI Writer</h1>
-      </div>
       <div className="home">
         <div className="left">
+          <h1 className="h1class">Upload Your Paper</h1>
           <div className="title-description">
             <input
               className="title"
@@ -116,6 +114,7 @@ const Upload = () => {
             </select>
           </div>
           <div className="categories">
+            <label className="label">Paper Category</label>
             <label className="label">
               <input
                 type="checkbox"

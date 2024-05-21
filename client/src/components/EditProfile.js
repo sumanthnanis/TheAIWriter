@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./EditProfile.css";
 import { Toaster, toast } from "sonner";
+import AuthorPapers from "./AuthorPapers";
 
 const EditProfile = () => {
   const { state } = useLocation();
@@ -97,13 +98,18 @@ const EditProfile = () => {
         console.log("Profile submitted successfully");
         setIsEditingImage(false);
         fetchProfileData(username);
-        toast.success("Profile updated successfully!");
+        if (activeTab === "account-general") {
+          toast.success("General profile updated successfully!");
+        } else if (activeTab === "account-professional") {
+          toast.success("Professional profile updated successfully!");
+        }
       } else {
         console.log("Failed to submit profile");
-        toast.error("Failed to update profile");
+        toast.error("Failed to update changes");
       }
     } catch (error) {
       console.error("Error submitting profile:", error);
+      toast.error("Failed to update changes");
     }
   };
 
@@ -132,6 +138,14 @@ const EditProfile = () => {
                     onClick={() => setActiveTab("account-professional")}
                   >
                     Professional Profile
+                  </a>
+                  <a
+                    className={`list-group-item ${
+                      activeTab === "research-papers" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveTab("research-papers")}
+                  >
+                    Research papers
                   </a>
                 </div>
                 <hr className="list-group-line" />
@@ -300,22 +314,33 @@ const EditProfile = () => {
                       </div>
                     </div>
                   </div>
+                  <div
+                    className={`tab-pane ${
+                      activeTab === "research-papers" ? "active" : ""
+                    }`}
+                    id="research-papers"
+                  >
+                    <AuthorPapers />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="buttons">
-            <button type="submit" className="btn btn-primary">
-              Save Changes
-            </button>
-            &nbsp;
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
+            {(activeTab === "account-general" ||
+              activeTab === "account-professional") && (
+              <div className="buttons">
+                <button type="submit" className="btn btn-primary">
+                  Save Changes
+                </button>
+                &nbsp;
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </form>

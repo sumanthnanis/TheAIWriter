@@ -54,32 +54,31 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchPapers = async () => {
-      try {
-        let url = "http://localhost:8000/api/get-papers";
-        const params = new URLSearchParams();
-        if (sortBy === "mostViewed") {
-          params.append("sortBy", "viewCount");
-        }
-        if (sortBy === "mostCited") {
-          params.append("sortBy", "citationCount");
-        }
-        if (category) {
-          params.append("category", category.trim());
-        }
-        if (params.toString()) {
-          url += `?${params.toString()}`;
-        }
-        const response = await axios.get(url);
-        setPapers(response.data);
-
-        setBookmarks(Array(response.data.length).fill(false));
-      } catch (error) {
-        console.error("Error fetching papers:", error);
+  const fetchPapers = async () => {
+    try {
+      let url = "http://localhost:8000/api/get-papers";
+      const params = new URLSearchParams();
+      if (sortBy === "mostViewed") {
+        params.append("sortBy", "viewCount");
       }
-    };
+      if (sortBy === "mostCited") {
+        params.append("sortBy", "citationCount");
+      }
+      if (category) {
+        params.append("category", category.trim());
+      }
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+      const response = await axios.get(url);
+      setPapers(response.data);
 
+      setBookmarks(Array(response.data.length).fill(false));
+    } catch (error) {
+      console.error("Error fetching papers:", error);
+    }
+  };
+  useEffect(() => {
     fetchPapers();
   }, [sortBy, category]);
 
@@ -177,7 +176,7 @@ const Home = () => {
         {
           paperId: id,
           username,
-          bookmarked: newBookmarks[index],
+          bookmarked: newBookmarks[index] ? 1 : 0,
         }
       );
 

@@ -85,7 +85,7 @@ const Login = () => {
               />
             </div>
             {message === "" ? null : <p>{message}</p>}
-            <input type="submit" value="Login" className="btn solid" />
+            <input type="submit" value="Login" className="cbutton solid" />
           </form>
           <form
             id="form"
@@ -121,19 +121,17 @@ const Login = () => {
               />
             </div>
 
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="input-field"
-            >
-              <option value="" disabled>
-                Select a role
-              </option>
-              <option value="user">User</option>
-              <option value="author">Author</option>
-            </select>
-
-            <input type="submit" className="btn" value="Sign up" />
+            <div className="input-field">
+              <i className="fas fa-user-tag"></i>
+              <select value={role} onChange={(e) => setRole(e.target.value)}>
+                <option value="" disabled>
+                  Select a role
+                </option>
+                <option value="user">User</option>
+                <option value="author">Author</option>
+              </select>
+            </div>
+            <input type="submit" className="cbutton" value="Sign up" />
           </form>
         </div>
       </div>
@@ -146,7 +144,7 @@ const Login = () => {
               Come on!!! Join us in this exciting journey of changing the world
               of security and writing research papers
             </p>
-            <button className="btn transparent" onClick={toggleSignUp}>
+            <button className="cbutton transparent" onClick={toggleSignUp}>
               Sign up
             </button>
           </div>
@@ -159,7 +157,7 @@ const Login = () => {
               Come on!!! Join us in this exciting journey of changing the world
               of security and writing research papers
             </p>
-            <button className="btn transparent" onClick={toggleSignUp}>
+            <button className="cbutton transparent" onClick={toggleSignUp}>
               Log In
             </button>
           </div>

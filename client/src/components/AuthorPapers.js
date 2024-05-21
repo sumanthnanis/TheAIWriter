@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PaperList from "./Paper";
-import Navbar from "./Navbar";
 import { useLocation, NavLink } from "react-router-dom";
 import axios from "axios";
+import { Toaster, toast } from "sonner";
 import styles from "./AuthorPapers.module.css";
 
 const AuthorPapers = () => {
@@ -39,8 +39,10 @@ const AuthorPapers = () => {
 
       setDraft0Papers(draft0Papers.filter((paper) => paper._id !== paperId));
       setDraft1Papers(draft1Papers.filter((paper) => paper._id !== paperId));
+      toast.success("Paper deleted successfully");
     } catch (error) {
       console.error("Error deleting paper:", error);
+      toast.error("Failed to delete paper");
     }
   };
 
@@ -59,15 +61,16 @@ const AuthorPapers = () => {
             paper.filename === filename ? { ...paper, draft: 0 } : paper
           )
         );
+        toast.success("Paper published successfully");
       } else {
         setDraft0Papers((prevDrafts) =>
           prevDrafts.map((paper) =>
             paper.filename === filename ? { ...paper, draft: 1 } : paper
           )
         );
+        toast.success("Paper unpublished successfully");
       }
 
-      // Fetch papers again after updating the draft status
       fetchPapers();
     } catch (error) {
       console.error("Error updating paper:", error);
@@ -77,37 +80,37 @@ const AuthorPapers = () => {
   const allPapers = [...draft0Papers, ...draft1Papers];
 
   return (
-    <div className={styles.container}>
-      <Navbar state={state.role} user={state} />
-      <div className={styles.tabs}>
-        <button
-          className={`${styles.tabButton} ${
-            activeTab === "all" ? styles.activeTab : ""
+    <div className={styles.researchPapersTabs}>
+      <Toaster richColors position="top-right" />
+      <div className={styles.tabsSidebar}>
+        <div
+          className={`${styles.tabLink} ${
+            activeTab === "all" ? styles.active : ""
           }`}
           onClick={() => setActiveTab("all")}
         >
           All Papers
-        </button>
-        <button
-          className={`${styles.tabButton} ${
-            activeTab === "published" ? styles.activeTab : ""
+        </div>
+        <div
+          className={`${styles.tabLink} ${
+            activeTab === "published" ? styles.active : ""
           }`}
           onClick={() => setActiveTab("published")}
         >
           Published Papers
-        </button>
-        <button
-          className={`${styles.tabButton} ${
-            activeTab === "drafts" ? styles.activeTab : ""
+        </div>
+        <div
+          className={`${styles.tabLink} ${
+            activeTab === "drafts" ? styles.active : ""
           }`}
           onClick={() => setActiveTab("drafts")}
         >
           Drafts
-        </button>
+        </div>
       </div>
-      {activeTab === "all" && (
-        <div>
-          <ul className={styles.paperList}>
+      <div className={styles.cardBody}>
+        {activeTab === "all" && (
+          <div className={styles.scrollableList}>
             <PaperList
               className={styles.allPapersDiv}
               papers={allPapers}
@@ -117,12 +120,10 @@ const AuthorPapers = () => {
               handleCitePopup={() => {}}
               state={""}
             />
-          </ul>
-        </div>
-      )}
-      {activeTab === "published" && (
-        <div>
-          <ul className={styles.paperList}>
+          </div>
+        )}
+        {activeTab === "published" && (
+          <div className={styles.scrollableList}>
             <PaperList
               className={styles.draftPapersDiv}
               papers={draft0Papers}
@@ -131,31 +132,13 @@ const AuthorPapers = () => {
               showPdf={() => {}}
               handleCitePopup={() => {}}
               state={""}
+              handleDraft={handleDraft} // Pass handleDraft function as prop
+              showButtons={true}
             />
-            {draft0Papers.map((paper) => (
-              <li key={paper._id} className={styles.paperItem}>
-                <div className={styles.innerDiv}>
-                  <NavLink
-                    to={`/paper/${paper._id}`}
-                    className={styles.paperLink}
-                  >
-                    {paper.title}
-                  </NavLink>
-                  <button
-                    onClick={() => handleDraft(paper.pdf, 1)}
-                    className={styles.deleteButton}
-                  >
-                    Unpublish
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {activeTab === "drafts" && (
-        <div>
-          <ul className={styles.paperList}>
+          </div>
+        )}
+        {activeTab === "drafts" && (
+          <div className={styles.scrollableList}>
             <PaperList
               className={styles.draftPapersDiv}
               papers={draft1Papers}
@@ -164,34 +147,13 @@ const AuthorPapers = () => {
               showPdf={() => {}}
               handleCitePopup={() => {}}
               state={""}
+              handleDelete={handleDelete}
+              handleDraft={handleDraft}
+              showButtons={true}
             />
-            {draft1Papers.map((paper) => (
-              <li key={paper._id} className={styles.paperItem}>
-                <div className={styles.innerDiv}>
-                  <NavLink
-                    to={`/paper/${paper._id}`}
-                    className={styles.paperLink}
-                  >
-                    {paper.title}
-                  </NavLink>
-                  <button
-                    onClick={() => handleDelete(paper._id)}
-                    className={styles.deleteButton}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => handleDraft(paper.pdf, 0)}
-                    className={styles.deleteButton}
-                  >
-                    Publish
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -81,15 +81,7 @@ form.sign-in-form {
   font-size: 1.1rem;
 }
 
-.input-field input {
-  background: none;
-  outline: none;
-  border: none;
-  line-height: 1;
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #333;
-}
+.input-field input,
 .input-field select {
   background: none;
   outline: none;
@@ -99,12 +91,21 @@ form.sign-in-form {
   font-size: 1.1rem;
   color: #333;
 }
+
+.input-field select {
+  background-color: #f0f0f0; /* Background color matching the input fields */
+  color: #333; /* Text color */
+  border: none; /* Remove the default border */
+  padding-left: 10px;
+  border-radius: 55px; /* Padding to match input fields */
+}
+
 .input-field input::placeholder {
   color: #aaa;
   font-weight: 500;
 }
 
-.btn {
+.cbutton {
   width: 150px;
   background-color: #363a42;
   border: none;
@@ -119,9 +120,10 @@ form.sign-in-form {
   transition: 0.5s;
 }
 
-.btn:hover {
+.cbutton:hover {
   background-color: #333;
 }
+
 .panels-container {
   position: absolute;
   height: 100%;
@@ -188,7 +190,7 @@ form.sign-in-form {
   padding: 0.7rem 0;
 }
 
-.btn.transparent {
+.cbutton.transparent {
   margin: auto;
   background: none;
   border: 2px solid #fff;
@@ -299,7 +301,7 @@ form.sign-in-form {
     padding: 0.5rem 0;
   }
 
-  .btn.transparent {
+  .cbutton.transparent {
     width: 110px;
     height: 35px;
     font-size: 0.7rem;

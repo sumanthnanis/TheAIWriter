@@ -359,3 +359,49 @@
   font-size: 14px;
   color: #666;
 }
+
+.deleteButton,
+.publishButton,
+.unpublishButton {
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.deleteButton {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.publishButton {
+  background-color: #3498db;
+  color: white;
+}
+
+.unpublishButton {
+  background-color: #f39c12;
+  color: white;
+}
+
+.draftButton {
+  margin-top: 5px;
+}
+
+.deleteButton:hover,
+.publishButton:hover,
+.unpublishButton:hover {
+  opacity: 0.9;
+}
+
+.deleteButton,
+.publishButton,
+.unpublishButton {
+  margin-top: 5px; /* Add margin between buttons */
+}
+
+.listButtons {
+  text-align: right;
+}

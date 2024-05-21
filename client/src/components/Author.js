@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, NavLink } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import PaperList from "./Paper";
 import axios from "axios";
@@ -9,6 +9,10 @@ import ProfileDetails from "./ProfileDetails";
 const Author = () => {
   const { authorName } = useParams();
   const [papers, setPapers] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedPaper, setSelectedPaper] = useState(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     const fetchPapersByAuthor = async () => {
@@ -18,8 +22,8 @@ const Author = () => {
             authorName
           )}`
         );
-
         setPapers(response.data);
+        setBookmarks(Array(response.data.length).fill(false));
       } catch (error) {
         console.error("Error fetching papers:", error);
       }
@@ -43,20 +47,101 @@ const Author = () => {
     }
   };
 
+  const toggleBookmark = async (index, id, username) => {
+    const newBookmarks = [...bookmarks];
+    newBookmarks[index] = !newBookmarks[index];
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/api/toggle-bookmark`,
+        {
+          paperId: id,
+          username,
+          bookmarked: newBookmarks[index],
+        }
+      );
+
+      if (response.status === 200) {
+        setBookmarks(newBookmarks);
+      } else {
+        console.error("Failed to update bookmark status");
+      }
+    } catch (error) {
+      console.error("Error updating bookmark status:", error);
+    }
+  };
+
+  const handleCitePopup = (paper) => {
+    setSelectedPaper(paper);
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    setSelectedPaper(null);
+    setCopySuccess(false);
+  };
+
+  const handleCiteThisPaper = async () => {
+    if (!selectedPaper) return;
+
+    try {
+      await axios.post(
+        `http://localhost:8000/api/increase-citations/${selectedPaper._id}`
+      );
+
+      setPapers((prevPapers) =>
+        prevPapers.map((paper) =>
+          paper._id === selectedPaper._id
+            ? { ...paper, citations: paper.citations + 1 }
+            : paper
+        )
+      );
+
+      const citationText = `Title: ${selectedPaper.title}, Author: ${selectedPaper.uploadedBy}`;
+      await navigator.clipboard.writeText(citationText);
+      console.log("Citation copied to clipboard:", citationText);
+      setCopySuccess(true);
+    } catch (error) {
+      console.error("Error citing paper:", error);
+    }
+  };
+
   return (
     <div className={styles.outputDiv}>
       <Navbar />
-
       <ProfileDetails authorname={authorName} />
       <PaperList
         className={styles.allPapersDiv}
         papers={papers}
-        bookmarks={[]}
-        toggleBookmark={() => {}}
-        showPdf={() => {}}
-        handleCitePopup={() => {}}
-        state={""}
+        bookmarks={bookmarks}
+        toggleBookmark={toggleBookmark}
+        showPdf={showPdf}
+        handleCitePopup={handleCitePopup}
+        state={{ username: authorName }}
       />
+      {showPopup && selectedPaper && (
+        <div className={styles.popup}>
+          <div className={styles.popupContent}>
+            <span className={styles.close} onClick={handleClosePopup}>
+              &times;
+            </span>
+            <h2 className={styles.citePaper}>Cite Paper</h2>
+            <p>
+              {selectedPaper.uploadedBy}. {selectedPaper.title}
+            </p>
+            <button
+              className={styles.copyButton}
+              onClick={() => handleCiteThisPaper(selectedPaper)}
+            >
+              Copy Citation
+            </button>
+            {copySuccess && (
+              <p className={styles.successMessage}>Copied to clipboard!</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

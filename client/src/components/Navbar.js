@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+// import { NavLink } from "react-router-dom";
 import Dropdown from "./Dropdown.js";
 import logo from "./img/logo.jpg";
 import styles from "./Navbar.module.css";
 import MenuItems from "./MenuItems.js";
 import Search from "./Search.js";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Navbar({
   state,
@@ -18,6 +19,7 @@ function Navbar({
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [authors, setAuthors] = useState([]);
+  const navigate = useNavigate();
 
   const handleClick = () => setMenuOpen(!menuOpen);
   const closeMobileMenu = () => setMenuOpen(false);
@@ -50,26 +52,24 @@ function Navbar({
     setActiveDropdown(null);
   };
 
+  const handleMyPapersClick = () => {
+    navigate("/user/profile", {
+      state: { activeTab: "research-papers", username: user.username },
+    });
+  };
+
   return (
     <nav id={styles.nav}>
       <div className={styles.logocontainer}>
         <img className={styles.logo} src={logo} alt="logo" />
       </div>
-      <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>
+      <div className={styles.menu} onClick={handleClick}>
         <span></span>
         <span></span>
         <span></span>
       </div>
-
       <div id={styles.navPart2}>
         <ul className={menuOpen ? styles.open : ""} id={styles.ul}>
-          {(state === "author" || state === "user" || state === "profile") && (
-            <li className={styles.navLinks}>
-              <NavLink to="/home" className={styles.linked} state={user}>
-                Home
-              </NavLink>
-            </li>
-          )}
           <Search
             authors={authors}
             setAuthors={setAuthors}
@@ -134,9 +134,9 @@ function Navbar({
 
           {state === "author" && (
             <li className={styles.navLinks}>
-              <NavLink to="/my-papers" className={styles.linked} state={user}>
+              <div onClick={handleMyPapersClick} className={styles.linked}>
                 My Papers
-              </NavLink>
+              </div>
             </li>
           )}
 

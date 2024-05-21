@@ -16,6 +16,7 @@ const Login = () => {
   const toggleSignUp = () => {
     setIsSignUp(!isSignUp);
   };
+
   async function registeUser(event) {
     event.preventDefault();
     const response = await fetch("http://localhost:8000/api/register", {
@@ -31,6 +32,10 @@ const Login = () => {
       }),
     });
     const data = await response.json();
+    console.log(data);
+    if (data.status === "ok") {
+      navigate("/home", { state: data });
+    }
   }
 
   async function loginuser(event) {
@@ -48,12 +53,9 @@ const Login = () => {
     const data = await response.json();
     if (data.token) {
       navigate("/home", { state: data });
-      console.log("routed");
     } else {
-      console.log("no token found");
       setMessage("Please check your email and password");
     }
-    console.log(data);
   }
 
   return (

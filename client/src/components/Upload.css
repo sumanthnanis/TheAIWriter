@@ -19,11 +19,11 @@
 }
 
 /* Title and description styles */
-.title-description {
-  margin-bottom: 30px;
+.titles-description {
+  margin-bottom: 20px;
 }
 
-.title {
+.titles {
   width: 100%;
   padding: 15px;
   margin-bottom: 15px;
@@ -69,11 +69,15 @@
 
 .label {
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   font-size: 1em;
   cursor: pointer;
 }
 
+.checkbox-label input {
+  margin-right: 10px;
+  transform: translateY(2px); /* Adjust vertical alignment */
+}
 .checkbox-label {
   display: flex;
   align-items: center;

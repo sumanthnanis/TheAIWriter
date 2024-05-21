@@ -45,6 +45,11 @@ const Upload = () => {
   const submitFile = async (e, draft) => {
     e.preventDefault();
 
+    if (!title || !description || !paperType || !file) {
+      setMsg("Please fill in all the details.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -72,7 +77,11 @@ const Upload = () => {
         }
       );
       if (result.status === 200) {
-        setMsg("Paper uploaded successfully");
+        if (draft) {
+          setMsg("Saved as draft");
+        } else {
+          setMsg("Paper uploaded successfully");
+        }
       }
     } catch (error) {
       console.error("Error submitting file:", error);
@@ -84,9 +93,9 @@ const Upload = () => {
       <div className="home">
         <div className="left">
           <h1 className="h1class">Upload Your Paper</h1>
-          <div className="title-description">
+          <div className="titles-description">
             <input
-              className="title"
+              className="titles"
               type="text"
               placeholder="Title"
               value={title}
@@ -126,7 +135,7 @@ const Upload = () => {
                   })
                 }
               />
-              Artificial Intelligence
+              <span> Artificial Intelligence</span>
             </label>
             <label className="label">
               <input
@@ -139,7 +148,7 @@ const Upload = () => {
                   })
                 }
               />
-              Deep Learning
+              <span> Deep Learning</span>
             </label>
             <label className="label">
               <input
@@ -152,7 +161,7 @@ const Upload = () => {
                   })
                 }
               />
-              Blockchain
+              <span> Blockchain</span>
             </label>
             <label className="label">
               <input
@@ -165,7 +174,7 @@ const Upload = () => {
                   })
                 }
               />
-              Frontend Development
+              <span> Frontend Development</span>
             </label>
             <label className="label">
               <input
@@ -178,7 +187,7 @@ const Upload = () => {
                   })
                 }
               />
-              Backend Development
+              <span> Backend Development</span>
             </label>
             <label className="label">
               <input
@@ -191,7 +200,7 @@ const Upload = () => {
                   })
                 }
               />
-              Databases
+              <span> Databases</span>
             </label>
           </div>
           <div className="drop-area" {...getRootProps()}>

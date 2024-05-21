@@ -42,7 +42,9 @@ const PaperList = ({
               <h3 className={styles.truncatedTitle}>{data.title}</h3>
             </NavLink>
             <div className={styles.details}>
-              <h5 className={styles.h5}>{data.paperType}</h5>
+              <h5 className={styles.h5} id={styles.paperType}>
+                {data.paperType}
+              </h5>
               {data.publicationDate && (
                 <h5 className={styles.h5}>
                   {new Date(data.publicationDate).toLocaleDateString(

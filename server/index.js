@@ -46,7 +46,12 @@ app.post("/api/register", async (req, res) => {
       email: req.body.email,
       role: req.body.role,
     });
-    res.json({ status: "ok" });
+    res.json({
+      status: "ok",
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ status: "error" });

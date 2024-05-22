@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import styles from "./Home.module.css";
 import PaperList from "./Paper";
+import { toast, Toaster } from "sonner";
 
 const Home = () => {
   const { state } = useLocation();
@@ -71,13 +72,18 @@ const Home = () => {
         url += `?${params.toString()}`;
       }
       const response = await axios.get(url);
-      setPapers(response.data);
+      const papersData = response.data;
+      setPapers(papersData);
 
-      setBookmarks(Array(response.data.length).fill(false));
+      // Initialize bookmarks state based on the fetched papers
+      setBookmarks(
+        papersData.map((paper) => paper.bookmarkedBy.includes(state.username))
+      );
     } catch (error) {
       console.error("Error fetching papers:", error);
     }
   };
+
   useEffect(() => {
     fetchPapers();
   }, [sortBy, category]);
@@ -95,7 +101,10 @@ const Home = () => {
         setPapers(papers);
         setProfiles(profiles);
         console.log(profiles);
-        setBookmarks(Array(papers.length).fill(false));
+        // setBookmarks(Array(papers.length).fill(false));
+        setBookmarks(
+          papers.map((paper) => paper.bookmarkedBy.includes(state.username))
+        );
       } catch (error) {
         console.error("Error fetching papers and profiles:", error);
       }
@@ -166,7 +175,9 @@ const Home = () => {
     return authorName.toLowerCase().includes(searchQuery.toLowerCase());
   };
 
-  const toggleBookmark = async (index, id, username) => {
+ 
+
+  const toggleBookmark = async (index, id) => {
     const newBookmarks = [...bookmarks];
     newBookmarks[index] = !newBookmarks[index];
 
@@ -175,13 +186,18 @@ const Home = () => {
         `http://localhost:8000/api/toggle-bookmark`,
         {
           paperId: id,
-          username,
-          bookmarked: newBookmarks[index] ? 1 : 0,
+          username: state.username,
+          bookmarked: newBookmarks[index],
         }
       );
 
       if (response.status === 200) {
         setBookmarks(newBookmarks);
+        if (newBookmarks[index]) {
+          toast.success("Bookmarked successfully!");
+        } else {
+          toast.info("Bookmark removed successfully!");
+        }
       } else {
         console.error("Failed to update bookmark status");
       }
@@ -190,129 +206,144 @@ const Home = () => {
     }
   };
 
-  return (
-    <div className={styles["home-root"]}>
-      <div className={styles["nav-div"]}>
-        <Navbar
-          state={state.role}
-          user={state}
-          setSortBy={setSortBy}
-          setCategory={setCategory}
-          handleChange={handleSearch}
-          searchQuery={searchQuery}
-        />
-      </div>
+  useEffect(() => {
+    console.log(
+      "Bookmarked papers:",
+      papers.filter((paper, index) => bookmarks[index])
+    );
+  }, [bookmarks, papers]);
 
-      {searchQuery && aggregatedProfiles.length > 0 && (
-        <div className={styles.authorDiv}>
-          <div className={styles.header}>
-            <span className={styles.authorSearch}>
-              Search Results for {searchQuery} in Authors{" "}
-            </span>
-          </div>
-          <div className={styles.total}>
-            {aggregatedProfiles.map((profile, index) => (
-              <NavLink
-                key={index}
-                className={styles.authorCard}
-                to={`/user/${encodeURIComponent(profile.username)}`}
-              >
-                <div className={styles.card}>
-                  <div className={styles.profileContainer}>
-                    <div className={styles.imageContainer}>
-                      {profile.profileImage && (
-                        <img
-                          src={`http://localhost:8000${profile.profileImage}`}
-                          alt={profile.username}
-                          className={styles.profileImage}
-                        />
-                      )}
-                    </div>
-                    <div className={styles.detailsOverlay}>
-                      <div className={styles.userInfo}>
-                        <h4 className={styles.userName}>{profile.username}</h4>
-                        <p className={styles.userInstitution}>
-                          {profile.institution}
-                        </p>
+  return (
+    <div>
+      <Toaster richColors position="top-right" />
+      <div className={styles["home-root"]}>
+        {/* <Toaster richColors position="top-right" /> */}
+        <div className={styles["nav-div"]}>
+          <Navbar
+            state={state.role}
+            user={state}
+            setSortBy={setSortBy}
+            setCategory={setCategory}
+            handleChange={handleSearch}
+            searchQuery={searchQuery}
+          />
+        </div>
+
+        {searchQuery && aggregatedProfiles.length > 0 && (
+          <div className={styles.authorDiv}>
+            <div className={styles.header}>
+              <span className={styles.authorSearch}>
+                Search Results for {searchQuery} in Authors{" "}
+              </span>
+            </div>
+            <div className={styles.total}>
+              {aggregatedProfiles.map((profile, index) => (
+                <NavLink
+                  key={index}
+                  className={styles.authorCard}
+                  to={`/user/${encodeURIComponent(profile.username)}`}
+                >
+                  <div className={styles.card}>
+                    <div className={styles.profileContainer}>
+                      <div className={styles.imageContainer}>
+                        {profile.profileImage && (
+                          <img
+                            src={`http://localhost:8000${profile.profileImage}`}
+                            alt={profile.username}
+                            className={styles.profileImage}
+                          />
+                        )}
                       </div>
-                      <div className={styles.stats}>
-                        <div className={styles.statItem}>
-                          <span className={styles.statNumber}>
-                            {profile.totalPapers}
-                          </span>
-                          <span className={styles.statLabel}>Publications</span>
+                      <div className={styles.detailsOverlay}>
+                        <div className={styles.userInfo}>
+                          <h4 className={styles.userName}>
+                            {profile.username}
+                          </h4>
+                          <p className={styles.userInstitution}>
+                            {profile.institution}
+                          </p>
                         </div>
-                        <div className={styles.statDivider}></div>
-                        <div className={styles.statItem}>
-                          <span className={styles.statNumber}>
-                            {profile.totalCitations}
-                          </span>
-                          <span className={styles.statLabel}>Citations</span>
-                        </div>
-                        <div className={styles.statDivider}></div>
-                        <div className={styles.statItem}>
-                          <span className={styles.statNumber}>
-                            {profile.totalReads}
-                          </span>
-                          <span className={styles.statLabel}>Reads</span>
+                        <div className={styles.stats}>
+                          <div className={styles.statItem}>
+                            <span className={styles.statNumber}>
+                              {profile.totalPapers}
+                            </span>
+                            <span className={styles.statLabel}>
+                              Publications
+                            </span>
+                          </div>
+                          <div className={styles.statDivider}></div>
+                          <div className={styles.statItem}>
+                            <span className={styles.statNumber}>
+                              {profile.totalCitations}
+                            </span>
+                            <span className={styles.statLabel}>Citations</span>
+                          </div>
+                          <div className={styles.statDivider}></div>
+                          <div className={styles.statItem}>
+                            <span className={styles.statNumber}>
+                              {profile.totalReads}
+                            </span>
+                            <span className={styles.statLabel}>Reads</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </NavLink>
-            ))}
+                </NavLink>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className={styles.outputDiv}>
-        <div className={styles.paperheader}>
-          {searchQuery ? (
-            <span className={styles.paperSearch}>
-              Search Results for {searchQuery} in Papers
-            </span>
-          ) : category ? (
-            <span className={styles.paperCategory}>
-              Showing Papers On {category}
-            </span>
-          ) : sortBy ? (
-            <span className={styles.paperFilter}>{sortBy} Papers</span>
-          ) : (
-            <span></span>
-          )}
-        </div>
-        <PaperList
-          papers={papers}
-          bookmarks={bookmarks}
-          toggleBookmark={toggleBookmark}
-          showPdf={showPdf}
-          handleCitePopup={handleCitePopup}
-          state={state}
-        />
-      </div>
-      {showPopup && selectedPaper && (
-        <div className={styles.popup}>
-          <div className={styles.popupContent}>
-            <span className={styles.close} onClick={handleClosePopup}>
-              &times;
-            </span>
-            <h2 className={styles.citePaper}>Cite Paper</h2>
-            <p>
-              {selectedPaper.uploadedBy}. {selectedPaper.title}
-            </p>
-            <button
-              className={styles.copyButton}
-              onClick={() => handleCiteThisPaper(selectedPaper)}
-            >
-              Copy Citation
-            </button>
-            {copySuccess && (
-              <p className={styles.successMessage}>Copied to clipboard!</p>
+        <div className={styles.outputDiv}>
+          <div className={styles.paperheader}>
+            {searchQuery ? (
+              <span className={styles.paperSearch}>
+                Search Results for {searchQuery} in Papers
+              </span>
+            ) : category ? (
+              <span className={styles.paperCategory}>
+                Showing Papers On {category}
+              </span>
+            ) : sortBy ? (
+              <span className={styles.paperFilter}>{sortBy} Papers</span>
+            ) : (
+              <span></span>
             )}
           </div>
+          <PaperList
+            papers={papers}
+            bookmarks={bookmarks}
+            toggleBookmark={toggleBookmark}
+            showPdf={showPdf}
+            handleCitePopup={handleCitePopup}
+            state={state}
+          />
         </div>
-      )}
+        {showPopup && selectedPaper && (
+          <div className={styles.popup}>
+            <div className={styles.popupContent}>
+              <span className={styles.close} onClick={handleClosePopup}>
+                &times;
+              </span>
+              <h2 className={styles.citePaper}>Cite Paper</h2>
+              <p>
+                {selectedPaper.uploadedBy}. {selectedPaper.title}
+              </p>
+              <button
+                className={styles.copyButton}
+                onClick={() => handleCiteThisPaper(selectedPaper)}
+              >
+                Copy Citation
+              </button>
+              {copySuccess && (
+                <p className={styles.successMessage}>Copied to clipboard!</p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

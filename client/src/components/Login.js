@@ -59,8 +59,8 @@ const Login = () => {
   }
 
   return (
-    <div className={`container ${isSignUp ? "sign-up-mode" : ""}`}>
-      <div className="forms-container">
+    <div className={`container1 ${isSignUp ? "sign-up-mode" : ""}`}>
+      <div className="forms-container1">
         <div className="signin-signup">
           <form
             onSubmit={loginuser}
@@ -138,7 +138,7 @@ const Login = () => {
         </div>
       </div>
 
-      <div className="panels-container">
+      <div className="panels-container1">
         <div className="panel left-panel">
           <div className="content">
             <h3>New here ?</h3>

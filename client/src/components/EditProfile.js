@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./EditProfile.css";
 import { Toaster, toast } from "sonner";
 import AuthorPapers from "./AuthorPapers";
+import UserFiles from "./UserFiles";
 
 const EditProfile = () => {
   const { state } = useLocation();
@@ -151,6 +152,14 @@ const EditProfile = () => {
                     onClick={() => setActiveTab("research-papers")}
                   >
                     Research papers
+                  </a>
+                  <a
+                    className={`list-group-item ${
+                      activeTab === "my-list" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveTab("my-list")}
+                  >
+                    My list
                   </a>
                 </div>
                 <hr className="list-group-line" />
@@ -327,6 +336,16 @@ const EditProfile = () => {
                   >
                     <AuthorPapers />
                   </div>
+                  <div
+                    className={`tab-pane ${
+                      activeTab === "my-list" ? "active" : ""
+                    }`}
+                    id="my-list"
+                  >
+                    <div className="cardBody">
+                      <UserFiles state={{ username, fromProfile: true }} />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -348,6 +367,7 @@ const EditProfile = () => {
             )}
           </div>
         </div>
+        <br />
       </form>
     </div>
   );

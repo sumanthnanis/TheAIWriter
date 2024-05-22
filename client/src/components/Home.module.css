@@ -209,7 +209,6 @@
   cursor: pointer;
   color: #ccc; /* Default color */
   transition: color 0.3s ease;
-  position: relative; /* Position relative for tooltip positioning */
 }
 
 .bookmarked {
@@ -225,7 +224,6 @@
   cursor: pointer;
   color: #ccc; /* Default color */
   transition: color 0.3s ease;
-  position: relative; /* Position relative for tooltip positioning */
 }
 
 .citeButton:hover {

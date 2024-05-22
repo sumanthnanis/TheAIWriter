@@ -181,6 +181,31 @@ app.post("/api/add-file", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// app.get("/api/user-files/:username", async (req, res) => {
+//   const { username } = req.params;
+
+//   try {
+//     const user = await User.findOne({ username });
+
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     const fileIds = user.files.map((fileId) => new ObjectId(fileId));
+
+//     const files = await Paper.find(
+//       { _id: { $in: fileIds } },
+//       { title: 1, uploadedBy: 1 }
+//     );
+
+//     res.status(200).json({ files });
+//   } catch (error) {
+//     console.error("Error retrieving user files:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
 app.get("/api/user-files/:username", async (req, res) => {
   const { username } = req.params;
 
@@ -195,7 +220,7 @@ app.get("/api/user-files/:username", async (req, res) => {
 
     const files = await Paper.find(
       { _id: { $in: fileIds } },
-      { title: 1, uploadedBy: 1 }
+      { title: 1, uploadedBy: 1, bookmarkedBy: 1 } // Include the bookmarkedBy field
     );
 
     res.status(200).json({ files });
@@ -204,6 +229,7 @@ app.get("/api/user-files/:username", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 app.delete("/api/user-files/:username/:filename", async (req, res) => {
   const { username, filename } = req.params;
 
@@ -316,6 +342,7 @@ app.put("/api/papers/:filename", async (req, res) => {
   const { filename } = req.params;
   console.log(filename);
   const { draft } = req.body;
+  const { bookmarks } = req.body;
 
   try {
     const paper = await Paper.findOne({ pdf: filename });
@@ -325,6 +352,7 @@ app.put("/api/papers/:filename", async (req, res) => {
     }
 
     paper.draft = draft;
+    paper.bookmarks = bookmarks;
     await paper.save();
     console.log(paper);
 
@@ -336,6 +364,7 @@ app.put("/api/papers/:filename", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 app.delete("/api/papers/:paperId", async (req, res) => {
   const { paperId } = req.params;
   try {
@@ -486,6 +515,27 @@ app.listen(8000, () => {
   console.log("server started");
 });
 
+// app.post("/api/toggle-bookmark", async (req, res) => {
+//   const { paperId, username, bookmarked } = req.body;
+
+//   try {
+//     const paper = await Paper.findById(paperId);
+
+//     if (!paper) {
+//       return res.status(404).json({ message: "Paper not found" });
+//     }
+
+//     paper.bookmarks = bookmarked;
+
+//     await paper.save();
+
+//     res.status(200).json({ message: "Bookmark status updated" });
+//   } catch (error) {
+//     console.error("Error updating bookmark status:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
 app.post("/api/toggle-bookmark", async (req, res) => {
   const { paperId, username, bookmarked } = req.body;
 
@@ -496,13 +546,41 @@ app.post("/api/toggle-bookmark", async (req, res) => {
       return res.status(404).json({ message: "Paper not found" });
     }
 
-    paper.bookmarks = bookmarked;
+    if (bookmarked) {
+      if (!paper.bookmarkedBy.includes(username)) {
+        paper.bookmarkedBy.push(username);
+      }
+    } else {
+      paper.bookmarkedBy = paper.bookmarkedBy.filter(
+        (user) => user !== username
+      );
+    }
+
+    paper.bookmarks = paper.bookmarkedBy.length;
 
     await paper.save();
 
-    res.status(200).json({ message: "Bookmark status updated" });
+    res.status(200).json({ message: "Bookmark status updated", paper });
   } catch (error) {
     console.error("Error updating bookmark status:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/api/bookmarked-papers/:username", async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const papers = await Paper.find({ bookmarkedBy: username });
+    console.log(papers);
+
+    if (!papers || papers.length === 0) {
+      return res.status(404).json({ message: "No bookmarked papers found" });
+    }
+
+    res.status(200).json(papers);
+  } catch (error) {
+    console.error("Error fetching bookmarked papers:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

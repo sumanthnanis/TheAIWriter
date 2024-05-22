@@ -18,7 +18,12 @@ const PaperList = ({
   return (
     <div>
       {papers.map((data, index) => (
-        <div key={index}>
+        <div
+          key={index}
+          className={`${styles.paper} ${
+            bookmarks[index] ? styles.bookmarked : ""
+          }`}
+        >
           <div className={styles.innerDiv}>
             <div className={styles.profilepicture}>
               <div>
@@ -73,7 +78,7 @@ const PaperList = ({
               className={`${styles.btnBookmark} ${
                 bookmarks[index] ? styles.bookmarked : ""
               }`}
-              onClick={() => toggleBookmark(index, data._id, state.username)}
+              onClick={() => toggleBookmark(index, data._id)}
             >
               <FaBookmark />
               <span className={styles.tooltip}>Bookmark</span>

@@ -9,10 +9,12 @@ const PaperPreview = () => {
   const { state } = useLocation();
   const { id } = useParams();
   const [paper, setPaper] = useState(null);
+  const [bookmarks, setBookmarks] = useState([]);
   const [relatedPapers, setRelatedPapers] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [buttonText, setButtonText] = useState("Cite this paper");
   const [copySuccess, setCopySuccess] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
 
   useEffect(() => {
     const fetchPaperDetails = async () => {
@@ -21,23 +23,38 @@ const PaperPreview = () => {
           `http://localhost:8000/api/get-paper/${id}`
         );
         setPaper(response.data);
+        setBookmarked(response.data.bookmarkedBy.includes(state.username));
       } catch (error) {
         console.error("Error fetching paper details:", error);
       }
     };
 
     fetchPaperDetails();
-  }, [id]);
+  }, [id, state.username]);
 
   useEffect(() => {
     if (paper) {
       fetchRelatedPapers(paper.categories);
     }
   }, [paper]);
+  const showPdf = async (fileName) => {
+    const url = `http://localhost:8000/files/${fileName}`;
 
-  const fetchRelatedPapers = async () => {
     try {
-      const categoriesString = paper.categories.join(",");
+      const response = await axios.get(url, {
+        responseType: "blob",
+      });
+      const file = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+    } catch (error) {
+      console.error("Error fetching PDF:", error);
+    }
+  };
+
+  const fetchRelatedPapers = async (categories) => {
+    try {
+      const categoriesString = categories.join(",");
       const response = await axios.get(
         `http://localhost:8000/api/get-related-papers/${categoriesString}`
       );
@@ -51,18 +68,24 @@ const PaperPreview = () => {
     }
   };
 
-  const showPdf = async (fileName) => {
-    const url = `http://localhost:8000/files/${fileName}`;
-
+  const toggleBookmark = async () => {
     try {
-      const response = await axios.get(url, {
-        responseType: "blob",
-      });
-      const file = new Blob([response.data], { type: "application/pdf" });
-      const fileURL = URL.createObjectURL(file);
-      window.open(fileURL);
+      const response = await axios.post(
+        `http://localhost:8000/api/toggle-bookmark`,
+        {
+          paperId: id,
+          username: state.username,
+          bookmarked: !bookmarked,
+        }
+      );
+
+      if (response.status === 200) {
+        setBookmarked(!bookmarked);
+      } else {
+        console.error("Failed to update bookmark status");
+      }
     } catch (error) {
-      console.error("Error fetching PDF:", error);
+      console.error("Error updating bookmark status:", error);
     }
   };
 
@@ -101,6 +124,7 @@ const PaperPreview = () => {
     <div>
       <Navbar />
       <div className={styles.paperpreviewcontainer}>
+        {/* Paper details section */}
         <div className={styles.paperdetails}>
           <div className={styles.uppercon}>
             <div className={styles.citationscontainer}>
@@ -138,7 +162,9 @@ const PaperPreview = () => {
             </button>
             <button
               className={styles.btnPrimary}
-              onClick={() => showPdf(paper.pdf)}
+              onClick={() =>
+                window.open(`http://localhost:8000/files/${paper.pdf}`)
+              }
             >
               <i
                 className="fa fa-file-pdf-o"
@@ -148,9 +174,35 @@ const PaperPreview = () => {
                 <span> PDF </span>
               </i>
             </button>
+            <button className={styles.bookmarkButton} onClick={toggleBookmark}>
+              {bookmarked ? "Remove Bookmark" : "Bookmark"}
+            </button>
           </div>
         </div>
+
+        <div className={styles.relatedPapers}>
+          <h3 className={styles.h3}>Related Papers</h3>
+          <PaperList
+            papers={relatedPapers}
+            bookmarks={[]}
+            toggleBookmark={() => {}}
+            showPdf={() => {}}
+            handleCitePopup={() => {}}
+            state={state}
+          />
+          <PaperList
+            className={styles.allPapersDiv}
+            papers={relatedPapers}
+            bookmarks={bookmarks}
+            toggleBookmark={toggleBookmark}
+            showPdf={showPdf}
+            handleCitePopup={handleCitePopup}
+            state={{ username: paper.uploadedBy }}
+          />
+        </div>
       </div>
+
+      {/* Citation popup */}
       {showPopup && (
         <div className={styles.popup}>
           <div className={styles.popupcontent}>
@@ -170,19 +222,6 @@ const PaperPreview = () => {
           </div>
         </div>
       )}
-
-      <div className={styles.relatedPapers}>
-        <h3 className={styles.h3}>Related Papers</h3>
-
-        <PaperList
-          papers={relatedPapers}
-          bookmarks={[]}
-          toggleBookmark={() => {}}
-          showPdf={() => {}}
-          handleCitePopup={() => {}}
-          state={state}
-        />
-      </div>
     </div>
   );
 };

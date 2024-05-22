@@ -12,7 +12,8 @@ const PaperSchema = new mongoose.Schema(
     categories: [String],
     publicationDate: Date,
     paperType: String,
-    bookmarks: Number,
+    bookmarks: { type: Number, default: 0 },
+    bookmarkedBy: { type: [String], default: [] },
   },
   { collection: "paperDetails" }
 );

@@ -18,9 +18,6 @@ const Profile = () => {
       <div>
         <EditProfile />
       </div>
-      <div>
-        <UserFiles />
-      </div>
     </div>
   );
 };

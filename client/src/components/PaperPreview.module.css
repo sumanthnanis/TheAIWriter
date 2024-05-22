@@ -104,6 +104,13 @@ h5 {
   padding: 20px;
   padding-top: 0px;
 }
+@media (max-width: 800px) {
+  .paperdescription {
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 15px;
+  }
+}
 .uppercon {
   padding: 20px;
   padding-bottom: 0px;
@@ -170,4 +177,32 @@ h5 {
 
 .pdf:hover {
   color: #45a049;
+}
+
+@media (max-width: 600px) {
+  .citationscontainer {
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 10px;
+  }
+  .papertypecon {
+    width: 100%;
+  }
+  h5 {
+    margin-right: 10px;
+    font-size: 15px;
+  }
+  .papertitle {
+    width: 100%;
+  }
+  .date {
+    display: flex;
+
+    flex-direction: row;
+  }
+
+  .innercontainer {
+    flex-direction: row;
+    justify-content: start;
+  }
 }

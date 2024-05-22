@@ -10,9 +10,6 @@ const Profile = () => {
   return (
     <div>
       <div>
-        <Navbar state="profile" />
-      </div>
-      <div>
         <ProfileDetails />
       </div>
       <div>

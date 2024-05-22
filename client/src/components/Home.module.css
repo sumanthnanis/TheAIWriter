@@ -18,6 +18,13 @@
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+@media (max-width: 800px) {
+  .innerDiv {
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 15px;
+  }
+}
 
 /* Paper title */
 .navlink {
@@ -296,6 +303,12 @@
   width: auto; /* Set width to auto */
   text-decoration: none;
   color: inherit;
+}
+@media (max-width: 800px) {
+  .authorCard {
+    display: block; /* Change display to block */
+    margin: 10px auto; /* Center the card by setting margin to auto */
+  }
 }
 
 .card {

@@ -59,6 +59,21 @@
   border-radius: 30px;
 }
 
+.navLinkss {
+  text-decoration: none;
+  list-style: none;
+  padding: 10px;
+  border-radius: 25px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.navLinkss:hover {
+  background-color: #e6e5e5;
+  color: #333;
+  padding: 12px;
+  border-radius: 30px;
+}
+
 .linked {
   text-decoration: none;
   list-style: none;
@@ -168,8 +183,14 @@ ul {
   display: block;
   transition: display 0.5s ease;
 }
-@media (max-width: 600px) {
-  .li {
+
+@media (max-width: 992px) {
+  .navLinks {
     display: none;
+  }
+}
+@media (max-width: 500px) {
+  #nav {
+    padding-bottom: 100px;
   }
 }

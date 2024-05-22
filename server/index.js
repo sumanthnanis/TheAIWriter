@@ -142,7 +142,6 @@ app.get("/api/profile", async (req, res) => {
   try {
     const profile = await Profile.find({});
     res.json(profile);
-    console.log(profile);
   } catch {
     res
       .status(500)

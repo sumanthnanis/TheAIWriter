@@ -37,18 +37,6 @@ label.btn {
   color: #babbbc !important;
 }
 
-.btn-facebook {
-  border-color: rgba(0, 0, 0, 0);
-  background: #3b5998;
-  color: #fff;
-}
-
-.btn-instagram {
-  border-color: rgba(0, 0, 0, 0);
-  background: #000;
-  color: #fff;
-}
-
 .card {
   background-clip: padding-box;
   box-shadow: 0 1px 4px rgba(24, 28, 33, 0.012);
@@ -231,17 +219,6 @@ html:not(.dark-style) .account-settings-links .list-group-item.active {
   margin-bottom: 1px;
 }
 
-/* Alerts */
-.alert {
-  margin-top: 10px;
-  padding: 12px 16px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-  color: #8a6d3b;
-}
-
 /* Buttons */
 .buttons {
   text-align: right;
@@ -339,4 +316,27 @@ html:not(.dark-style) .account-settings-links .list-group-item.active {
 
 .mt-1 {
   margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .list-group-item {
+    /* padding: 15px 20px; */
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+  .list-group-item.active {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .list-group-item {
+    padding: 10px 14px;
+    font-size: 12.1px;
+  }
+  .list-group-item.active {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
 }

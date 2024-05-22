@@ -124,7 +124,6 @@ const EditProfile = () => {
       <Toaster richColors position="top-right" />
       <form onSubmit={handleSubmit}>
         <div className="containerr">
-          <h4 className="heading">User Profile</h4>
           <div className="card">
             <div className="row-bordered row-border-light">
               <div className="list-group-containerr">

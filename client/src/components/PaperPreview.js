@@ -164,7 +164,8 @@ const PaperPreview = () => {
           <div className={styles.uppercon}>
             <div className={styles.citationscontainer}>
               <div className={styles.papertypecon}>
-                <h5 className={styles.paperType}>{paper.paperType}</h5>
+                <div className={styles.paperType}>{paper.paperType}</div>
+
                 <div className={styles.papertitle}>{paper.title}</div>
               </div>
               <div className={styles.innercontainer}>

@@ -14,6 +14,7 @@ const PaperSchema = new mongoose.Schema(
     paperType: String,
     bookmarks: { type: Number, default: 0 },
     bookmarkedBy: { type: [String], default: [] },
+    Author: { type: Number, default: 0 },
   },
   { collection: "paperDetails" }
 );

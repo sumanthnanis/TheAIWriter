@@ -133,27 +133,39 @@ const Home = () => {
       console.error("Error fetching PDF:", error);
     }
   };
-  const aggregatedProfiles = profiles.map((profile) => {
-    const authorPapers = papers.filter(
-      (paper) => paper.uploadedBy === profile.username
-    );
-    const totalPapers = authorPapers.length;
-    const totalCitations = authorPapers.reduce(
-      (sum, paper) => sum + paper.citations,
-      0
-    );
-    const totalReads = authorPapers.reduce(
-      (sum, paper) => sum + paper.count,
-      0
-    );
 
-    return {
-      ...profile,
-      totalPapers,
-      totalCitations,
-      totalReads,
-    };
-  });
+  const aggregatedProfiles = profiles
+    .map((profile) => {
+      const authorPapers = papers.filter(
+        (paper) => paper.uploadedBy === profile.username
+      );
+      const totalPapers = authorPapers.length;
+      const totalCitations = authorPapers.reduce(
+        (sum, paper) => sum + paper.citations,
+        0
+      );
+      const totalReads = authorPapers.reduce(
+        (sum, paper) => sum + paper.count,
+        0
+      );
+
+      const hasAuthorOnePaper = authorPapers.some(
+        (paper) => paper.author === 1
+      );
+
+      if (hasAuthorOnePaper) {
+        return {
+          username: profile.username,
+          totalPapers,
+          totalCitations,
+          totalReads,
+        };
+      } else {
+        return null;
+      }
+    })
+    .filter((profile) => profile !== null);
+
   const toggleBookmark = async (index, id) => {
     const paper = papers[index];
     const bookmarked = !bookmarkedPapers.some((bp) => bp._id === paper._id);

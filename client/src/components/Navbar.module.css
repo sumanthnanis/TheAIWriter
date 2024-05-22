@@ -188,9 +188,7 @@ ul {
   .navLinks {
     display: none;
   }
-}
-@media (max-width: 500px) {
-  #nav {
-    padding-bottom: 100px;
+  .search {
+    display: none;
   }
 }

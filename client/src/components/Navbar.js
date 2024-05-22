@@ -242,6 +242,7 @@ function Navbar({
   setCategory,
   handleChange = null,
   searchQuery = null,
+  hideCategoriesFilter = false,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -320,15 +321,17 @@ function Navbar({
       </div>
       <div id={styles.navPart2}>
         <ul className={menuOpen ? styles.open : ""} id={styles.ul}>
-          {
-            <Search
-              authors={authors}
-              setAuthors={setAuthors}
-              className={styles.search}
-              handleChange={handleChange}
-              searchQuery={searchQuery}
-            />
-          }
+          {(state === "user" || state === "author") &&
+            !hideCategoriesFilter &&
+            !isMediumScreen && (
+              <Search
+                authors={authors}
+                setAuthors={setAuthors}
+                className={styles.search}
+                handleChange={handleChange}
+                searchQuery={searchQuery}
+              />
+            )}
           {state === "landing" && (
             <li className={styles.li}>
               <NavLink to="/login" className={styles.navLinks}>

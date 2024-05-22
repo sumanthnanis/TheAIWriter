@@ -67,7 +67,12 @@
 .paperType {
   background-color: #a4f9a8;
   padding: 4px;
-  width: 10%;
+  width: 20%;
+}
+@media (max-width: 800px) {
+  .paperType {
+    width: 40%;
+  }
 }
 .paperauthor {
   font-size: 16px;

@@ -274,6 +274,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
       publicationDate: date,
       paperType: paperType,
       bookmark: 0,
+      Author: 1,
     });
 
     res.send({ status: "ok", paper: paper });

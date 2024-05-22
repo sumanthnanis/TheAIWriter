@@ -1,204 +1,351 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import Navbar from "./Navbar";
 
-import Dropdown from "./Dropdown.js";
-import logo from "./img/logo.jpg";
-import styles from "./Navbar.module.css";
-import MenuItems from "./MenuItems.js";
-import Search from "./Search.js";
-import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
+import styles from "./Home.module.css";
+import PaperList from "./Paper";
+import { toast, Toaster } from "sonner";
 
-function Navbar({
-  state,
-  user,
-  setSortBy,
-  setCategory,
-  handleChange = null,
-  searchQuery = null,
-}) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [authors, setAuthors] = useState([]);
-  const navigate = useNavigate();
+const Home = () => {
+  const { state } = useLocation();
+  const [papers, setPapers] = useState([]);
+  const [profiles, setProfiles] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [category, setCategory] = useState("");
+  const [bookmarks, setBookmarks] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedPaper, setSelectedPaper] = useState(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
-  const handleClick = () => setMenuOpen(!menuOpen);
-  const closeMobileMenu = () => setMenuOpen(false);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
+  const handleCitePopup = (paper) => {
+    setSelectedPaper(paper);
+    setShowPopup(true);
   };
 
-  const handleMostViewedClick = () => {
-    setSortBy("mostViewed");
-    closeMobileMenu();
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    setSelectedPaper(null);
+    setCopySuccess(false);
   };
 
-  const handleMostCitedClick = () => {
-    setSortBy("mostCited");
-    closeMobileMenu();
+  const handleCiteThisPaper = async () => {
+    if (!selectedPaper) return;
+
+    try {
+      await axios.post(
+        http://localhost:8000/api/increase-citations/${selectedPaper._id}
+      );
+
+      setPapers((prevPapers) =>
+        prevPapers.map((paper) =>
+          paper._id === selectedPaper._id
+            ? { ...paper, citations: paper.citations + 1 }
+            : paper
+        )
+      );
+
+      const citationText = Title: ${selectedPaper.title}, Author: ${selectedPaper.uploadedBy};
+      await navigator.clipboard.writeText(citationText);
+      console.log("Citation copied to clipboard:", citationText);
+      setCopySuccess(true);
+    } catch (error) {
+      console.error("Error citing paper:", error);
+    }
   };
 
-  const handleCategoryClick = (category) => {
-    setCategory(category);
-    closeMobileMenu();
+  const fetchPapers = async () => {
+    try {
+      let url = "http://localhost:8000/api/get-papers";
+      const params = new URLSearchParams();
+      if (sortBy === "mostViewed") {
+        params.append("sortBy", "viewCount");
+      }
+      if (sortBy === "mostCited") {
+        params.append("sortBy", "citationCount");
+      }
+      if (category) {
+        params.append("category", category.trim());
+      }
+      if (params.toString()) {
+        url += ?${params.toString()};
+      }
+      const response = await axios.get(url);
+      const papersData = response.data;
+      setPapers(papersData);
+
+      // Initialize bookmarks state based on the fetched papers
+      setBookmarks(
+        papersData.map((paper) => paper.bookmarkedBy.includes(state.username))
+      );
+    } catch (error) {
+      console.error("Error fetching papers:", error);
+    }
   };
 
-  const toggleDropdown = (dropdown) => {
-    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  useEffect(() => {
+    fetchPapers();
+  }, [sortBy, category]);
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      return;
+    }
+    const getPapersBySearch = async () => {
+      try {
+        const response = await axios.get(
+          http://localhost:8000/api/search?search=${searchQuery}
+        );
+        const { papers, profiles } = response.data;
+        setPapers(papers);
+        setProfiles(profiles);
+        console.log(profiles);
+        // setBookmarks(Array(papers.length).fill(false));
+        setBookmarks(
+          papers.map((paper) => paper.bookmarkedBy.includes(state.username))
+        );
+      } catch (error) {
+        console.error("Error fetching papers and profiles:", error);
+      }
+    };
+    getPapersBySearch();
+  }, [searchQuery]);
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   };
 
-  const handleMouseLeaveDropdown = () => {
-    setActiveDropdown(null);
+  const addList = async (id, username) => {
+    const url = http://localhost:8000/api/add-file;
+    try {
+      const response = await axios.post(url, {
+        username,
+        id,
+      });
+      console.log(response.data);
+      if (response.status === 200) {
+        console.log("File added to list successfully");
+      } else {
+        console.error("Failed to add file to list");
+      }
+    } catch (error) {
+      console.error("Error adding file to list:", error);
+    }
   };
 
-  const handleMyPapersClick = () => {
-    navigate("/user/profile", {
-      state: { activeTab: "research-papers", username: user.username },
-    });
+  const showPdf = async (fileName) => {
+    const url = http://localhost:8000/files/${fileName};
+
+    try {
+      const response = await axios.get(url, {
+        responseType: "blob",
+      });
+      const file = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+    } catch (error) {
+      console.error("Error fetching PDF:", error);
+    }
   };
+
+  const aggregatedProfiles = profiles.map((profile) => {
+    const authorPapers = papers.filter(
+      (paper) => paper.uploadedBy === profile.username
+    );
+    const totalPapers = authorPapers.length;
+    const totalCitations = authorPapers.reduce(
+      (sum, paper) => sum + paper.citations,
+      0
+    );
+    const totalReads = authorPapers.reduce(
+      (sum, paper) => sum + paper.count,
+      0
+    );
+
+    return {
+      ...profile,
+      totalPapers,
+      totalCitations,
+      totalReads,
+    };
+  });
+
+  const includeSearchQuery = (authorName, searchQuery) => {
+    return authorName.toLowerCase().includes(searchQuery.toLowerCase());
+  };
+
+ 
+
+  const toggleBookmark = async (index, id) => {
+    const newBookmarks = [...bookmarks];
+    newBookmarks[index] = !newBookmarks[index];
+
+    try {
+      const response = await axios.post(
+        http://localhost:8000/api/toggle-bookmark,
+        {
+          paperId: id,
+          username: state.username,
+          bookmarked: newBookmarks[index],
+        }
+      );
+
+      if (response.status === 200) {
+        setBookmarks(newBookmarks);
+        if (newBookmarks[index]) {
+          toast.success("Bookmarked successfully!");
+        } else {
+          toast.info("Bookmark removed successfully!");
+        }
+      } else {
+        console.error("Failed to update bookmark status");
+      }
+    } catch (error) {
+      console.error("Error updating bookmark status:", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log(
+      "Bookmarked papers:",
+      papers.filter((paper, index) => bookmarks[index])
+    );
+  }, [bookmarks, papers]);
 
   return (
-    <nav id={styles.nav}>
-      <div className={styles.logocontainer}>
-        <img className={styles.logo} src={logo} alt="logo" />
-      </div>
-      <div className={styles.menu} onClick={handleClick}>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <div id={styles.navPart2}>
-        <ul className={menuOpen ? styles.open : ""} id={styles.ul}>
-          <Search
-            authors={authors}
-            setAuthors={setAuthors}
-            className={styles.search}
-            handleChange={handleChange}
+    <div>
+      <Toaster richColors position="top-right" />
+      <div className={styles["home-root"]}>
+        {/* <Toaster richColors position="top-right" /> */}
+        <div className={styles["nav-div"]}>
+          <Navbar
+            state={state.role}
+            user={state}
+            setSortBy={setSortBy}
+            setCategory={setCategory}
+            handleChange={handleSearch}
             searchQuery={searchQuery}
           />
-          {state === "landing" && (
-            <li className={styles.li}>
-              <NavLink to="/login" className={styles.navLinks}>
-                Login
-              </NavLink>
-            </li>
-          )}
+        </div>
 
-          {(state === "user" || state === "author") && (
-            <li
-              className={`${styles.navLinks} ${styles.dropdownToggle}`}
-              onMouseEnter={() => toggleDropdown("categories")}
-              onMouseLeave={handleMouseLeaveDropdown}
-            >
-              Categories <i className="fas fa-caret-down" />
-              {activeDropdown === "categories" && (
-                <Dropdown
-                  className={styles.dropdown}
-                  items={MenuItems}
-                  handleCategoryClick={handleCategoryClick}
-                  onMouseLeave={handleMouseLeaveDropdown}
-                />
-              )}
-            </li>
-          )}
-
-          {(state === "user" || state === "author") && (
-            <li
-              className={`${styles.navLinks} ${styles.dropdownToggle}`}
-              onMouseEnter={() => toggleDropdown("filter")}
-              onMouseLeave={() => setTimeout(handleMouseLeaveDropdown, 100)}
-            >
-              Filter <i className="fas fa-caret-down" />
-              {activeDropdown === "filter" && (
-                <ul
-                  className={styles.filterDropdown}
-                  onMouseLeave={handleMouseLeaveDropdown}
+        {searchQuery && aggregatedProfiles.length > 0 && (
+          <div className={styles.authorDiv}>
+            <div className={styles.header}>
+              <span className={styles.authorSearch}>
+                Search Results for {searchQuery} in Authors{" "}
+              </span>
+            </div>
+            <div className={styles.total}>
+              {aggregatedProfiles.map((profile, index) => (
+                <NavLink
+                  key={index}
+                  className={styles.authorCard}
+                  to={/user/${encodeURIComponent(profile.username)}}
                 >
-                  <li
-                    className={styles.filterItem}
-                    onClick={handleMostViewedClick}
-                  >
-                    Most Viewed
-                  </li>
-                  <li
-                    className={styles.filterItem}
-                    onClick={handleMostCitedClick}
-                  >
-                    Most Cited
-                  </li>
-                </ul>
-              )}
-            </li>
-          )}
+                  <div className={styles.card}>
+                    <div className={styles.profileContainer}>
+                      <div className={styles.imageContainer}>
+                        {profile.profileImage && (
+                          <img
+                            src={http://localhost:8000${profile.profileImage}}
+                            alt={profile.username}
+                            className={styles.profileImage}
+                          />
+                        )}
+                      </div>
+                      <div className={styles.detailsOverlay}>
+                        <div className={styles.userInfo}>
+                          <h4 className={styles.userName}>
+                            {profile.username}
+                          </h4>
+                          <p className={styles.userInstitution}>
+                            {profile.institution}
+                          </p>
+                        </div>
+                        <div className={styles.stats}>
+                          <div className={styles.statItem}>
+                            <span className={styles.statNumber}>
+                              {profile.totalPapers}
+                            </span>
+                            <span className={styles.statLabel}>
+                              Publications
+                            </span>
+                          </div>
+                          <div className={styles.statDivider}></div>
+                          <div className={styles.statItem}>
+                            <span className={styles.statNumber}>
+                              {profile.totalCitations}
+                            </span>
+                            <span className={styles.statLabel}>Citations</span>
+                          </div>
+                          <div className={styles.statDivider}></div>
+                          <div className={styles.statItem}>
+                            <span className={styles.statNumber}>
+                              {profile.totalReads}
+                            </span>
+                            <span className={styles.statLabel}>Reads</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        )}
 
-          {state === "author" && (
-            <li className={styles.navLinks}>
-              <div onClick={handleMyPapersClick} className={styles.linked}>
-                My Papers
-              </div>
-            </li>
-          )}
-
-          {(state === "author" || state === "author-papers") && (
-            <li className={styles.navLinks}>
-              <NavLink to="/upload" className={styles.linked} state={user}>
-                Publish
-              </NavLink>
-            </li>
-          )}
-
-          {(state === "user" || state === "author") && (
-            <>
+        <div className={styles.outputDiv}>
+          <div className={styles.paperheader}>
+            {searchQuery ? (
+              <span className={styles.paperSearch}>
+                Search Results for {searchQuery} in Papers
+              </span>
+            ) : category ? (
+              <span className={styles.paperCategory}>
+                Showing Papers On {category}
+              </span>
+            ) : sortBy ? (
+              <span className={styles.paperFilter}>{sortBy} Papers</span>
+            ) : (
+              <span></span>
+            )}
+          </div>
+          <PaperList
+            papers={papers}
+            bookmarks={bookmarks}
+            toggleBookmark={toggleBookmark}
+            showPdf={showPdf}
+            handleCitePopup={handleCitePopup}
+            state={state}
+          />
+        </div>
+        {showPopup && selectedPaper && (
+          <div className={styles.popup}>
+            <div className={styles.popupContent}>
+              <span className={styles.close} onClick={handleClosePopup}>
+                &times;
+              </span>
+              <h2 className={styles.citePaper}>Cite Paper</h2>
+              <p>
+                {selectedPaper.uploadedBy}. {selectedPaper.title}
+              </p>
               <button
-                onClick={() => toggleDropdown("userMenu")}
-                className={isOpen ? "Close" : "Open"}
-                id={styles.button}
+                className={styles.copyButton}
+                onClick={() => handleCiteThisPaper(selectedPaper)}
               >
-                <div className={styles.icons}>
-                  <i className="fa fa-bars padd" id={styles.icon}></i>
-                  <i className="fas fa-user" id={styles.icon}></i>
-                </div>
+                Copy Citation
               </button>
-
-              {activeDropdown === "userMenu" && (
-                <ul
-                  className={styles.menudrop}
-                  onMouseLeave={handleMouseLeaveDropdown}
-                >
-                  <li className={styles.listdrop}>
-                    <NavLink
-                      className={styles.navitem}
-                      to="/user/profile"
-                      state={user}
-                    >
-                      Your profile
-                    </NavLink>
-                  </li>
-                  <li className={styles.listdrop}>
-                    <NavLink
-                      className={styles.navitem}
-                      to="/user-files/:username"
-                      state={user}
-                    >
-                      My list
-                    </NavLink>
-                  </li>
-                  <li
-                    className={styles.navitem}
-                    id={styles.listdrop}
-                    onClick={() => handleLogout()}
-                  >
-                    Logout
-                  </li>
-                </ul>
+              {copySuccess && (
+                <p className={styles.successMessage}>Copied to clipboard!</p>
               )}
-            </>
-          )}
-        </ul>
+            </div>
+          </div>
+        )}
       </div>
-    </nav>
+    </div>
   );
-}
+};
 
-export default Navbar;
+export default Home;

@@ -58,6 +58,12 @@ function Navbar({
     });
   };
 
+  const handleMyListClick = () => {
+    navigate("/user/profile", {
+      state: { activeTab: "my-list", username: user.username },
+    });
+  };
+
   return (
     <nav id={styles.nav}>
       <div className={styles.logocontainer}>
@@ -175,14 +181,15 @@ function Navbar({
                       Your profile
                     </NavLink>
                   </li>
-                  <li className={styles.listdrop}>
-                    <NavLink
+                  <li className={styles.listdrop} onClick={handleMyListClick}>
+                    {/* <NavLink
                       className={styles.navitem}
                       to="/user-files/:username"
                       state={user}
                     >
                       My list
-                    </NavLink>
+                    </NavLink> */}
+                    <div className={styles.navitem}>My List</div>
                   </li>
                   <li
                     className={styles.navitem}

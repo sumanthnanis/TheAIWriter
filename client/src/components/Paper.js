@@ -14,6 +14,7 @@ const PaperList = ({
   handleDraft,
   state,
   showButtons,
+  showBookmark = true,
 }) => {
   return (
     <div>
@@ -43,11 +44,7 @@ const PaperList = ({
                 <h5 className={styles.papertype}>Added an {data.paperType}</h5>
               </div>
             </div>
-            <NavLink
-              to={`/paper/${data._id}`}
-              className={styles.navlink}
-              state={state}
-            >
+            <NavLink to={`/paper/${data._id}`} className={styles.navlink}>
               <h3 className={styles.truncatedTitle}>{data.title}</h3>
             </NavLink>
             <div className={styles.details}>
@@ -78,15 +75,17 @@ const PaperList = ({
                 <span> PDF </span>
               </i>
             </button>
-            <button
-              className={`${styles.btnBookmark} ${
-                bookmarks[index] ? styles.bookmarked : ""
-              }`}
-              onClick={() => toggleBookmark(index, data._id)}
-            >
-              <FaBookmark />
-              <span className={styles.tooltip}>Bookmark</span>
-            </button>
+            {showBookmark && ( // Conditionally render the bookmark button
+              <button
+                className={`${styles.btnBookmark} ${
+                  bookmarks[index] ? styles.bookmarked : ""
+                }`}
+                onClick={() => toggleBookmark(index, data._id)}
+              >
+                <FaBookmark />
+                <span className={styles.tooltip}>Bookmark</span>
+              </button>
+            )}
             <button
               className={styles.citeButton}
               onClick={() => handleCitePopup(data)}

@@ -119,6 +119,7 @@ const AuthorPapers = () => {
               showPdf={() => {}}
               handleCitePopup={() => {}}
               state={""}
+              showBookmark={false}
             />
           </div>
         )}
@@ -134,6 +135,7 @@ const AuthorPapers = () => {
               state={""}
               handleDraft={handleDraft} // Pass handleDraft function as prop
               showButtons={true}
+              showBookmark={false}
             />
           </div>
         )}
@@ -150,6 +152,7 @@ const AuthorPapers = () => {
               handleDelete={handleDelete}
               handleDraft={handleDraft}
               showButtons={true}
+              showBookmark={false}
             />
           </div>
         )}

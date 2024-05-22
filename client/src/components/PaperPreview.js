@@ -2,13 +2,15 @@ import React, { useEffect, useState, useContext } from "react";
 import Navbar from "./Navbar";
 import BookmarksContext from "../BookmarksContext";
 import axios from "axios";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, NavLink } from "react-router-dom";
 import styles from "./PaperPreview.module.css";
 import PaperList from "./Paper";
 import { toast, Toaster } from "sonner";
+import { useData } from "../DataContext";
 
 const PaperPreview = () => {
   const { state } = useLocation();
+
   const { id } = useParams();
   const [paper, setPaper] = useState(null);
   const { bookmarkedPapers, setBookmarkedPapers } =
@@ -19,6 +21,11 @@ const PaperPreview = () => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const username = state?.username || "defaultUsername"; // Fallback username
+  console.log(state);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
 
   useEffect(() => {
     const fetchPaperDetails = async () => {
@@ -149,8 +156,9 @@ const PaperPreview = () => {
 
   return (
     <div>
-      <Toaster richColors position="top-right" /> {/* Add Toaster component */}
-      <Navbar />
+      <Toaster richColors position="top-right" />
+
+      <Navbar state={state.role} user={state} hideCategoriesFilter={true} />
       <div className={styles.paperpreviewcontainer}>
         <div className={styles.paperdetails}>
           <div className={styles.uppercon}>

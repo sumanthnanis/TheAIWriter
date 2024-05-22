@@ -138,6 +138,17 @@ app.post("/api/profile", upload.single("profileImage"), async (req, res) => {
     });
   }
 });
+app.get("/api/profile", async (req, res) => {
+  try {
+    const profile = await Profile.find({});
+    res.json(profile);
+    console.log(profile);
+  } catch {
+    res
+      .status(500)
+      .json({ error: "Failed to get profile", details: error.message });
+  }
+});
 
 app.get("/api/profile/:username", async (req, res) => {
   try {
@@ -181,30 +192,6 @@ app.post("/api/add-file", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-
-// app.get("/api/user-files/:username", async (req, res) => {
-//   const { username } = req.params;
-
-//   try {
-//     const user = await User.findOne({ username });
-
-//     if (!user) {
-//       return res.status(404).json({ error: "User not found" });
-//     }
-
-//     const fileIds = user.files.map((fileId) => new ObjectId(fileId));
-
-//     const files = await Paper.find(
-//       { _id: { $in: fileIds } },
-//       { title: 1, uploadedBy: 1 }
-//     );
-
-//     res.status(200).json({ files });
-//   } catch (error) {
-//     console.error("Error retrieving user files:", error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
 
 app.get("/api/user-files/:username", async (req, res) => {
   const { username } = req.params;
@@ -537,7 +524,6 @@ app.post("/api/toggle-bookmark", async (req, res) => {
 
     res.status(200).json({ message: "Bookmark status updated", paper });
   } catch (error) {
-    // Log and respond with a 500 error in case of an internal server error
     console.error("Error updating bookmark status:", error);
     res.status(500).json({ message: "Internal server error" });
   }

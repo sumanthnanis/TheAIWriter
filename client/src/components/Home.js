@@ -6,9 +6,11 @@ import PaperList from "./Paper";
 import { toast, Toaster } from "sonner";
 import Navbar from "./Navbar";
 import BookmarksContext from "../BookmarksContext";
+import { useData } from "../DataContext";
 
 const Home = () => {
   const { state } = useLocation();
+  const { globalData } = useData();
   const { bookmarkedPapers, setBookmarkedPapers } =
     useContext(BookmarksContext);
   const [papers, setPapers] = useState([]);
@@ -190,6 +192,7 @@ const Home = () => {
       console.error("Error updating bookmark status:", error);
     }
   };
+  console.log(state);
 
   return (
     <div>
@@ -203,6 +206,8 @@ const Home = () => {
             setCategory={setCategory}
             handleChange={handleSearch}
             searchQuery={searchQuery}
+            hideCategoriesFiler={true}
+            datas={globalData}
           />
         </div>
         {searchQuery && aggregatedProfiles.length > 0 && (
@@ -218,6 +223,7 @@ const Home = () => {
                   key={index}
                   className={styles.authorCard}
                   to={`/user/${encodeURIComponent(profile.username)}`}
+                  state={state}
                 >
                   <div className={styles.card}>
                     <div className={styles.profileContainer}>

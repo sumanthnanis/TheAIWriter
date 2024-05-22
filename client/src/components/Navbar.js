@@ -6,6 +6,7 @@ import styles from "./Navbar.module.css";
 import MenuItems from "./MenuItems.js";
 import Search from "./Search.js";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useData } from "../DataContext";
 
 function Navbar({
   state,
@@ -14,7 +15,11 @@ function Navbar({
   setCategory,
   handleChange = null,
   searchQuery = null,
+  hideCategoriesFilter = false,
+  hideCategoriesFiler = false,
+  datas,
 }) {
+  const { globalData } = useData();
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +28,7 @@ function Navbar({
 
   const handleClick = () => setMenuOpen(!menuOpen);
   const closeMobileMenu = () => setMenuOpen(false);
-
+  console.log(state);
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/";
@@ -83,6 +88,18 @@ function Navbar({
             handleChange={handleChange}
             searchQuery={searchQuery}
           />
+          {/* {(state === "user" || state === "author") && !hideCategoriesFiler && (
+            <li className={styles.li}>
+              <NavLink
+                to="/home"
+                className={styles.navLinks}
+                state={state.role}
+              >
+                Home
+              </NavLink>
+            </li>
+          )} */}
+
           {state === "landing" && (
             <li className={styles.li}>
               <NavLink to="/login" className={styles.navLinks}>
@@ -91,52 +108,54 @@ function Navbar({
             </li>
           )}
 
-          {(state === "user" || state === "author") && (
-            <li
-              className={`${styles.navLinks} ${styles.dropdownToggle}`}
-              onMouseEnter={() => toggleDropdown("categories")}
-              onMouseLeave={handleMouseLeaveDropdown}
-            >
-              Categories <i className="fas fa-caret-down" />
-              {activeDropdown === "categories" && (
-                <Dropdown
-                  className={styles.dropdown}
-                  items={MenuItems}
-                  handleCategoryClick={handleCategoryClick}
-                  onMouseLeave={handleMouseLeaveDropdown}
-                />
-              )}
-            </li>
-          )}
+          {(state === "user" || state === "author") &&
+            !hideCategoriesFilter && (
+              <li
+                className={`${styles.navLinks} ${styles.dropdownToggle}`}
+                onMouseEnter={() => toggleDropdown("categories")}
+                onMouseLeave={handleMouseLeaveDropdown}
+              >
+                Categories <i className="fas fa-caret-down" />
+                {activeDropdown === "categories" && (
+                  <Dropdown
+                    className={styles.dropdown}
+                    items={MenuItems}
+                    handleCategoryClick={handleCategoryClick}
+                    onMouseLeave={handleMouseLeaveDropdown}
+                  />
+                )}
+              </li>
+            )}
 
-          {(state === "user" || state === "author") && (
-            <li
-              className={`${styles.navLinks} ${styles.dropdownToggle}`}
-              onMouseEnter={() => toggleDropdown("filter")}
-              onMouseLeave={() => setTimeout(handleMouseLeaveDropdown, 100)}
-            >
-              Filter <i className="fas fa-caret-down" />
-              {activeDropdown === "filter" && (
-                <ul
-                  className={styles.filterDropdown}
-                  onMouseLeave={handleMouseLeaveDropdown}
-                >
-                  <li
-                    className={styles.filterItem}
-                    onClick={handleMostViewedClick}
+          {(state === "user" || state === "author") &&
+            !hideCategoriesFilter && (
+              <li
+                className={`${styles.navLinks} ${styles.dropdownToggle}`}
+                onMouseEnter={() => toggleDropdown("filter")}
+                onMouseLeave={() => setTimeout(handleMouseLeaveDropdown, 100)}
+              >
+                Filter <i className="fas fa-caret-down" />
+                {activeDropdown === "filter" && (
+                  <ul
+                    className={styles.filterDropdown}
+                    onMouseLeave={handleMouseLeaveDropdown}
                   >
-                    Most Viewed
-                  </li>
-                  <li
-                    className={styles.filterItem}
-                    onClick={handleMostCitedClick}
-                  >
-                    Most Cited
-                  </li>
-                </ul>
-              )}
-            </li>
-          )}
+                    <li
+                      className={styles.filterItem}
+                      onClick={handleMostViewedClick}
+                    >
+                      Most Viewed
+                    </li>
+                    <li
+                      className={styles.filterItem}
+                      onClick={handleMostCitedClick}
+                    >
+                      Most Cited
+                    </li>
+                  </ul>
+                )}
+              </li>
+            )}
 
           {state === "author" && (
             <li className={styles.navLinks}>
@@ -145,7 +164,6 @@ function Navbar({
               </div>
             </li>
           )}
-
           {(state === "author" || state === "author-papers") && (
             <li className={styles.navLinks}>
               <NavLink to="/upload" className={styles.linked} state={user}>

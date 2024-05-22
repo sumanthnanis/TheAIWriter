@@ -3,11 +3,13 @@ import { useDropzone } from "react-dropzone";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import "./Upload.css";
+import { useData } from "../DataContext";
 
 const Upload = () => {
   const { state } = useLocation();
   const [file, setFile] = useState(null);
   const [msg, setMsg] = useState(null);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [paperType, setPaperType] = useState("");
@@ -92,7 +94,7 @@ const Upload = () => {
     <>
       <div className="home">
         <div className="left">
-          <h1 className="h1class">Upload Your Paper</h1>
+          <h1 className="h1class">Add research to your profile</h1>
           <div className="titles-description">
             <input
               className="titles"

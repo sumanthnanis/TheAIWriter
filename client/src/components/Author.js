@@ -5,9 +5,13 @@ import PaperList from "./Paper";
 import axios from "axios";
 import styles from "./Home.module.css";
 import ProfileDetails from "./ProfileDetails";
-import { toast, Toaster } from "sonner"; // Import toast from sonner
+import { useLocation } from "react-router-dom";
+import { toast, Toaster } from "sonner";
+import { useData } from "../DataContext";
 
 const Author = () => {
+  const { profileData } = useData();
+  const { state } = useLocation();
   const { authorName } = useParams();
   const [papers, setPapers] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
@@ -121,7 +125,7 @@ const Author = () => {
   return (
     <div className={styles.outputDiv}>
       <Toaster richColors position="top-right" /> {/* Add Toaster component */}
-      <Navbar />
+      <Navbar state={state.role} hideCategoriesFilter={true} user={state} />
       <ProfileDetails authorname={authorName} />
       <PaperList
         className={styles.allPapersDiv}

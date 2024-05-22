@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { FaBookmark } from "react-icons/fa";
 import styles from "./Home.module.css";
 import logo from "./img/myself.jpg";
+
+import axios from "axios";
 
 const PaperList = ({
   papers,
@@ -16,6 +18,27 @@ const PaperList = ({
   showButtons,
   showBookmark = true,
 }) => {
+  const [profiles, setProfiles] = useState([]);
+
+  const fetchProfiles = async () => {
+    const url = `http://localhost:8000/api/profile`;
+    try {
+      const response = await axios.get(url);
+      setProfiles(response.data);
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
+
+  const getProfileImage = (username) => {
+    const profile = profiles.find((profile) => profile.username === username);
+    return profile ? `http://localhost:8000${profile.profileImage}` : logo;
+  };
+
   return (
     <div>
       {papers.map((data, index) => (
@@ -29,8 +52,8 @@ const PaperList = ({
             <div className={styles.profilepicture}>
               <div>
                 <img
-                  src={logo}
-                  alt={data.username}
+                  src={getProfileImage(data.uploadedBy)}
+                  alt={data.uploadedBy}
                   className={styles.profileImag}
                 />
               </div>
@@ -38,13 +61,18 @@ const PaperList = ({
                 <NavLink
                   to={`/user/${encodeURIComponent(data.uploadedBy)}`}
                   className={styles.navlnk}
+                  state={state}
                 >
                   <h5 className={styles.uploadedBy}> {data.uploadedBy}</h5>
                 </NavLink>
                 <h5 className={styles.papertype}>Added an {data.paperType}</h5>
               </div>
             </div>
-            <NavLink to={`/paper/${data._id}`} className={styles.navlink}>
+            <NavLink
+              to={`/paper/${data._id}`}
+              className={styles.navlink}
+              state={state}
+            >
               <h3 className={styles.truncatedTitle}>{data.title}</h3>
             </NavLink>
             <div className={styles.details}>

@@ -43,7 +43,11 @@ const PaperList = ({
                 <h5 className={styles.papertype}>Added an {data.paperType}</h5>
               </div>
             </div>
-            <NavLink to={`/paper/${data._id}`} className={styles.navlink}>
+            <NavLink
+              to={`/paper/${data._id}`}
+              className={styles.navlink}
+              state={state}
+            >
               <h3 className={styles.truncatedTitle}>{data.title}</h3>
             </NavLink>
             <div className={styles.details}>

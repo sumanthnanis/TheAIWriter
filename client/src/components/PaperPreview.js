@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Navbar from "./Navbar";
+import BookmarksContext from "../BookmarksContext";
 import axios from "axios";
 import { useLocation, useParams } from "react-router-dom";
 import styles from "./PaperPreview.module.css";
 import PaperList from "./Paper";
+import { toast, Toaster } from "sonner";
 
 const PaperPreview = () => {
   const { state } = useLocation();
   const { id } = useParams();
   const [paper, setPaper] = useState(null);
-  const [bookmarks, setBookmarks] = useState([]);
+  const { bookmarkedPapers, setBookmarkedPapers } =
+    useContext(BookmarksContext);
   const [relatedPapers, setRelatedPapers] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [buttonText, setButtonText] = useState("Cite this paper");
   const [copySuccess, setCopySuccess] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const username = state?.username || "defaultUsername"; // Fallback username
 
   useEffect(() => {
     const fetchPaperDetails = async () => {
@@ -23,20 +27,21 @@ const PaperPreview = () => {
           `http://localhost:8000/api/get-paper/${id}`
         );
         setPaper(response.data);
-        setBookmarked(response.data.bookmarkedBy.includes(state.username));
+        setBookmarked(response.data.bookmarkedBy.includes(username));
       } catch (error) {
         console.error("Error fetching paper details:", error);
       }
     };
 
     fetchPaperDetails();
-  }, [id, state.username]);
+  }, [id, username]);
 
   useEffect(() => {
     if (paper) {
       fetchRelatedPapers(paper.categories);
     }
   }, [paper]);
+
   const showPdf = async (fileName) => {
     const url = `http://localhost:8000/files/${fileName}`;
 
@@ -68,19 +73,39 @@ const PaperPreview = () => {
     }
   };
 
-  const toggleBookmark = async () => {
+  const toggleBookmark = async (index, paperId) => {
+    const relatedPaper = relatedPapers[index];
+    const bookmarked = !bookmarkedPapers.some(
+      (bp) => bp._id === relatedPaper._id
+    );
+
     try {
       const response = await axios.post(
         `http://localhost:8000/api/toggle-bookmark`,
         {
-          paperId: id,
+          paperId: paperId, // Use the paperId passed as a parameter
           username: state.username,
-          bookmarked: !bookmarked,
+          bookmarked,
         }
       );
 
       if (response.status === 200) {
-        setBookmarked(!bookmarked);
+        const updatedPaper = response.data.paper;
+        setRelatedPapers((prevPapers) =>
+          prevPapers.map((paper) =>
+            paper._id === updatedPaper._id ? updatedPaper : paper
+          )
+        );
+
+        if (bookmarked) {
+          setBookmarkedPapers((prev) => [...prev, updatedPaper]);
+          toast.success("Bookmarked successfully!");
+        } else {
+          setBookmarkedPapers((prev) =>
+            prev.filter((paper) => paper._id !== updatedPaper._id)
+          );
+          toast.info("Bookmark removed successfully!");
+        }
       } else {
         console.error("Failed to update bookmark status");
       }
@@ -95,6 +120,8 @@ const PaperPreview = () => {
 
   const handleClosePopup = () => {
     setShowPopup(false);
+    setCopySuccess(false);
+    setButtonText("Cite this paper");
   };
 
   const handleCiteThisPaper = async () => {
@@ -122,9 +149,9 @@ const PaperPreview = () => {
 
   return (
     <div>
+      <Toaster richColors position="top-right" /> {/* Add Toaster component */}
       <Navbar />
       <div className={styles.paperpreviewcontainer}>
-        {/* Paper details section */}
         <div className={styles.paperdetails}>
           <div className={styles.uppercon}>
             <div className={styles.citationscontainer}>
@@ -135,7 +162,7 @@ const PaperPreview = () => {
               <div className={styles.innercontainer}>
                 <div className={styles.citations}>
                   <div className={styles.divv}>Citations:</div>{" "}
-                  <div> {paper.citations}</div>
+                  <div>{paper.citations}</div>
                 </div>
                 <span className={styles.reads}>Reads: {paper.count}</span>
               </div>
@@ -154,7 +181,8 @@ const PaperPreview = () => {
             </div>
           </div>
           <div className={styles.paperdescription}>
-            Description<div className={styles.descriptionline}></div>{" "}
+            Description
+            <div className={styles.descriptionline}></div>
             {paper.description}
             <br></br>
             <button className={styles.citebutton} onClick={handleCitePopup}>
@@ -174,35 +202,24 @@ const PaperPreview = () => {
                 <span> PDF </span>
               </i>
             </button>
-            <button className={styles.bookmarkButton} onClick={toggleBookmark}>
-              {bookmarked ? "Remove Bookmark" : "Bookmark"}
-            </button>
           </div>
         </div>
 
         <div className={styles.relatedPapers}>
           <h3 className={styles.h3}>Related Papers</h3>
           <PaperList
-            papers={relatedPapers}
-            bookmarks={[]}
-            toggleBookmark={() => {}}
-            showPdf={() => {}}
-            handleCitePopup={() => {}}
-            state={state}
-          />
-          <PaperList
             className={styles.allPapersDiv}
             papers={relatedPapers}
-            bookmarks={bookmarks}
+            bookmarks={relatedPapers.map((paper) =>
+              paper.bookmarkedBy.includes(username)
+            )}
             toggleBookmark={toggleBookmark}
             showPdf={showPdf}
             handleCitePopup={handleCitePopup}
-            state={{ username: paper.uploadedBy }}
+            state={state}
           />
         </div>
       </div>
-
-      {/* Citation popup */}
       {showPopup && (
         <div className={styles.popup}>
           <div className={styles.popupcontent}>
@@ -211,7 +228,7 @@ const PaperPreview = () => {
             </span>
             <h2 className={styles.citepaper}>Cite Paper</h2>
             <p>
-              {paper.uploadedBy}.{paper.title}
+              {paper.uploadedBy}. {paper.title}
             </p>
             <button className={styles.copybutton} onClick={handleCiteThisPaper}>
               {buttonText}

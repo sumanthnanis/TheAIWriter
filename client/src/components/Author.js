@@ -5,6 +5,7 @@ import PaperList from "./Paper";
 import axios from "axios";
 import styles from "./Home.module.css";
 import ProfileDetails from "./ProfileDetails";
+import { toast, Toaster } from "sonner"; // Import toast from sonner
 
 const Author = () => {
   const { authorName } = useParams();
@@ -22,8 +23,13 @@ const Author = () => {
             authorName
           )}`
         );
-        setPapers(response.data);
-        setBookmarks(Array(response.data.length).fill(false));
+        const papersData = response.data;
+        setPapers(papersData);
+
+        // Initialize bookmarks state based on the fetched papers
+        setBookmarks(
+          papersData.map((paper) => paper.bookmarkedBy.includes(authorName))
+        );
       } catch (error) {
         console.error("Error fetching papers:", error);
       }
@@ -63,6 +69,11 @@ const Author = () => {
 
       if (response.status === 200) {
         setBookmarks(newBookmarks);
+        if (newBookmarks[index]) {
+          toast.success("Bookmarked successfully!");
+        } else {
+          toast.info("Bookmark removed successfully!");
+        }
       } else {
         console.error("Failed to update bookmark status");
       }
@@ -109,13 +120,14 @@ const Author = () => {
 
   return (
     <div className={styles.outputDiv}>
+      <Toaster richColors position="top-right" /> {/* Add Toaster component */}
       <Navbar />
       <ProfileDetails authorname={authorName} />
       <PaperList
         className={styles.allPapersDiv}
         papers={papers}
         bookmarks={bookmarks}
-        toggleBookmark={toggleBookmark}
+        toggleBookmark={(index, id) => toggleBookmark(index, id, authorName)}
         showPdf={showPdf}
         handleCitePopup={handleCitePopup}
         state={{ username: authorName }}

@@ -386,7 +386,6 @@ app.get("/api/search", async (req, res) => {
   console.log(searchData);
 
   try {
-    // Search papers based on title, description, or uploadedBy
     if (searchData) {
       paperQuery = {
         $or: [
@@ -399,7 +398,6 @@ app.get("/api/search", async (req, res) => {
 
     const paperSearchPromise = Paper.find(paperQuery);
 
-    // Search for profiles if the search query is a username
     const profileSearchPromise = Profile.find({
       username: { $regex: searchData, $options: "i" },
     });
@@ -409,7 +407,6 @@ app.get("/api/search", async (req, res) => {
       profileSearchPromise,
     ]);
 
-    // If profiles are found, find papers uploaded by these users
     let userPapers = [];
     if (profiles.length > 0) {
       const usernames = profiles.map((profile) => profile.username);
@@ -515,33 +512,11 @@ app.listen(8000, () => {
   console.log("server started");
 });
 
-// app.post("/api/toggle-bookmark", async (req, res) => {
-//   const { paperId, username, bookmarked } = req.body;
-
-//   try {
-//     const paper = await Paper.findById(paperId);
-
-//     if (!paper) {
-//       return res.status(404).json({ message: "Paper not found" });
-//     }
-
-//     paper.bookmarks = bookmarked;
-
-//     await paper.save();
-
-//     res.status(200).json({ message: "Bookmark status updated" });
-//   } catch (error) {
-//     console.error("Error updating bookmark status:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
-
 app.post("/api/toggle-bookmark", async (req, res) => {
   const { paperId, username, bookmarked } = req.body;
 
   try {
     const paper = await Paper.findById(paperId);
-
     if (!paper) {
       return res.status(404).json({ message: "Paper not found" });
     }
@@ -562,6 +537,7 @@ app.post("/api/toggle-bookmark", async (req, res) => {
 
     res.status(200).json({ message: "Bookmark status updated", paper });
   } catch (error) {
+    // Log and respond with a 500 error in case of an internal server error
     console.error("Error updating bookmark status:", error);
     res.status(500).json({ message: "Internal server error" });
   }
@@ -572,7 +548,6 @@ app.get("/api/bookmarked-papers/:username", async (req, res) => {
 
   try {
     const papers = await Paper.find({ bookmarkedBy: username });
-    console.log(papers);
 
     if (!papers || papers.length === 0) {
       return res.status(404).json({ message: "No bookmarked papers found" });

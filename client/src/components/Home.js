@@ -9,8 +9,6 @@ import BookmarksContext from "../BookmarksContext";
 import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
-  
-
   const { bookmarkedPapers, setBookmarkedPapers } =
     useContext(BookmarksContext);
   const [papers, setPapers] = useState([]);
@@ -19,6 +17,7 @@ const Home = () => {
   const [category, setCategory] = useState("");
   const [profiles, setProfiles] = useState([]);
   const [role, setRole] = useState("");
+  const [userProfile,setUserProfile] =useState([])
   const dispatch = useDispatch();
   const data = useSelector((prev) => prev.auth.user);
 
@@ -70,6 +69,7 @@ const Home = () => {
       const response = await axios.get("http://localhost:8000/api/profile");
       const profilesData = response.data;
       setProfiles(profilesData);
+      setUserProfile(profilesData)
       console.log("these are profiles", profilesData);
       fetchPapers();
     } catch (error) {
@@ -81,6 +81,7 @@ const Home = () => {
   }, [sortBy, category]);
   const fetchPapers = async () => {
     try {
+      console.log("dgdgddh");
       let url = "http://localhost:8000/api/get-papers";
       const params = new URLSearchParams();
 
@@ -101,7 +102,7 @@ const Home = () => {
       }
       const response = await axios.get(url);
       const papersData = response.data;
-      console.log(papersData)
+      console.log(papersData);
 
       const userProfile = profiles.find(
         (profile) => profile.username === data.username
@@ -111,8 +112,7 @@ const Home = () => {
         ? userProfile.skills.toLowerCase()
         : "";
       const userSkills = userSkillsString ? userSkillsString.split(",") : [];
-      console.log(userSkills);
-      
+      console.log("hiiiiiiiiiiiiiii", userSkills);
 
       const matchedPapers = papersData.filter((paper) => {
         const paperCategories = paper.categories.map((category) =>
@@ -131,9 +131,7 @@ const Home = () => {
       setPapers(matchedPapers.length > 0 ? matchedPapers : papersData);
 
       setBookmarkedPapers(
-        papersData.filter((paper) =>
-          paper.bookmarkedBy.includes(data.username)
-        )
+        papersData.filter((paper) => paper.bookmarkedBy.includes(data.username))
       );
     } catch (error) {
       console.error("Error fetching papers:", error);
@@ -146,6 +144,7 @@ const Home = () => {
         if (searchQuery === "") {
           // If search query is empty, fetch all papers
           await fetchPapers();
+          await fetchProfiles();
         } else {
           const response = await axios.get(
             `http://localhost:8000/api/search?search=${searchQuery}`
@@ -155,9 +154,7 @@ const Home = () => {
           setProfiles(profiles);
           console.log(profiles);
           setBookmarkedPapers(
-            papers.filter((paper) =>
-              paper.bookmarkedBy.includes(data.username)
-            )
+            papers.filter((paper) => paper.bookmarkedBy.includes(data.username))
           );
         }
       } catch (error) {
@@ -168,12 +165,7 @@ const Home = () => {
     getPapersBySearch();
   }, [searchQuery]);
 
-  useEffect(() => {
-    const storedRole = localStorage.getItem("role");
-    if (storedRole) {
-      setRole(storedRole);
-    }
-  }, []);
+
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -196,7 +188,6 @@ const Home = () => {
 
   const aggregatedProfiles = profiles
     .map((profile) => {
-      // Filter papers uploaded by the profile
       const authorPapers = papers.filter(
         (paper) => paper.uploadedBy === profile.username
       );
@@ -212,14 +203,13 @@ const Home = () => {
         0
       );
 
-      // Only include profiles that have at least one paper
       if (totalPapers > 0) {
         return {
           username: profile.username,
           totalPapers,
           totalCitations,
           totalReads,
-          profileImage: profile.profileImage, 
+          profileImage: profile.profileImage,
           institution: profile.institution,
         };
       } else {
@@ -286,7 +276,6 @@ const Home = () => {
       <div className={styles["home-root"]}>
         <div className={styles["nav-div"]}>
           <Navbar
-            
             setSortBy={setSortBy}
             setCategory={setCategory}
             handleChange={handleSearch}
@@ -319,7 +308,6 @@ const Home = () => {
               toggleBookmark={toggleBookmark}
               showPdf={showPdf}
               handleCitePopup={handleCitePopup}
-             
             />
           </div>
           <div className={styles.total}>
@@ -339,7 +327,6 @@ const Home = () => {
                 key={index}
                 className={styles.authorCard}
                 to={`/user/${encodeURIComponent(profile.username)}`}
-               
               >
                 <div className={styles.card}>
                   <div className={styles.profileContainer}>

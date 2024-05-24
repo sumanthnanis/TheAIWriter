@@ -5,13 +5,15 @@ import axios from "axios";
 import { Toaster, toast } from "sonner";
 import styles from "./AuthorPapers.module.css";
 import FilterDropdown from "./FilterDropdown";
+import { useDispatch, useSelector } from "react-redux";
 
 const AuthorPapers = () => {
-  const { state } = useLocation();
+ 
   const [draft0Papers, setDraft0Papers] = useState([]);
   const [draft1Papers, setDraft1Papers] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
-  
+  const dispatch = useDispatch();
+  const data = useSelector((prev) => prev.auth.user);
   const handleFilterChange = (filter) => {
     switch (filter) {
       case "All":
@@ -31,7 +33,7 @@ const AuthorPapers = () => {
   const fetchPapers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/papers/${state.username}`
+        `http://localhost:8000/api/papers/${data.username}`
       );
 
       const draft0 = response.data.filter((paper) => paper.draft === 0);
@@ -45,10 +47,10 @@ const AuthorPapers = () => {
   };
 
   useEffect(() => {
-    if (state.username) {
+    if (data.username) {
       fetchPapers();
     }
-  }, [state.username]);
+  }, [data.username]);
 
   const handleDelete = async (paperId) => {
     try {

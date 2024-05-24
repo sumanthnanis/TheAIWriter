@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import "./EditProfile.css";
 import { Toaster, toast } from "sonner";
 import AuthorPapers from "./AuthorPapers";
@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const EditProfile = () => {
   
-  const [username, setUsername] = useState("");
+ 
   const [image, setImage] = useState(null);
   const [activeTab, setActiveTab] = useState("account-general");
   const navigate = useNavigate();
@@ -43,20 +43,16 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    if ( data.username) {
-      setUsername(data.username);
-      fetchProfileData(data.username);
-    }
-
+      fetchProfileData();
     if (data && data.activeTab) {
       setActiveTab(data.activeTab);
     }
   }, [data]);
 
-  const fetchProfileData = async (username) => {
+  const fetchProfileData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/profile/${username}`
+        `http://localhost:8000/api/profile/${data.username}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -85,7 +81,7 @@ const EditProfile = () => {
     e.preventDefault();
 
     const dataToSend = new FormData();
-    dataToSend.append("username", username);
+    dataToSend.append("username", data.username);
     dataToSend.append("degree", formData.degree);
     dataToSend.append("department", formData.department);
     dataToSend.append("interests", formData.interests);
@@ -105,7 +101,7 @@ const EditProfile = () => {
       if (response.ok) {
         console.log("Profile submitted successfully");
         setIsEditingImage(false);
-        fetchProfileData(username);
+        fetchProfileData();
         if (activeTab === "account-general") {
           toast.success("General profile updated successfully!");
         } else if (activeTab === "account-professional") {
@@ -213,7 +209,7 @@ const EditProfile = () => {
                             id="username"
                             name="username"
                             className="form-control"
-                            value={username}
+                            value={data.username}
                             disabled
                           />
                         </div>
@@ -344,7 +340,7 @@ const EditProfile = () => {
                     id="my-list"
                   >
                     <div className="cardBody">
-                      <UserFiles state={{ username, fromProfile: true }} />
+                      <UserFiles   />
                     </div>
                   </div>
                 </div>

@@ -8,7 +8,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 function Navbar({
-  state,
+ 
   user,
   setSortBy,
   setCategory,
@@ -29,7 +29,7 @@ function Navbar({
 
   const dispatch = useDispatch();
   const data = useSelector((prev) => prev.auth.user);
-  console.log(data.role);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMediumScreen(window.innerWidth <= 992);
@@ -42,7 +42,7 @@ function Navbar({
     };
   }, []);
 
-  console.log(state, user);
+
 
   const handleClick = () => setMenuOpen(!menuOpen);
   const closeMobileMenu = () => setMenuOpen(false);
@@ -77,13 +77,13 @@ function Navbar({
 
   const handleMyPapersClick = () => {
     navigate("/user/profile", {
-      state: { activeTab: "research-papers", username: user.username },
+      state: { activeTab: "research-papers" },
     });
   };
 
   const handleMyListClick = () => {
     navigate("/user/profile", {
-      state: { activeTab: "my-list", username: user.username },
+      state: { activeTab: "my-list" },
     });
   };
 
@@ -209,7 +209,7 @@ function Navbar({
                     <NavLink
                       className={styles.navitem}
                       to="/user/profile"
-                      state={user}
+                      
                     >
                       Your profile
                     </NavLink>
@@ -232,7 +232,7 @@ function Navbar({
                           <NavLink
                             className={styles.navitem}
                             to="/upload"
-                            state={user}
+                           
                           >
                             Publish
                           </NavLink>

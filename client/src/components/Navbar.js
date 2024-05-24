@@ -111,9 +111,11 @@ function Navbar({
               />
             )}
           {hideCategoriesFilter && (
-            <NavLink className={styles.NavLinkss} to="/home">
-              Home
-            </NavLink>
+            <li className={styles.navLinks}>
+              <NavLink className={styles.linked} to="/home">
+                Home
+              </NavLink>
+            </li>
           )}
 
           {(data.role === "user" || data.role === "author") &&
@@ -206,11 +208,7 @@ function Navbar({
                   onMouseLeave={handleMouseLeaveDropdown}
                 >
                   <li className={styles.listdrop}>
-                    <NavLink
-                      className={styles.navitem}
-                      to="/user/profile"
-                      
-                    >
+                    <NavLink className={styles.navitem} to="/user/profile">
                       Your profile
                     </NavLink>
                   </li>
@@ -229,11 +227,7 @@ function Navbar({
                       {(data.role === "author" ||
                         data.role === "author-papers") && (
                         <li className={styles.listdrop}>
-                          <NavLink
-                            className={styles.navitem}
-                            to="/upload"
-                           
-                          >
+                          <NavLink className={styles.navitem} to="/upload">
                             Publish
                           </NavLink>
                         </li>

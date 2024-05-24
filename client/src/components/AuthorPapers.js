@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PaperList from "./Paper";
-import { useLocation, NavLink } from "react-router-dom";
+
 import axios from "axios";
 import { Toaster, toast } from "sonner";
 import styles from "./AuthorPapers.module.css";

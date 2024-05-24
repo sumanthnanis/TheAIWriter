@@ -7,17 +7,19 @@ import styles from "./Home.module.css";
 import ProfileDetails from "./ProfileDetails";
 import { useLocation } from "react-router-dom";
 import { toast, Toaster } from "sonner";
-import { useData } from "../DataContext";
 
+import { useDispatch, useSelector } from "react-redux";
 const Author = () => {
-  const { profileData } = useData();
-  const { state } = useLocation();
+ 
+ 
   const { authorName } = useParams();
   const [papers, setPapers] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPaper, setSelectedPaper] = useState(null);
   const [copySuccess, setCopySuccess] = useState(false);
+  const dispatch = useDispatch();
+  const data = useSelector((prev) => prev.auth.user);
 
   useEffect(() => {
     const fetchPapersByAuthor = async () => {
@@ -125,7 +127,7 @@ const Author = () => {
   return (
     <div className={styles.outputDiv}>
       <Toaster richColors position="top-right" /> {/* Add Toaster component */}
-      <Navbar state={state.role} hideCategoriesFilter={true} user={state} />
+      <Navbar  hideCategoriesFilter={true}  />
       <ProfileDetails authorname={authorName} />
       <PaperList
         className={styles.allPapersDiv}

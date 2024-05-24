@@ -8,9 +8,9 @@ const ProfileSchema = new Schema({
   interests: { type: String },
   institution: { type: String },
   skills: { type: String },
-
   currentActivity: { type: String },
   profileImage: { type: String },
+  rating: { type: Number },
 });
 
 module.exports = mongoose.model("Profile", ProfileSchema);

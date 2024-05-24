@@ -142,7 +142,6 @@ app.get("/api/profile", async (req, res) => {
   try {
     const profile = await Profile.find({});
     res.json(profile);
-    console.log(profile);
   } catch {
     res
       .status(500)
@@ -240,7 +239,6 @@ app.delete("/api/user-files/:username/:filename", async (req, res) => {
 
 app.get("/api/get-related-papers/:category", async (req, res) => {
   const { category } = req.params;
-  console.log(category);
 
   const categoriesArray = category.split(",");
 
@@ -250,7 +248,6 @@ app.get("/api/get-related-papers/:category", async (req, res) => {
     });
 
     res.json(relatedPapers);
-    console.log(relatedPapers);
   } catch (error) {
     console.error("Error fetching related papers:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -301,12 +298,12 @@ app.get("/api/get-papers", async (req, res) => {
         .replace(/\s+/g, "")
         .toLowerCase();
       const papers = await Paper.find({ categories: formattedCategory });
-      console.log(formattedCategory);
+
       return res.send(papers);
     }
     if (req.query.authorName) {
       const authorName = req.query.authorName;
-      console.log(authorName);
+
       const papers = await Paper.find({ uploadedBy: authorName });
       return res.send(papers);
     }
@@ -335,7 +332,7 @@ app.get("/api/papers/:username", async (req, res) => {
 });
 app.put("/api/papers/:filename", async (req, res) => {
   const { filename } = req.params;
-  console.log(filename);
+
   const { draft } = req.body;
   const { bookmarks } = req.body;
 
@@ -349,7 +346,6 @@ app.put("/api/papers/:filename", async (req, res) => {
     paper.draft = draft;
     paper.bookmarks = bookmarks;
     await paper.save();
-    console.log(paper);
 
     res
       .status(200)
@@ -378,7 +374,6 @@ app.delete("/api/papers/:paperId", async (req, res) => {
 app.get("/api/search", async (req, res) => {
   let paperQuery = {};
   const searchData = req.query.search;
-  console.log(searchData);
 
   try {
     if (searchData) {
@@ -431,12 +426,10 @@ const incrementCount = async (path) => {
     const filename = decodedPath.substring(1);
 
     let file = await Paper.findOne({ pdf: filename });
-    console.log("File found in database:", file);
 
     if (file) {
       file.count++;
       await file.save();
-      console.log(`Count incremented for file: ${filename}`);
     } else {
       console.log("File not found in database");
     }
@@ -457,7 +450,7 @@ app.use(
 
 app.get("/api/papers-by-category", async (req, res) => {
   const category = req.query.category;
-  console.log("hiiiiiiiiiii", category);
+
   try {
     const papers = await Paper.find({ categories: { $in: [category] } });
 
@@ -550,6 +543,46 @@ app.get("/api/bookmarked-papers/:username", async (req, res) => {
     res.status(200).json(papers);
   } catch (error) {
     console.error("Error fetching bookmarked papers:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+app.post("/api/rate", async (req, res) => {
+  const { author, rating } = req.body;
+
+  try {
+    // Find the profile by username and update the rating
+    const profile = await Profile.findOneAndUpdate(
+      { username: author },
+      { rating: rating },
+      { new: true }
+    );
+
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    res.status(200).json({ message: "Rating submitted successfully" });
+  } catch (error) {
+    console.error("Error submitting rating:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Endpoint to get ratings
+app.get("/api/ratings", async (req, res) => {
+  try {
+    // Fetch all profiles and their ratings
+    const profiles = await Profile.find({}, "username rating");
+
+    // Construct an object with username as key and rating as value
+    const ratings = {};
+    profiles.forEach((profile) => {
+      ratings[profile.username] = profile.rating;
+    });
+
+    res.status(200).json(ratings);
+  } catch (error) {
+    console.error("Error fetching ratings:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

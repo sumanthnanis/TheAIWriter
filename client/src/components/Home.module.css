@@ -5,7 +5,6 @@
   display: flex;
 }
 .outputDiv {
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -21,6 +20,7 @@
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 @media (max-width: 800px) {
   .innerDiv {
     width: 100%;
@@ -32,11 +32,11 @@
   background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
-  padding: 16px;
+  padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
-  width: 100%; /* Set card width to 100% */
-  box-sizing: border-box; /* Include padding in width calculation */
+  width: 100%;
+  box-sizing: border-box;
 }
 /* Paper title */
 .navlink {
@@ -132,12 +132,12 @@
   font-family: sans-serif;
 }
 .btnBookmark {
-  margin-top: 10px;
-  padding: 8px;
-  background-color: transparent;
+  margin-top: 11px;
+  padding: 10px;
+  background-color: #fff;
   border: none;
   cursor: pointer;
-  color: #ccc;
+  color: #007bff;
   transition: color 0.3s ease;
 }
 
@@ -153,10 +153,16 @@
   margin-top: 10px;
   padding: 8px 16px;
   color: black;
-  border: none;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+.btnPrimary:hover {
+  background-color: #007bff;
+  color: #fff;
 }
 
 .popup {
@@ -226,20 +232,6 @@
   margin-top: 5px;
 }
 
-.btnBookmark {
-  margin-top: 10px;
-  padding: 8px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  color: #ccc; /* Default color */
-  transition: color 0.3s ease;
-}
-
-.bookmarked {
-  color: red; /* Red color when bookmarked */
-}
-
 /* Cite icon */
 .citeButton {
   margin-top: 10px;
@@ -247,12 +239,12 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  color: #ccc; /* Default color */
+  color: #007bff;
   transition: color 0.3s ease;
 }
 
 .citeButton:hover {
-  color: #007bff; /* Blue color on hover */
+  color: #007bff;
 }
 
 .tooltip {
@@ -290,9 +282,7 @@
 
   background-color: white;
 }
-.header {
-  margin-top: 15px;
-}
+
 .authorSearch {
   margin-left: 2.3vw;
 }
@@ -428,4 +418,12 @@
 
 .listButtons {
   text-align: right;
+}
+.star {
+  cursor: pointer;
+  color: gray; /* Inactive star color */
+}
+
+.star.active {
+  color: gold; /* Active star color */
 }

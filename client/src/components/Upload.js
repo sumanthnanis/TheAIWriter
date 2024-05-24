@@ -1,15 +1,17 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { useLocation } from "react-router-dom";
+
 import axios from "axios";
 import "./Upload.css";
-import { useData } from "../DataContext";
+
+import { useDispatch, useSelector } from "react-redux";
 
 const Upload = () => {
-  const { state } = useLocation();
+  
   const [file, setFile] = useState(null);
   const [msg, setMsg] = useState(null);
-
+const dispatch = useDispatch();
+const data = useSelector((prev) => prev.auth.user);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [paperType, setPaperType] = useState("");
@@ -21,7 +23,7 @@ const Upload = () => {
     backendDevelopment: false,
     databases: false,
   });
-  console.log(state.username);
+  
   const onDropHandler = useCallback((acceptedFiles) => {
     const selectedFile = acceptedFiles[0];
     const fileName = selectedFile.name;
@@ -56,7 +58,7 @@ const Upload = () => {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", file);
-    formData.append("username", state.username);
+    formData.append("username", data.username);
     formData.append("draft", draft);
     formData.append("paperType", paperType);
 

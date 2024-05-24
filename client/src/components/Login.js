@@ -3,10 +3,9 @@ import "./Login.css";
 import log from "./img/log.svg";
 import register from "./img/register.svg";
 import { useNavigate } from "react-router-dom";
-import { useData } from "../DataContext";
-
+import { setUser } from "../reducers/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 const Login = () => {
-  const { setGlobalData } = useData();
   const [isSignUp, setIsSignUp] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +13,7 @@ const Login = () => {
   const [role, setRole] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const toggleSignUp = () => {
     setIsSignUp(!isSignUp);
   };
@@ -34,11 +33,10 @@ const Login = () => {
       }),
     });
     const data = await response.json();
+    dispatch(setUser(data));
     console.log(data);
     if (data.status === "ok") {
-      setGlobalData(data);
       navigate("/home", { state: data });
-      console.log(setGlobalData);
     }
   }
 
@@ -56,8 +54,8 @@ const Login = () => {
     });
     const data = await response.json();
     if (data.token) {
-      setGlobalData(data);
-      navigate("/home", { state: data });
+      dispatch(setUser(data));
+      navigate("/home");
     } else {
       setMessage("Please check your email and password");
     }

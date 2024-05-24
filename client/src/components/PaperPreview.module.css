@@ -1,5 +1,7 @@
+* {
+  font-family: sans-serif;
+}
 .paperpreviewcontainer {
-  padding: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -21,12 +23,13 @@
 .btnPrimary {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #4caf50;
-  border: none;
+
+  border: 1px solid #006dd9;
   border-radius: 5px;
-  color: white;
+  color: #006dd9;
   cursor: pointer;
   margin-top: 15px;
+  background-color: #fff;
   transition: background-color 0.3s ease;
   margin-right: 5px;
 }
@@ -34,10 +37,12 @@
 .citebutton:hover,
 .copybutton:hover,
 .btnPrimary:hover {
-  background-color: #45a049;
+  background-color: #006dd9;
+  color: #fff;
 }
 .citationscontainer {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
   width: 100%;
@@ -64,11 +69,19 @@
   margin-right: 10px;
 }
 
-.paperType {
-  background-color: #a4f9a8;
-  padding: 4px;
-  width: 20%;
+.papertypecon {
+  display: inline-block;
+  width: auto;
 }
+
+#paperType {
+  display: inline-block;
+  padding: 4px;
+  font-size: 14px;
+  background-color: #d0eeed;
+  color: #003a37;
+}
+
 @media (max-width: 800px) {
   .paperType {
     width: 40%;
@@ -94,7 +107,7 @@ h5 {
 
 .paperdetails {
   font-size: 16px;
-  margin-bottom: 20px;
+  margin: 20px;
   background-color: white;
   padding: 20px;
   border: 1px solid #ccc;
@@ -161,27 +174,9 @@ h5 {
   margin-bottom: 20px;
 }
 
-.btnPrimary {
-  padding: 10px 20px;
-  color: white;
-  background-color: #4caf50;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btnPrimary:hover {
-  background-color: #45a049;
-}
-
 .pdf {
   font-size: 18px;
   margin-right: 5px;
-  color: #4caf50;
-}
-
-.pdf:hover {
-  color: #45a049;
 }
 
 @media (max-width: 600px) {

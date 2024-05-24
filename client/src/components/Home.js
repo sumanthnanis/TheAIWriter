@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import axios from "axios";
 import styles from "./Home.module.css";
 import PaperList from "./Paper";
 import { toast, Toaster } from "sonner";
 import Navbar from "./Navbar";
 import BookmarksContext from "../BookmarksContext";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
-  const { state } = useLocation();
-  console.log(state);
+  
 
   const { bookmarkedPapers, setBookmarkedPapers } =
     useContext(BookmarksContext);
@@ -18,7 +18,9 @@ const Home = () => {
   const [sortBy, setSortBy] = useState("");
   const [category, setCategory] = useState("");
   const [profiles, setProfiles] = useState([]);
-  const [role, setRole] = useState(""); // State to store the user's role
+  const [role, setRole] = useState("");
+  const dispatch = useDispatch();
+  const data = useSelector((prev) => prev.auth.user);
 
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPaper, setSelectedPaper] = useState(null);
@@ -59,13 +61,29 @@ const Home = () => {
       console.error("Error citing paper:", error);
     }
   };
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
 
+  const fetchProfiles = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/profile");
+      const profilesData = response.data;
+      setProfiles(profilesData);
+      console.log("these are profiles", profilesData);
+      fetchPapers();
+    } catch (error) {
+      console.error("Error fetching profiles:", error);
+    }
+  };
+  useEffect(() => {
+    fetchPapers();
+  }, [sortBy, category]);
   const fetchPapers = async () => {
     try {
       let url = "http://localhost:8000/api/get-papers";
       const params = new URLSearchParams();
 
-      // Adding the sorting by publicationDate in descending order
       params.append("sortBy", "publicationDate");
       params.append("order", "desc");
 
@@ -83,33 +101,44 @@ const Home = () => {
       }
       const response = await axios.get(url);
       const papersData = response.data;
-      setPapers(papersData);
+      console.log(papersData)
+
+      const userProfile = profiles.find(
+        (profile) => profile.username === data.username
+      );
+      console.log("profile", userProfile);
+      const userSkillsString = userProfile
+        ? userProfile.skills.toLowerCase()
+        : "";
+      const userSkills = userSkillsString ? userSkillsString.split(",") : [];
+      console.log(userSkills);
+      
+
+      const matchedPapers = papersData.filter((paper) => {
+        const paperCategories = paper.categories.map((category) =>
+          category.toLowerCase()
+        );
+        return (
+          userSkills &&
+          userSkills.some((skill) => paperCategories.includes(skill))
+        );
+      });
+
+      matchedPapers.sort(
+        (a, b) => new Date(b.publicationDate) - new Date(a.publicationDate)
+      );
+
+      setPapers(matchedPapers.length > 0 ? matchedPapers : papersData);
 
       setBookmarkedPapers(
         papersData.filter((paper) =>
-          paper.bookmarkedBy.includes(state.username)
+          paper.bookmarkedBy.includes(data.username)
         )
       );
     } catch (error) {
       console.error("Error fetching papers:", error);
     }
   };
-
-  const fetchProfiles = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/profile");
-      const profilesData = response.data;
-      setProfiles(profilesData);
-      console.log("these are profiles", profilesData);
-    } catch (error) {
-      console.error("Error fetching profiles:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPapers();
-    fetchProfiles();
-  }, [sortBy, category]);
 
   useEffect(() => {
     const getPapersBySearch = async () => {
@@ -127,7 +156,7 @@ const Home = () => {
           console.log(profiles);
           setBookmarkedPapers(
             papers.filter((paper) =>
-              paper.bookmarkedBy.includes(state.username)
+              paper.bookmarkedBy.includes(data.username)
             )
           );
         }
@@ -190,8 +219,8 @@ const Home = () => {
           totalPapers,
           totalCitations,
           totalReads,
-          profileImage: profile.profileImage, // Ensure you include this if needed
-          institution: profile.institution, // Ensure you include this if needed
+          profileImage: profile.profileImage, 
+          institution: profile.institution,
         };
       } else {
         return null;
@@ -210,7 +239,7 @@ const Home = () => {
         `http://localhost:8000/api/toggle-bookmark`,
         {
           paperId: id,
-          username: state.username,
+          username: data.username,
           bookmarked,
         }
       );
@@ -257,8 +286,7 @@ const Home = () => {
       <div className={styles["home-root"]}>
         <div className={styles["nav-div"]}>
           <Navbar
-            state={state.role}
-            user={state}
+            
             setSortBy={setSortBy}
             setCategory={setCategory}
             handleChange={handleSearch}
@@ -291,7 +319,7 @@ const Home = () => {
               toggleBookmark={toggleBookmark}
               showPdf={showPdf}
               handleCitePopup={handleCitePopup}
-              state={state}
+             
             />
           </div>
           <div className={styles.total}>
@@ -311,7 +339,7 @@ const Home = () => {
                 key={index}
                 className={styles.authorCard}
                 to={`/user/${encodeURIComponent(profile.username)}`}
-                state={state}
+               
               >
                 <div className={styles.card}>
                   <div className={styles.profileContainer}>

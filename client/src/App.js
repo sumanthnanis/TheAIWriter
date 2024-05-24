@@ -11,11 +11,13 @@ import PaperPreview from "./components/PaperPreview";
 import Author from "./components/Author";
 import Profile from "./components/Profile";
 import { BookmarksProvider } from "./BookmarksContext";
+import { store } from "./reducers/store";
+import { Provider } from "react-redux";
 
 function App() {
   return (
     <BrowserRouter>
-      <DataProvider>
+      <Provider store={store}>
         <BookmarksProvider>
           <Routes>
             <Route path="/" element={<Login />} />
@@ -27,7 +29,7 @@ function App() {
             <Route path="/user/profile" element={<Profile />} />
           </Routes>
         </BookmarksProvider>
-      </DataProvider>
+      </Provider>
     </BrowserRouter>
   );
 }

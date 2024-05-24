@@ -1,25 +1,19 @@
 import React, { useEffect, useContext } from "react";
 import axios from "axios";
 import styles from "./UserFiles.module.css";
-import { useLocation } from "react-router-dom";
+
 import PaperList from "./Paper";
 import { toast } from "sonner";
 import BookmarksContext from "../BookmarksContext";
+import { useDispatch, useSelector } from "react-redux";
 
 const UserFiles = () => {
-  const { state } = useLocation();
+  const dispatch = useDispatch();
+  const data = useSelector((prev) => prev.auth.user);
   const { bookmarkedPapers, setBookmarkedPapers } =
     useContext(BookmarksContext);
 
-  const removeFile = async (file) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/user-files/${state.username}/${file._id}`
-      );
-    } catch (error) {
-      console.error("Error removing file:", error);
-    }
-  };
+
 
   const showPdf = async (fileName) => {
     const url = `http://localhost:8000/files/${fileName}`;
@@ -39,11 +33,11 @@ const UserFiles = () => {
   const fetchPapers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/papers/${state.username}`
+        `http://localhost:8000/api/papers/${data.username}`
       );
       setBookmarkedPapers(
         response.data.filter((paper) =>
-          paper.bookmarkedBy.includes(state.username)
+          paper.bookmarkedBy.includes(data.username)
         )
       );
     } catch (error) {
@@ -57,7 +51,7 @@ const UserFiles = () => {
         `http://localhost:8000/api/toggle-bookmark`,
         {
           paperId: id,
-          username: state.username,
+          username: data.username,
           bookmarked: false,
         }
       );
@@ -76,14 +70,14 @@ const UserFiles = () => {
   };
 
   useEffect(() => {
-    if (state.username) {
+    if (data.username) {
       fetchPapers();
     }
-  }, [state.username]);
+  }, [data.username]);
 
   return (
     <div className={styles.userFiles}>
-      <h2 className={styles.filesHeading}>Files for {state.username}</h2>
+      <h2 className={styles.filesHeading}>Files for {data.username}</h2>
       <div className={styles.listBody}>
         <ul className={styles.list}>
           {bookmarkedPapers.length === 0 ? (
@@ -95,7 +89,7 @@ const UserFiles = () => {
               toggleBookmark={handleBookmarkRemoval}
               showPdf={showPdf}
               handleCitePopup={() => {}}
-              state={state}
+            
             />
           )}
         </ul>

@@ -2,16 +2,18 @@ import React, { useEffect, useState, useContext } from "react";
 import Navbar from "./Navbar";
 import BookmarksContext from "../BookmarksContext";
 import axios from "axios";
-import { useLocation, useParams, NavLink } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import styles from "./PaperPreview.module.css";
 import PaperList from "./Paper";
 import { toast, Toaster } from "sonner";
-import { useData } from "../DataContext";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const PaperPreview = () => {
-  const { state } = useLocation();
-  console.log(state);
-  // const { role, user } = state;
+  
+
+  const dispatch = useDispatch();
+  const data = useSelector((prev) => prev.auth.user);
   const { id } = useParams();
   const [paper, setPaper] = useState(null);
   const { bookmarkedPapers, setBookmarkedPapers } =
@@ -21,12 +23,9 @@ const PaperPreview = () => {
   const [buttonText, setButtonText] = useState("Cite this paper");
   const [copySuccess, setCopySuccess] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
-  const username = state?.username || "defaultUsername"; // Fallback username
-  console.log(state);
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
-  };
+  const username = data?.username || "defaultUsername"; // Fallback username
+
+ 
 
   useEffect(() => {
     const fetchPaperDetails = async () => {
@@ -92,7 +91,7 @@ const PaperPreview = () => {
         `http://localhost:8000/api/toggle-bookmark`,
         {
           paperId: paperId, // Use the paperId passed as a parameter
-          username: state.username,
+          username: data.username,
           bookmarked,
         }
       );
@@ -154,21 +153,24 @@ const PaperPreview = () => {
   if (!paper) {
     return <div>Loading...</div>;
   }
-  console.log(state.role);
+  
 
   return (
     <div>
       <Toaster richColors position="top-right" />
 
-      <Navbar state={state.role} user={state} hideCategoriesFilter={true} />
+      <Navbar hideCategoriesFilter={true} />
       <div className={styles.paperpreviewcontainer}>
         <div className={styles.paperdetails}>
           <div className={styles.uppercon}>
             <div className={styles.citationscontainer}>
               <div className={styles.papertypecon}>
-                <div className={styles.paperType}>{paper.paperType}</div>
-
-                <div className={styles.papertitle}>{paper.title}</div>
+                <div className={styles.paperType}>
+                  <h5 className={styles.h5} id={styles.paperType}>
+                    {paper.paperType}
+                  </h5>
+                </div>
+                <h5 className={styles.papertitle}>{paper.title}</h5>
               </div>
               <div className={styles.innercontainer}>
                 <div className={styles.citations}>
@@ -227,7 +229,7 @@ const PaperPreview = () => {
             toggleBookmark={toggleBookmark}
             showPdf={showPdf}
             handleCitePopup={handleCitePopup}
-            state={state}
+            
           />
         </div>
       </div>

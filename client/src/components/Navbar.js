@@ -5,6 +5,7 @@ import styles from "./Navbar.module.css";
 import MenuItems from "./MenuItems.js";
 import Search from "./Search.js";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 function Navbar({
   state,
@@ -15,6 +16,7 @@ function Navbar({
   searchQuery = null,
   hideCategoriesFilter = false,
 }) {
+  console.log(hideCategoriesFilter)
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +27,9 @@ function Navbar({
   const [isFullScreen, setIsFullScreen] = useState(window.innerWidth > 992);
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+  const data = useSelector((prev) => prev.auth.user);
+  console.log(data.role);
   useEffect(() => {
     const handleResize = () => {
       setIsMediumScreen(window.innerWidth <= 992);
@@ -94,7 +99,7 @@ function Navbar({
       </div>
       <div id={styles.navPart2}>
         <ul className={menuOpen ? styles.open : ""} id={styles.ul}>
-          {(state === "user" || state === "author") &&
+          {(data.role === "user" || data.role === "author") &&
             !hideCategoriesFilter &&
             !isMediumScreen && (
               <Search
@@ -105,14 +110,13 @@ function Navbar({
                 searchQuery={searchQuery}
               />
             )}
-          {/* {hideCategoriesFilter && (
-            <li className={styles.li}>
-              <NavLink to="/home" state={state} className={styles.navLinks}>
-                Home
-              </NavLink>
-            </li>
-          )} */}
-          {(state === "user" || state === "author") &&
+          {hideCategoriesFilter && (
+            <NavLink className={styles.NavLinkss} to="/home">
+              Home
+            </NavLink>
+          )}
+
+          {(data.role === "user" || data.role === "author") &&
             !hideCategoriesFilter && (
               <>
                 <li
@@ -158,25 +162,33 @@ function Navbar({
                 </li>
               </>
             )}
-          {(state === "user" || state === "author") && !isMediumScreen && (
-            <>
-              {state === "author" && (
-                <li className={styles.navLinks}>
-                  <div onClick={handleMyPapersClick} className={styles.linked}>
-                    My Papers
-                  </div>
-                </li>
-              )}
-              {(state === "author" || state === "author-papers") && (
-                <li className={styles.navLinks}>
-                  <NavLink to="/upload" className={styles.linked} state={user}>
-                    Publish
-                  </NavLink>
-                </li>
-              )}
-            </>
-          )}
-          {(state === "user" || state === "author") && (
+          {(data.role === "user" || data.role === "author") &&
+            !isMediumScreen && (
+              <>
+                {data.role === "author" && (
+                  <li className={styles.navLinks}>
+                    <div
+                      onClick={handleMyPapersClick}
+                      className={styles.linked}
+                    >
+                      My Papers
+                    </div>
+                  </li>
+                )}
+                {data.role === "author" && (
+                  <li className={styles.navLinks}>
+                    <NavLink
+                      to="/upload"
+                      className={styles.linked}
+                      state={user}
+                    >
+                      Publish
+                    </NavLink>
+                  </li>
+                )}
+              </>
+            )}
+          {(data.role === "user" || data.role === "author") && (
             <>
               <button
                 onClick={() => toggleDropdown("userMenu")}
@@ -214,7 +226,8 @@ function Navbar({
                         <div className={styles.navitem}>My Papers</div>
                       </li>
 
-                      {(state === "author" || state === "author-papers") && (
+                      {(data.role === "author" ||
+                        data.role === "author-papers") && (
                         <li className={styles.listdrop}>
                           <NavLink
                             className={styles.navitem}

@@ -14,11 +14,14 @@ const PaperList = ({
   handleCitePopup,
   handleDelete,
   handleDraft,
-  state,
   showButtons,
   showBookmark = true,
 }) => {
   const [profiles, setProfiles] = useState([]);
+
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
 
   const fetchProfiles = async () => {
     const url = `http://localhost:8000/api/profile`;
@@ -29,10 +32,6 @@ const PaperList = ({
       console.error("Error fetching profile data:", error);
     }
   };
-
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
 
   const getProfileImage = (username) => {
     const profile = profiles.find((profile) => profile.username === username);
@@ -60,7 +59,7 @@ const PaperList = ({
               <NavLink
                 to={`/user/${encodeURIComponent(data.uploadedBy)}`}
                 className={styles.navlnk}
-                state={state}
+               
               >
                 <h5 className={styles.uploadedBy}> {data.uploadedBy}</h5>
               </NavLink>
@@ -69,7 +68,7 @@ const PaperList = ({
           </div>
           <NavLink
             to={`/paper/${data._id}`}
-            state={state}
+           
             className={styles.navlink}
           >
             <h3 className={styles.truncatedTitle}>{data.title}</h3>
@@ -99,7 +98,7 @@ const PaperList = ({
               <span> PDF </span>
             </i>
           </button>
-          {showBookmark && ( // Conditionally render the bookmark button
+          {showBookmark && (
             <button
               className={`${styles.btnBookmark} ${
                 bookmarks[index] ? styles.bookmarked : ""
@@ -117,10 +116,10 @@ const PaperList = ({
             <i className="fa fa-quote-right" aria-hidden="true"></i>
             <span className={styles.tooltip}>Cite</span>
           </button>
-          {showButtons && ( // Conditionally render buttons
+
+          {showButtons && (
             <div className={styles.listButtons}>
               {data.draft ? (
-                // If paper is a draft, show delete and publish buttons
                 <div>
                   <button
                     onClick={() => handleDelete(data._id)}

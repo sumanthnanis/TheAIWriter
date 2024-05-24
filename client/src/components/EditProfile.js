@@ -4,13 +4,16 @@ import "./EditProfile.css";
 import { Toaster, toast } from "sonner";
 import AuthorPapers from "./AuthorPapers";
 import UserFiles from "./UserFiles";
+import { useDispatch, useSelector } from "react-redux";
 
 const EditProfile = () => {
-  const { state } = useLocation();
+  
   const [username, setUsername] = useState("");
   const [image, setImage] = useState(null);
   const [activeTab, setActiveTab] = useState("account-general");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const data = useSelector((prev) => prev.auth.user);
 
   const [formData, setFormData] = useState({
     degree: "",
@@ -40,15 +43,15 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    if (state && state.username) {
-      setUsername(state.username);
-      fetchProfileData(state.username);
+    if ( data.username) {
+      setUsername(data.username);
+      fetchProfileData(data.username);
     }
 
-    if (state && state.activeTab) {
-      setActiveTab(state.activeTab);
+    if (data && data.activeTab) {
+      setActiveTab(data.activeTab);
     }
-  }, [state]);
+  }, [data]);
 
   const fetchProfileData = async (username) => {
     try {

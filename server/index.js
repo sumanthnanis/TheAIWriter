@@ -142,6 +142,7 @@ app.get("/api/profile", async (req, res) => {
   try {
     const profile = await Profile.find({});
     res.json(profile);
+    console.log(profile);
   } catch {
     res
       .status(500)
@@ -309,6 +310,12 @@ app.get("/api/get-papers", async (req, res) => {
       const papers = await Paper.find({ uploadedBy: authorName });
       return res.send(papers);
     }
+    if (req.query.sortBy === "publicationDate") {
+      const order = req.query.order === "desc" ? -1 : 1;
+      const papers = await Paper.find({}).sort({ publicationDate: order });
+      return res.send(papers);
+    }
+
     const papers = await Paper.find({ draft: 0 });
     res.send(papers);
   } catch (error) {
@@ -316,6 +323,7 @@ app.get("/api/get-papers", async (req, res) => {
     res.status(500).json({ status: "error" });
   }
 });
+
 app.get("/api/papers/:username", async (req, res) => {
   try {
     const papers = await Paper.find({ uploadedBy: req.params.username });

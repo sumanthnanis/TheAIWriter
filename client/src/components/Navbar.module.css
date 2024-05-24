@@ -67,13 +67,6 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
-.navLinkss:hover {
-  background-color: #e6e5e5;
-  color: #333;
-  padding: 12px;
-  border-radius: 30px;
-}
-
 .linked {
   text-decoration: none;
   list-style: none;
@@ -157,7 +150,7 @@ ul {
   padding: 10px 0;
   width: 200px;
   z-index: 1;
-  top: 60px;
+  top: 40px;
 }
 
 .filterItem {

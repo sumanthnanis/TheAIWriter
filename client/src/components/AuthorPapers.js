@@ -4,12 +4,29 @@ import { useLocation, NavLink } from "react-router-dom";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
 import styles from "./AuthorPapers.module.css";
+import FilterDropdown from "./FilterDropdown";
 
 const AuthorPapers = () => {
   const { state } = useLocation();
   const [draft0Papers, setDraft0Papers] = useState([]);
   const [draft1Papers, setDraft1Papers] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
+  
+  const handleFilterChange = (filter) => {
+    switch (filter) {
+      case "All":
+        setActiveTab("all");
+        break;
+      case "Published Papers":
+        setActiveTab("published");
+        break;
+      case "Drafts":
+        setActiveTab("drafts");
+        break;
+      default:
+        setActiveTab("all");
+    }
+  };
 
   const fetchPapers = async () => {
     try {
@@ -80,82 +97,88 @@ const AuthorPapers = () => {
   const allPapers = [...draft0Papers, ...draft1Papers];
 
   return (
-    <div className={styles.researchPapersTabs}>
-      <Toaster richColors position="top-right" />
-      <div className={styles.tabsSidebar}>
-        <div
-          className={`${styles.tabLink} ${
-            activeTab === "all" ? styles.active : ""
-          }`}
-          onClick={() => setActiveTab("all")}
-        >
-          All Papers
-        </div>
-        <div
-          className={`${styles.tabLink} ${
-            activeTab === "published" ? styles.active : ""
-          }`}
-          onClick={() => setActiveTab("published")}
-        >
-          Published Papers
-        </div>
-        <div
-          className={`${styles.tabLink} ${
-            activeTab === "drafts" ? styles.active : ""
-          }`}
-          onClick={() => setActiveTab("drafts")}
-        >
-          Drafts
-        </div>
+    <div>
+      <div className={styles.filterDropdown}>
+        <FilterDropdown onFilterChange={handleFilterChange} />
       </div>
-      <div className={styles.cardBody}>
-        {activeTab === "all" && (
-          <div className={styles.scrollableList}>
-            <PaperList
-              className={styles.allPapersDiv}
-              papers={allPapers}
-              bookmarks={[]}
-              toggleBookmark={() => {}}
-              showPdf={() => {}}
-              handleCitePopup={() => {}}
-              state={""}
-              showBookmark={false}
-            />
+      <div className={styles.researchPapersTabs}>
+        <Toaster richColors position="top-right" />
+        
+        <div className={styles.tabsSidebar}>
+          <div
+            className={`${styles.tabLink} ${
+              activeTab === "all" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("all")}
+          >
+            All Papers
           </div>
-        )}
-        {activeTab === "published" && (
-          <div className={styles.scrollableList}>
-            <PaperList
-              className={styles.draftPapersDiv}
-              papers={draft0Papers}
-              bookmarks={[]}
-              toggleBookmark={() => {}}
-              showPdf={() => {}}
-              handleCitePopup={() => {}}
-              state={""}
-              handleDraft={handleDraft} // Pass handleDraft function as prop
-              showButtons={true}
-              showBookmark={false}
-            />
+          <div
+            className={`${styles.tabLink} ${
+              activeTab === "published" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("published")}
+          >
+            Published Papers
           </div>
-        )}
-        {activeTab === "drafts" && (
-          <div className={styles.scrollableList}>
-            <PaperList
-              className={styles.draftPapersDiv}
-              papers={draft1Papers}
-              bookmarks={[]}
-              toggleBookmark={() => {}}
-              showPdf={() => {}}
-              handleCitePopup={() => {}}
-              state={""}
-              handleDelete={handleDelete}
-              handleDraft={handleDraft}
-              showButtons={true}
-              showBookmark={false}
-            />
+          <div
+            className={`${styles.tabLink} ${
+              activeTab === "drafts" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("drafts")}
+          >
+            Drafts
           </div>
-        )}
+        </div>
+        <div className={styles.cardBody}>
+          {activeTab === "all" && (
+            <div className={styles.scrollableList}>
+              <PaperList
+                className={styles.allPapersDiv}
+                papers={allPapers}
+                bookmarks={[]}
+                toggleBookmark={() => {}}
+                showPdf={() => {}}
+                handleCitePopup={() => {}}
+                state={""}
+                showBookmark={false}
+              />
+            </div>
+          )}
+          {activeTab === "published" && (
+            <div className={styles.scrollableList}>
+              <PaperList
+                className={styles.draftPapersDiv}
+                papers={draft0Papers}
+                bookmarks={[]}
+                toggleBookmark={() => {}}
+                showPdf={() => {}}
+                handleCitePopup={() => {}}
+                state={""}
+                handleDraft={handleDraft} // Pass handleDraft function as prop
+                showButtons={true}
+                showBookmark={false}
+              />
+            </div>
+          )}
+          {activeTab === "drafts" && (
+            <div className={styles.scrollableList}>
+              <PaperList
+                className={styles.draftPapersDiv}
+                papers={draft1Papers}
+                bookmarks={[]}
+                toggleBookmark={() => {}}
+                showPdf={() => {}}
+                handleCitePopup={() => {}}
+                state={""}
+                handleDelete={handleDelete}
+                handleDraft={handleDraft}
+                showButtons={true}
+                showBookmark={false}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

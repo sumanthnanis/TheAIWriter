@@ -96,7 +96,7 @@ form.sign-in-form {
   background-color: #f0f0f0; /* Background color matching the input fields */
   color: #333; /* Text color */
   border: none; /* Remove the default border */
-  padding-left: 10px;
+
   border-radius: 55px; /* Padding to match input fields */
 }
 
@@ -215,7 +215,7 @@ form.sign-in-form {
   transform: translateX(-800px);
 }
 
-.panels-container1.sign-up-mode .signin-signup {
+.container1.sign-up-mode .signin-signup {
   left: 25%;
 }
 

@@ -1,7 +1,9 @@
 * {
   font-family: "Circular", sans-serif;
 }
-
+.page {
+  display: flex;
+}
 .outputDiv {
   margin-top: 20px;
   display: flex;
@@ -10,8 +12,9 @@
 
 .innerDiv {
   background-color: #fff;
+  border: 1px solid #e0e0e0;
   padding: 20px;
-  width: 70%;
+  width: 90%;
   margin-left: 25px;
   margin-bottom: 11px;
   margin-top: 10px;
@@ -25,7 +28,16 @@
     margin-bottom: 15px;
   }
 }
-
+.card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  width: 100%; /* Set card width to 100% */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
 /* Paper title */
 .navlink {
   text-decoration: none;
@@ -45,15 +57,20 @@
   justify-content: start;
 }
 .truncatedTitle {
+  color: #333;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3; /* Limit to three lines */
   overflow: hidden;
   font-family: sans-serif;
-  font-weight: 600;
+  font-weight: 550;
 
   text-overflow: ellipsis;
   cursor: pointer; /* Add pointer cursor for clickable effect */
+}
+.truncatedTitle:hover {
+  text-decoration: underline;
+  text-decoration-color: #333;
 }
 .h5 {
   margin-top: 13px;
@@ -77,7 +94,8 @@
 .uploadedBy {
   font-family: sans-serif;
   font-style: normal;
-  font-size: 17px;
+  color: #3498db;
+  font-size: 18px;
   font-weight: 400;
 }
 .papertype {
@@ -87,8 +105,8 @@
   color: rgb(105, 105, 105);
 }
 #paperType {
-  background-color: lightgreen;
-  color: #3d3d3d;
+  background-color: #d0eeed;
+  color: #003a37;
 }
 .profileImag {
   width: 50px;
@@ -293,7 +311,8 @@
 .total {
   display: flex; /* Set display to flex */
   margin-left: 1.3vw;
-  flex-wrap: wrap;
+  flex-direction: column;
+  margin-right: 25px;
   /* Allow cards to wrap if necessary */
 }
 
@@ -309,17 +328,6 @@
     display: block; /* Change display to block */
     margin: 10px auto; /* Center the card by setting margin to auto */
   }
-}
-
-.card {
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
-  width: 100%; /* Set card width to 100% */
-  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .card:hover {
@@ -343,8 +351,9 @@
 
 .userName {
   margin: 0;
+  color: #3498db;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .userInstitution {

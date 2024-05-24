@@ -139,3 +139,23 @@
 .deleteButton:hover {
   background-color: #c0392b;
 }
+
+
+@media (max-width: 768px) {
+  .tabsSidebar {
+    display: none;
+  }
+
+  .filterDropdown {
+    display: block; /* Display the filterDropdown for medium screens */
+    margin-bottom: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .filterDropdown {
+    display: none; /* Display the filterDropdown for medium screens */
+    margin-bottom: 10px;
+  }
+}

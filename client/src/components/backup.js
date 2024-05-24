@@ -1,351 +1,379 @@
-import React, { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import Navbar from "./Navbar";
+// @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
 
-import axios from "axios";
-import styles from "./Home.module.css";
-import PaperList from "./Paper";
-import { toast, Toaster } from "sonner";
+// * {
+//   margin: 0;
+//   padding: 0;
+//   box-sizing: border-box;
+// }
 
-const Home = () => {
-  const { state } = useLocation();
-  const [papers, setPapers] = useState([]);
-  const [profiles, setProfiles] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("");
-  const [category, setCategory] = useState("");
-  const [bookmarks, setBookmarks] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
-  const [selectedPaper, setSelectedPaper] = useState(null);
-  const [copySuccess, setCopySuccess] = useState(false);
+// body,
+// input {
+//   font-family: "Poppins", sans-serif;
+// }
 
-  const handleCitePopup = (paper) => {
-    setSelectedPaper(paper);
-    setShowPopup(true);
-  };
+// .container1 {
+//   position: relative;
+//   width: 100%;
+//   background-color: #fff;
+//   min-height: 100vh;
+//   overflow: hidden;
+// }
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    setSelectedPaper(null);
-    setCopySuccess(false);
-  };
+// .forms-container1 {
+//   position: absolute;
+//   width: 100%;
+//   height: 100%;
+//   top: 0;
+//   left: 0;
+// }
 
-  const handleCiteThisPaper = async () => {
-    if (!selectedPaper) return;
+// .signin-signup {
+//   position: absolute;
+//   top: 50%;
+//   transform: translate(-50%, -50%);
+//   left: 75%;
+//   width: 50%;
+//   transition: 1s 0.7s ease-in-out;
+//   display: grid;
+//   grid-template-columns: 1fr;
+//   z-index: 5;
+// }
 
-    try {
-      await axios.post(
-        http://localhost:8000/api/increase-citations/${selectedPaper._id}
-      );
+// form {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   flex-direction: column;
+//   padding: 0rem 5rem;
+//   transition: all 0.2s 0.7s;
+//   overflow: hidden;
+//   grid-column: 1 / 2;
+//   grid-row: 1 / 2;
+// }
 
-      setPapers((prevPapers) =>
-        prevPapers.map((paper) =>
-          paper._id === selectedPaper._id
-            ? { ...paper, citations: paper.citations + 1 }
-            : paper
-        )
-      );
+// form.sign-up-form {
+//   opacity: 0;
+//   z-index: 1;
+// }
 
-      const citationText = Title: ${selectedPaper.title}, Author: ${selectedPaper.uploadedBy};
-      await navigator.clipboard.writeText(citationText);
-      console.log("Citation copied to clipboard:", citationText);
-      setCopySuccess(true);
-    } catch (error) {
-      console.error("Error citing paper:", error);
-    }
-  };
+// form.sign-in-form {
+//   z-index: 2;
+// }
 
-  const fetchPapers = async () => {
-    try {
-      let url = "http://localhost:8000/api/get-papers";
-      const params = new URLSearchParams();
-      if (sortBy === "mostViewed") {
-        params.append("sortBy", "viewCount");
-      }
-      if (sortBy === "mostCited") {
-        params.append("sortBy", "citationCount");
-      }
-      if (category) {
-        params.append("category", category.trim());
-      }
-      if (params.toString()) {
-        url += ?${params.toString()};
-      }
-      const response = await axios.get(url);
-      const papersData = response.data;
-      setPapers(papersData);
+// .title {
+//   font-size: 2.2rem;
+//   color: #444;
+//   margin-bottom: 10px;
+// }
 
-      // Initialize bookmarks state based on the fetched papers
-      setBookmarks(
-        papersData.map((paper) => paper.bookmarkedBy.includes(state.username))
-      );
-    } catch (error) {
-      console.error("Error fetching papers:", error);
-    }
-  };
+// .input-field {
+//   max-width: 380px;
+//   width: 100%;
+//   background-color: #f0f0f0;
+//   margin: 10px 0;
+//   height: 55px;
+//   border-radius: 55px;
+//   display: grid;
+//   grid-template-columns: 15% 85%;
+//   padding: 0 0.4rem;
+//   position: relative;
+// }
 
-  useEffect(() => {
-    fetchPapers();
-  }, [sortBy, category]);
+// .input-field i {
+//   text-align: center;
+//   line-height: 55px;
+//   color: #acacac;
+//   transition: 0.5s;
+//   font-size: 1.1rem;
+// }
 
-  useEffect(() => {
-    if (searchQuery === "") {
-      return;
-    }
-    const getPapersBySearch = async () => {
-      try {
-        const response = await axios.get(
-          http://localhost:8000/api/search?search=${searchQuery}
-        );
-        const { papers, profiles } = response.data;
-        setPapers(papers);
-        setProfiles(profiles);
-        console.log(profiles);
-        // setBookmarks(Array(papers.length).fill(false));
-        setBookmarks(
-          papers.map((paper) => paper.bookmarkedBy.includes(state.username))
-        );
-      } catch (error) {
-        console.error("Error fetching papers and profiles:", error);
-      }
-    };
-    getPapersBySearch();
-  }, [searchQuery]);
+// .input-field input,
+// .input-field select {
+//   background: none;
+//   outline: none;
+//   border: none;
+//   line-height: 1;
+//   font-weight: 600;
+//   font-size: 1.1rem;
+//   color: #333;
+// }
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
+// .input-field input::placeholder {
+//   color: #aaa;
+//   font-weight: 500;
+// }
 
-  const addList = async (id, username) => {
-    const url = http://localhost:8000/api/add-file;
-    try {
-      const response = await axios.post(url, {
-        username,
-        id,
-      });
-      console.log(response.data);
-      if (response.status === 200) {
-        console.log("File added to list successfully");
-      } else {
-        console.error("Failed to add file to list");
-      }
-    } catch (error) {
-      console.error("Error adding file to list:", error);
-    }
-  };
+// .cbutton {
+//   width: 150px;
+//   background-color: #363a42;
+//   border: none;
+//   outline: none;
+//   height: 49px;
+//   border-radius: 49px;
+//   color: #fff;
+//   text-transform: uppercase;
+//   font-weight: 600;
+//   margin: 10px 0;
+//   cursor: pointer;
+//   transition: 0.5s;
+// }
 
-  const showPdf = async (fileName) => {
-    const url = http://localhost:8000/files/${fileName};
+// .cbutton:hover {
+//   background-color: #333;
+// }
+// .input-field select {
+//   background-color: #f0f0f0; /* Background color matching the input fields */
+//   color: #333; /* Text color */
+//   border: none; /* Remove the default border */
+//   padding-left: 10px;
+//   border-radius: 55px; /* Padding to match input fields */
+// }
 
-    try {
-      const response = await axios.get(url, {
-        responseType: "blob",
-      });
-      const file = new Blob([response.data], { type: "application/pdf" });
-      const fileURL = URL.createObjectURL(file);
-      window.open(fileURL);
-    } catch (error) {
-      console.error("Error fetching PDF:", error);
-    }
-  };
+// .panels-container1 {
+//   position: absolute;
+//   height: 100%;
+//   width: 100%;
+//   top: 0;
+//   left: 0;
+//   display: grid;
+//   grid-template-columns: repeat(2, 1fr);
+// }
 
-  const aggregatedProfiles = profiles.map((profile) => {
-    const authorPapers = papers.filter(
-      (paper) => paper.uploadedBy === profile.username
-    );
-    const totalPapers = authorPapers.length;
-    const totalCitations = authorPapers.reduce(
-      (sum, paper) => sum + paper.citations,
-      0
-    );
-    const totalReads = authorPapers.reduce(
-      (sum, paper) => sum + paper.count,
-      0
-    );
+// .container1:before {
+//   content: "";
+//   position: absolute;
+//   height: 2000px;
+//   width: 2000px;
+//   top: -10%;
+//   right: 48%;
+//   transform: translateY(-50%);
+//   background-image: linear-gradient(-45deg, #636a78 0%, #636a78 100%);
+//   transition: 1.8s ease-in-out;
+//   border-radius: 50%;
+//   z-index: 6;
+// }
 
-    return {
-      ...profile,
-      totalPapers,
-      totalCitations,
-      totalReads,
-    };
-  });
+// .image {
+//   width: 100%;
+//   transition: transform 1.1s ease-in-out;
+//   transition-delay: 0.4s;
+// }
 
-  const includeSearchQuery = (authorName, searchQuery) => {
-    return authorName.toLowerCase().includes(searchQuery.toLowerCase());
-  };
+// .panel {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: flex-end;
+//   justify-content: space-around;
+//   text-align: center;
+//   z-index: 6;
+// }
 
- 
+// .left-panel {
+//   pointer-events: all;
+//   padding: 3rem 17% 2rem 12%;
+// }
 
-  const toggleBookmark = async (index, id) => {
-    const newBookmarks = [...bookmarks];
-    newBookmarks[index] = !newBookmarks[index];
+// .right-panel {
+//   pointer-events: none;
+//   padding: 3rem 12% 2rem 17%;
+// }
 
-    try {
-      const response = await axios.post(
-        http://localhost:8000/api/toggle-bookmark,
-        {
-          paperId: id,
-          username: state.username,
-          bookmarked: newBookmarks[index],
-        }
-      );
+// .panel .content {
+//   color: #fff;
+//   transition: transform 0.9s ease-in-out;
+//   transition-delay: 0.6s;
+// }
 
-      if (response.status === 200) {
-        setBookmarks(newBookmarks);
-        if (newBookmarks[index]) {
-          toast.success("Bookmarked successfully!");
-        } else {
-          toast.info("Bookmark removed successfully!");
-        }
-      } else {
-        console.error("Failed to update bookmark status");
-      }
-    } catch (error) {
-      console.error("Error updating bookmark status:", error);
-    }
-  };
+// .panel h3 {
+//   font-weight: 600;
+//   line-height: 1;
+//   font-size: 1.5rem;
+// }
 
-  useEffect(() => {
-    console.log(
-      "Bookmarked papers:",
-      papers.filter((paper, index) => bookmarks[index])
-    );
-  }, [bookmarks, papers]);
+// .panel p {
+//   font-size: 0.95rem;
+//   padding: 0.7rem 0;
+// }
+// .cbutton.transparent {
+//   margin: auto;
 
-  return (
-    <div>
-      <Toaster richColors position="top-right" />
-      <div className={styles["home-root"]}>
-        {/* <Toaster richColors position="top-right" /> */}
-        <div className={styles["nav-div"]}>
-          <Navbar
-            state={state.role}
-            user={state}
-            setSortBy={setSortBy}
-            setCategory={setCategory}
-            handleChange={handleSearch}
-            searchQuery={searchQuery}
-          />
-        </div>
+//   background: none;
+//   border: 2px solid #fff;
+//   width: 130px;
+//   height: 41px;
+//   font-weight: 600;
+//   font-size: 0.8rem;
+// }
 
-        {searchQuery && aggregatedProfiles.length > 0 && (
-          <div className={styles.authorDiv}>
-            <div className={styles.header}>
-              <span className={styles.authorSearch}>
-                Search Results for {searchQuery} in Authors{" "}
-              </span>
-            </div>
-            <div className={styles.total}>
-              {aggregatedProfiles.map((profile, index) => (
-                <NavLink
-                  key={index}
-                  className={styles.authorCard}
-                  to={/user/${encodeURIComponent(profile.username)}}
-                >
-                  <div className={styles.card}>
-                    <div className={styles.profileContainer}>
-                      <div className={styles.imageContainer}>
-                        {profile.profileImage && (
-                          <img
-                            src={http://localhost:8000${profile.profileImage}}
-                            alt={profile.username}
-                            className={styles.profileImage}
-                          />
-                        )}
-                      </div>
-                      <div className={styles.detailsOverlay}>
-                        <div className={styles.userInfo}>
-                          <h4 className={styles.userName}>
-                            {profile.username}
-                          </h4>
-                          <p className={styles.userInstitution}>
-                            {profile.institution}
-                          </p>
-                        </div>
-                        <div className={styles.stats}>
-                          <div className={styles.statItem}>
-                            <span className={styles.statNumber}>
-                              {profile.totalPapers}
-                            </span>
-                            <span className={styles.statLabel}>
-                              Publications
-                            </span>
-                          </div>
-                          <div className={styles.statDivider}></div>
-                          <div className={styles.statItem}>
-                            <span className={styles.statNumber}>
-                              {profile.totalCitations}
-                            </span>
-                            <span className={styles.statLabel}>Citations</span>
-                          </div>
-                          <div className={styles.statDivider}></div>
-                          <div className={styles.statItem}>
-                            <span className={styles.statNumber}>
-                              {profile.totalReads}
-                            </span>
-                            <span className={styles.statLabel}>Reads</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        )}
+// .right-panel .image,
+// .right-panel .content {
+//   transform: translateX(800px);
+// }
 
-        <div className={styles.outputDiv}>
-          <div className={styles.paperheader}>
-            {searchQuery ? (
-              <span className={styles.paperSearch}>
-                Search Results for {searchQuery} in Papers
-              </span>
-            ) : category ? (
-              <span className={styles.paperCategory}>
-                Showing Papers On {category}
-              </span>
-            ) : sortBy ? (
-              <span className={styles.paperFilter}>{sortBy} Papers</span>
-            ) : (
-              <span></span>
-            )}
-          </div>
-          <PaperList
-            papers={papers}
-            bookmarks={bookmarks}
-            toggleBookmark={toggleBookmark}
-            showPdf={showPdf}
-            handleCitePopup={handleCitePopup}
-            state={state}
-          />
-        </div>
-        {showPopup && selectedPaper && (
-          <div className={styles.popup}>
-            <div className={styles.popupContent}>
-              <span className={styles.close} onClick={handleClosePopup}>
-                &times;
-              </span>
-              <h2 className={styles.citePaper}>Cite Paper</h2>
-              <p>
-                {selectedPaper.uploadedBy}. {selectedPaper.title}
-              </p>
-              <button
-                className={styles.copyButton}
-                onClick={() => handleCiteThisPaper(selectedPaper)}
-              >
-                Copy Citation
-              </button>
-              {copySuccess && (
-                <p className={styles.successMessage}>Copied to clipboard!</p>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+// /* ANIMATION */
 
-export default Home;
+// .container1.sign-up-mode:before {
+//   transform: translate(100%, -50%);
+//   right: 52%;
+// }
+
+// .container1.sign-up-mode .left-panel .image,
+// .container1.sign-up-mode .left-panel .content {
+//   transform: translateX(-800px);
+// }
+
+// .container1.sign-up-mode .signin-signup {
+//   left: 25%;
+// }
+
+// .container1.sign-up-mode form.sign-up-form {
+//   opacity: 1;
+//   z-index: 2;
+// }
+
+// .container1.sign-up-mode form.sign-in-form {
+//   opacity: 0;
+//   z-index: 1;
+// }
+
+// .container1.sign-up-mode .right-panel .image,
+// .container1.sign-up-mode .right-panel .content {
+//   transform: translateX(0%);
+// }
+
+// .container1.sign-up-mode .left-panel {
+//   pointer-events: none;
+// }
+
+// .container1.sign-up-mode .right-panel {
+//   pointer-events: all;
+// }
+
+// @media (max-width: 870px) {
+//   .container1 {
+//     min-height: 800px;
+//     height: 100vh;
+//   }
+//   .signin-signup {
+//     width: 100%;
+//     top: 95%;
+//     transform: translate(-50%, -100%);
+//     transition: 1s 0.8s ease-in-out;
+//   }
+
+//   .signin-signup,
+//   .container1.sign-up-mode .signin-signup {
+//     left: 50%;
+//   }
+
+//   .panels-container1 {
+//     grid-template-columns: 1fr;
+//     grid-template-rows: 1fr 2fr 1fr;
+//   }
+
+//   .panel {
+//     flex-direction: row;
+//     justify-content: space-around;
+//     align-items: center;
+//     padding: 2.5rem 8%;
+//     grid-column: 1 / 2;
+//   }
+
+//   .right-panel {
+//     grid-row: 3 / 4;
+//   }
+
+//   .left-panel {
+//     grid-row: 1 / 2;
+//   }
+
+//   .image {
+//     width: 200px;
+//     transition: transform 0.9s ease-in-out;
+//     transition-delay: 0.6s;
+//   }
+
+//   .panel .content {
+//     padding-right: 15%;
+//     transition: transform 0.9s ease-in-out;
+//     transition-delay: 0.8s;
+//   }
+
+//   .panel h3 {
+//     font-size: 1.2rem;
+//   }
+
+//   .panel p {
+//     font-size: 0.7rem;
+//     padding: 0.5rem 0;
+//   }
+
+//   .cbutton.transparent {
+//     width: 110px;
+//     height: 35px;
+//     font-size: 0.7rem;
+//   }
+
+//   .container1:before {
+//     width: 1500px;
+//     height: 1500px;
+//     transform: translateX(-50%);
+//     left: 30%;
+//     bottom: 68%;
+//     right: initial;
+//     top: initial;
+//     transition: 2s ease-in-out;
+//   }
+
+//   .container1.sign-up-mode:before {
+//     transform: translate(-50%, 100%);
+//     bottom: 32%;
+//     right: initial;
+//   }
+
+//   .container1.sign-up-mode .left-panel .image,
+//   .container1.sign-up-mode .left-panel .content {
+//     transform: translateY(-300px);
+//   }
+
+//   .container1.sign-up-mode .right-panel .image,
+//   .container1.sign-up-mode .right-panel .content {
+//     transform: translateY(0px);
+//   }
+
+//   .right-panel .image,
+//   .right-panel .content {
+//     transform: translateY(300px);
+//   }
+
+//   .container1.sign-up-mode .signin-signup {
+//     top: 5%;
+//     transform: translate(-50%, 0);
+//   }
+// }
+
+// @media (max-width: 570px) {
+//   form {
+//     padding: 0 1.5rem;
+//   }
+
+//   .image {
+//     display: none;
+//   }
+//   .panel .content {
+//     padding: 0.5rem 1rem;
+//   }
+//   .container1 {
+//     padding: 1.5rem;
+//   }
+
+//   .container1:before {
+//     bottom: 72%;
+//     left: 50%;
+//   }
+
+//   .container1.sign-up-mode:before {
+//     bottom: 28%;
+//     left: 50%;
+//   }
+// }

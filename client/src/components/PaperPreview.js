@@ -10,7 +10,8 @@ import { useData } from "../DataContext";
 
 const PaperPreview = () => {
   const { state } = useLocation();
-
+  console.log(state);
+  // const { role, user } = state;
   const { id } = useParams();
   const [paper, setPaper] = useState(null);
   const { bookmarkedPapers, setBookmarkedPapers } =
@@ -153,6 +154,7 @@ const PaperPreview = () => {
   if (!paper) {
     return <div>Loading...</div>;
   }
+  console.log(state.role);
 
   return (
     <div>

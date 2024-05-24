@@ -45,7 +45,6 @@ const EditProfile = () => {
       fetchProfileData(state.username);
     }
 
-    // Check if the activeTab prop is present in the state
     if (state && state.activeTab) {
       setActiveTab(state.activeTab);
     }
@@ -158,7 +157,7 @@ const EditProfile = () => {
                     }`}
                     onClick={() => setActiveTab("my-list")}
                   >
-                    My list
+                    My List
                   </a>
                 </div>
                 <hr className="list-group-line" />

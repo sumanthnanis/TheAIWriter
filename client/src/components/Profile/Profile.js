@@ -1,10 +1,7 @@
-import EditProfile from "./EditProfile";
-import UserFiles from "./UserFiles";
-
-import Navbar from "./Navbar";
+import EditProfile from "./EditProfile/EditProfile";
 
 import React from "react";
-import ProfileDetails from "./ProfileDetails";
+import ProfileDetails from "./ProfileDetails/ProfileDetails";
 
 const Profile = () => {
   return (

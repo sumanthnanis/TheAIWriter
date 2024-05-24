@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import PaperList from "./Paper";
+import PaperList from "../Paper/Paper";
 
 import axios from "axios";
 import { Toaster, toast } from "sonner";
 import styles from "./AuthorPapers.module.css";
-import FilterDropdown from "./FilterDropdown";
+import FilterDropdown from "../Dropdown/FilterDropdown";
 import { useDispatch, useSelector } from "react-redux";
 
 const AuthorPapers = () => {
- 
   const [draft0Papers, setDraft0Papers] = useState([]);
   const [draft1Papers, setDraft1Papers] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
@@ -105,7 +104,7 @@ const AuthorPapers = () => {
       </div>
       <div className={styles.researchPapersTabs}>
         <Toaster richColors position="top-right" />
-        
+
         <div className={styles.tabsSidebar}>
           <div
             className={`${styles.tabLink} ${

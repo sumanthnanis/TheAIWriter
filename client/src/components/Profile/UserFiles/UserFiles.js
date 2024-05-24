@@ -2,9 +2,9 @@ import React, { useEffect, useContext } from "react";
 import axios from "axios";
 import styles from "./UserFiles.module.css";
 
-import PaperList from "./Paper";
+import PaperList from "../../Paper/Paper";
 import { toast } from "sonner";
-import BookmarksContext from "../BookmarksContext";
+import BookmarksContext from "../../../BookmarksContext";
 import { useDispatch, useSelector } from "react-redux";
 
 const UserFiles = () => {
@@ -12,8 +12,6 @@ const UserFiles = () => {
   const data = useSelector((prev) => prev.auth.user);
   const { bookmarkedPapers, setBookmarkedPapers } =
     useContext(BookmarksContext);
-
-
 
   const showPdf = async (fileName) => {
     const url = `http://localhost:8000/files/${fileName}`;
@@ -89,7 +87,6 @@ const UserFiles = () => {
               toggleBookmark={handleBookmarkRemoval}
               showPdf={showPdf}
               handleCitePopup={() => {}}
-            
             />
           )}
         </ul>

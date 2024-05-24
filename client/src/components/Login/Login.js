@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import "./Login.css";
-import log from "./img/log.svg";
-import register from "./img/register.svg";
+import log from "../Img/log.svg";
+import register from "../Img/register.svg";
 import { useNavigate } from "react-router-dom";
-import { setUser } from "../reducers/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../reducers/authSlice";
+import { useDispatch } from "react-redux";
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [username, setUsername] = useState("");

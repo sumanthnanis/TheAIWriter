@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Dropdown from "./Dropdown.js";
-import logo from "./img/logo.jpg";
+import Dropdown from "../Dropdown/Dropdown.js";
+import logo from "../Img/logo.jpg";
 import styles from "./Navbar.module.css";
 import MenuItems from "./MenuItems.js";
-import Search from "./Search.js";
+import Search from "./Search/Search.js";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 function Navbar({
- 
   user,
   setSortBy,
   setCategory,
@@ -16,7 +15,7 @@ function Navbar({
   searchQuery = null,
   hideCategoriesFilter = false,
 }) {
-  console.log(hideCategoriesFilter)
+  console.log(hideCategoriesFilter);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -41,8 +40,6 @@ function Navbar({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-
 
   const handleClick = () => setMenuOpen(!menuOpen);
   const closeMobileMenu = () => setMenuOpen(false);

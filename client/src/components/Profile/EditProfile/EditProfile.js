@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./EditProfile.css";
 import { Toaster, toast } from "sonner";
-import AuthorPapers from "./AuthorPapers";
-import UserFiles from "./UserFiles";
+import AuthorPapers from "../../AuthorPapers/AuthorPapers";
+import UserFiles from "../UserFiles/UserFiles";
 import { useDispatch, useSelector } from "react-redux";
 
 const EditProfile = () => {
-  
- 
   const [image, setImage] = useState(null);
   const [activeTab, setActiveTab] = useState("account-general");
   const navigate = useNavigate();
@@ -43,7 +41,7 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-      fetchProfileData();
+    fetchProfileData();
     if (data && data.activeTab) {
       setActiveTab(data.activeTab);
     }
@@ -340,7 +338,7 @@ const EditProfile = () => {
                     id="my-list"
                   >
                     <div className="cardBody">
-                      <UserFiles   />
+                      <UserFiles />
                     </div>
                   </div>
                 </div>

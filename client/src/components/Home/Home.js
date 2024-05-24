@@ -1,12 +1,21 @@
+// Home.js
 import React, { useEffect, useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import styles from "./Home.module.css";
-import PaperList from "./Paper";
+import PaperList from "../Paper/Paper";
 import { toast, Toaster } from "sonner";
-import Navbar from "./Navbar";
-import BookmarksContext from "../BookmarksContext";
+import Navbar from "../Navbar/Navbar";
+import BookmarksContext from "../../BookmarksContext";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  toggleBookmark,
+  showPdf,
+  handleCitePopup,
+  handleClosePopup,
+  fetchProfiles,
+  handleCiteThisPaper,
+} from "../../utils/util";
 
 const Home = () => {
   const { bookmarkedPapers, setBookmarkedPapers } =
@@ -17,7 +26,7 @@ const Home = () => {
   const [category, setCategory] = useState("");
   const [profiles, setProfiles] = useState([]);
   const [role, setRole] = useState("");
-  const [userProfile,setUserProfile] =useState([])
+  const [userProfile, setUserProfile] = useState([]);
   const dispatch = useDispatch();
   const data = useSelector((prev) => prev.auth.user);
 
@@ -25,61 +34,24 @@ const Home = () => {
   const [selectedPaper, setSelectedPaper] = useState(null);
   const [copySuccess, setCopySuccess] = useState(false);
 
-  const handleCitePopup = (paper) => {
-    setSelectedPaper(paper);
-    setShowPopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    setSelectedPaper(null);
-    setCopySuccess(false);
-  };
-
-  const handleCiteThisPaper = async () => {
-    if (!selectedPaper) return;
-
-    try {
-      await axios.post(
-        `http://localhost:8000/api/increase-citations/${selectedPaper._id}`
-      );
-
-      setPapers((prevPapers) =>
-        prevPapers.map((paper) =>
-          paper._id === selectedPaper._id
-            ? { ...paper, citations: paper.citations + 1 }
-            : paper
-        )
-      );
-
-      const citationText = `Title: ${selectedPaper.title}, Author: ${selectedPaper.uploadedBy}`;
-      await navigator.clipboard.writeText(citationText);
-      console.log("Citation copied to clipboard:", citationText);
-      setCopySuccess(true);
-    } catch (error) {
-      console.error("Error citing paper:", error);
-    }
-  };
   useEffect(() => {
-    fetchProfiles();
+    const fetchProfileData = async () => {
+      try {
+        const profileData = await fetchProfiles();
+        setProfiles(profileData);
+      } catch (error) {
+        console.error("Error fetching profiles:", error);
+      }
+    };
+
+    fetchProfileData();
   }, []);
 
-  const fetchProfiles = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/profile");
-      const profilesData = response.data;
-      setProfiles(profilesData);
-      setUserProfile(profilesData)
-      console.log("these are profiles", profilesData);
-      fetchPapers();
-    } catch (error) {
-      console.error("Error fetching profiles:", error);
-    }
-  };
   useEffect(() => {
-    fetchPapers();
+    fetchPapers(profiles);
   }, [sortBy, category]);
-  const fetchPapers = async () => {
+
+  const fetchPapers = async (profilesData = profiles) => {
     try {
       console.log("dgdgddh");
       let url = "http://localhost:8000/api/get-papers";
@@ -104,7 +76,7 @@ const Home = () => {
       const papersData = response.data;
       console.log(papersData);
 
-      const userProfile = profiles.find(
+      const userProfile = profilesData.find(
         (profile) => profile.username === data.username
       );
       console.log("profile", userProfile);
@@ -142,9 +114,8 @@ const Home = () => {
     const getPapersBySearch = async () => {
       try {
         if (searchQuery === "") {
-          // If search query is empty, fetch all papers
           await fetchPapers();
-          await fetchProfiles();
+          await fetchProfiles(setProfiles, setUserProfile, fetchPapers);
         } else {
           const response = await axios.get(
             `http://localhost:8000/api/search?search=${searchQuery}`
@@ -165,25 +136,8 @@ const Home = () => {
     getPapersBySearch();
   }, [searchQuery]);
 
-
-
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
-  };
-
-  const showPdf = async (fileName) => {
-    const url = `http://localhost:8000/files/${fileName}`;
-
-    try {
-      const response = await axios.get(url, {
-        responseType: "blob",
-      });
-      const file = new Blob([response.data], { type: "application/pdf" });
-      const fileURL = URL.createObjectURL(file);
-      window.open(fileURL);
-    } catch (error) {
-      console.error("Error fetching PDF:", error);
-    }
   };
 
   const aggregatedProfiles = profiles
@@ -219,45 +173,6 @@ const Home = () => {
     .filter((profile) => profile !== null);
 
   console.log("Aggregated Profiles:", aggregatedProfiles);
-
-  const toggleBookmark = async (index, id) => {
-    const paper = papers[index];
-    const bookmarked = !bookmarkedPapers.some((bp) => bp._id === paper._id);
-
-    try {
-      const response = await axios.post(
-        `http://localhost:8000/api/toggle-bookmark`,
-        {
-          paperId: id,
-          username: data.username,
-          bookmarked,
-        }
-      );
-
-      if (response.status === 200) {
-        const updatedPaper = response.data.paper;
-        setPapers((prevPapers) =>
-          prevPapers.map((paper) =>
-            paper._id === updatedPaper._id ? updatedPaper : paper
-          )
-        );
-
-        if (bookmarked) {
-          setBookmarkedPapers((prev) => [...prev, updatedPaper]);
-          toast.success("Bookmarked successfully!");
-        } else {
-          setBookmarkedPapers((prev) =>
-            prev.filter((paper) => paper._id !== updatedPaper._id)
-          );
-          toast.info("Bookmark removed successfully!");
-        }
-      } else {
-        console.error("Failed to update bookmark status");
-      }
-    } catch (error) {
-      console.error("Error updating bookmark status:", error);
-    }
-  };
 
   useEffect(() => {
     localStorage.setItem("role", role);
@@ -305,9 +220,22 @@ const Home = () => {
               bookmarks={papers.map((paper) =>
                 bookmarkedPapers.some((bp) => bp._id === paper._id)
               )}
-              toggleBookmark={toggleBookmark}
+              toggleBookmark={(index, id) =>
+                toggleBookmark(
+                  index,
+
+                  id,
+                  papers,
+                  bookmarkedPapers,
+                  setPapers,
+                  setBookmarkedPapers,
+                  data.username
+                )
+              }
               showPdf={showPdf}
-              handleCitePopup={handleCitePopup}
+              handleCitePopup={(paper) =>
+                handleCitePopup(paper, setSelectedPaper, setShowPopup)
+              }
             />
           </div>
           <div className={styles.total}>
@@ -378,7 +306,10 @@ const Home = () => {
         {showPopup && selectedPaper && (
           <div className={styles.popup}>
             <div className={styles.popupContent}>
-              <span className={styles.close} onClick={handleClosePopup}>
+              <span
+                className={styles.close}
+                onClick={() => handleClosePopup(setShowPopup, setSelectedPaper)}
+              >
                 &times;
               </span>
               <h2 className={styles.citePaper}>Cite Paper</h2>
@@ -387,7 +318,14 @@ const Home = () => {
               </p>
               <button
                 className={styles.copyButton}
-                onClick={() => handleCiteThisPaper(selectedPaper)}
+                onClick={() =>
+                  handleCiteThisPaper(
+                    selectedPaper,
+                    setPapers,
+                    setCopySuccess,
+                    papers
+                  )
+                }
               >
                 Copy Citation
               </button>

@@ -2,14 +2,14 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { DataProvider } from "./DataContext";
-import Login from "./components/Login";
-import Home from "./components/Home";
-import AuthorPapers from "./components/AuthorPapers";
-import Upload from "./components/Upload";
-import PaperPreview from "./components/PaperPreview";
-import Author from "./components/Author";
-import Profile from "./components/Profile";
+
+import Login from "./components/Login/Login";
+import Home from "./components/Home/Home";
+import AuthorPapers from "./components/AuthorPapers/AuthorPapers";
+import Upload from "./components/Upload/Upload";
+import PaperPreview from "./components/PaperPreview/PaperPreview";
+import Author from "./components/AuthorPapers/Author";
+import Profile from "./components/Profile/Profile";
 import { BookmarksProvider } from "./BookmarksContext";
 import { store } from "./reducers/store";
 import { Provider } from "react-redux";
